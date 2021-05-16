@@ -48,7 +48,7 @@ namespace CM3D2.VMDPlay.Plugin
 		private string lastFilename;
 		private string oggFilename=string.Empty;
 
-		protected FileBrowser m_fileBrowser;
+		//protected FileBrowser m_fileBrowser;
 
 		protected Texture2D m_directoryImage;
 
@@ -136,11 +136,13 @@ namespace CM3D2.VMDPlay.Plugin
 						val.hover.textColor = Color.white;
 						val.onHover.textColor = Color.white;
 					}
+					/*
 					if (m_fileBrowser != null)
 					{
 						m_fileBrowser.OnGUIAsWindow(dialogWindowID);
 					}
 					else
+					*/
 					{
 						windowRect = GUI.Window(windowID, windowRect, FuncWindowGUI, windowTitle, val);
 					}
@@ -285,7 +287,7 @@ namespace CM3D2.VMDPlay.Plugin
 
 		private void DrawVMDAnimationArea()
 		{
-			EnsureResourceLoaded();
+			//EnsureResourceLoaded();
 			GUI.skin.GetStyle("Button");
 
 
@@ -320,6 +322,10 @@ namespace CM3D2.VMDPlay.Plugin
 
 				}
 			}
+            if (oggFilename==null)
+            {
+				oggFilename = string.Empty;
+			}
 			oggFilename = GUILayout.TextField(oggFilename, (GUILayoutOption[])new GUILayoutOption[2]
 			{
 							GUILayout.Width(350f),
@@ -331,6 +337,14 @@ namespace CM3D2.VMDPlay.Plugin
 							GUILayout.Height(25f)
 			}))
 			{
+				System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
+				dialog.Filter = "OGG files (*.ogg)|*.ogg";
+
+				if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+				{
+					oggFilename = dialog.FileName;
+				}
+				/*
 				m_fileBrowser = new FileBrowser(new Rect((float)(Screen.width / 2 - 300), 200f, 600f, 500f), "Choose .OGG File", FileSelectedCallbackOgg);
 				m_fileBrowser.SelectionPattern = "*.OGG";
 				//m_fileBrowser.DirectoryImage = m_directoryImage;
@@ -351,6 +365,7 @@ namespace CM3D2.VMDPlay.Plugin
 						m_fileBrowser.CurrentDirectory = stringValue;
 					}
 				}
+				*/
 			}
 			GUILayout.EndHorizontal();
 
@@ -461,6 +476,10 @@ namespace CM3D2.VMDPlay.Plugin
 							vMDAnimationController.ReloadVMDAnimation();
 							lastFilename = vMDAnimationController.lastLoadedVMD;
 						}
+						if (lastFilename == null)
+						{
+							lastFilename = string.Empty;
+						}
 						lastFilename = GUILayout.TextField(lastFilename, (GUILayoutOption[])new GUILayoutOption[2]
 						{
 							GUILayout.Width(350f),
@@ -472,10 +491,19 @@ namespace CM3D2.VMDPlay.Plugin
 							GUILayout.Height(25f)
 						}))
 						{
+							System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
+							dialog.Filter = "VMD files (*.vmd)|*.vmd";
+
+							if (dialog.ShowDialog()== System.Windows.Forms.DialogResult.OK)
+                            {
+								lastFilename = dialog.FileName;
+							}
+							// 개선 필요
+							/*
 							m_fileBrowser = new FileBrowser(new Rect((float)(Screen.width / 2 - 300), 200f, 600f, 500f), "Choose .vmd File", FileSelectedCallback);
 							m_fileBrowser.SelectionPattern = "*.vmd";							
-							//m_fileBrowser.DirectoryImage = m_directoryImage;
-							//m_fileBrowser.FileImage = m_fileImage;
+							m_fileBrowser.DirectoryImage = m_directoryImage;
+							m_fileBrowser.FileImage = m_fileImage;
 							if (File.Exists(lastFilename))
 							{
 								m_fileBrowser.CurrentDirectory = Path.GetDirectoryName(lastFilename);
@@ -492,6 +520,7 @@ namespace CM3D2.VMDPlay.Plugin
 									m_fileBrowser.CurrentDirectory = stringValue;
 								}
 							}
+							*/
 						}
 						GUILayout.EndHorizontal();
 
@@ -717,6 +746,7 @@ namespace CM3D2.VMDPlay.Plugin
 			}
 		}
 
+		/*
 		private void EnsureResourceLoaded()
 		{
 			if (m_fileImage == null)
@@ -729,7 +759,8 @@ namespace CM3D2.VMDPlay.Plugin
 				m_directoryImage.Apply();
 			}
 		}
-
+		*/
+		/*
 		protected void FileSelectedCallback(string path)
 		{
 			m_fileBrowser = null;
@@ -741,6 +772,7 @@ namespace CM3D2.VMDPlay.Plugin
 			m_fileBrowser = null;
 			oggFilename = path;
 		}
+		*/
 
 		public float AddSliderGeneral(string prop, string label, float value, float defaultMin, float defaultMax, bool fixedScale, bool useText)
 		{

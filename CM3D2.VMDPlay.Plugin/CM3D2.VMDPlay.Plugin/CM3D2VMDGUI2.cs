@@ -20,7 +20,7 @@ namespace CM3D2.VMDPlay.Plugin
 
 		private string lastFilename;
 
-		protected FileBrowser m_fileBrowser;
+		//protected FileBrowser m_fileBrowser;
 
 		protected Texture2D m_directoryImage;
 

@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace CM3D2.VMDPlay.Plugin
 {
+	/*
 	public class FileBrowser
 	{
 		public delegate void FinishedCallback(string path);
@@ -456,4 +457,6 @@ namespace CM3D2.VMDPlay.Plugin
 			}
 		}
 	}
+
+	*/
 }

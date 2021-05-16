@@ -329,14 +329,14 @@ namespace CM3D2.VMDPlay.Plugin
 		public void OnGUI(int winID)
 		{
 			GUI.skin.GetStyle("List Item").alignment = (TextAnchor)3;
-			GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
+			GUILayout.BeginHorizontal( );
 			for (int i = 0; i < m_currentDirectoryParts.Length; i++)
 			{
 				if (i == m_currentDirectoryParts.Length - 1)
 				{
-					GUILayout.Label(m_currentDirectoryParts[i], CentredText, (GUILayoutOption[])new GUILayoutOption[0]);
+					GUILayout.Label(m_currentDirectoryParts[i], CentredText  );
 				}
-				else if (GUILayout.Button(m_currentDirectoryParts[i], (GUILayoutOption[])new GUILayoutOption[0]))
+				else if (GUILayout.Button(m_currentDirectoryParts[i]  ))
 				{
 					if (i == 0)
 					{
@@ -355,7 +355,7 @@ namespace CM3D2.VMDPlay.Plugin
 			}
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
-			m_scrollPosition = GUILayout.BeginScrollView(m_scrollPosition, false, true, GUI.skin.horizontalScrollbar, GUI.skin.verticalScrollbar, GUI.skin.box, (GUILayoutOption[])new GUILayoutOption[0]);
+			m_scrollPosition = GUILayout.BeginScrollView(m_scrollPosition, false, true, GUI.skin.horizontalScrollbar, GUI.skin.verticalScrollbar, GUI.skin.box  );
 			m_selectedDirectory = GUILayoutx.SelectionList(m_selectedDirectory, m_directoriesWithImages, (GUILayoutx.DoubleClickCallback)DirectoryDoubleClickCallback);
 			if (m_selectedDirectory > -1)
 			{
@@ -377,7 +377,7 @@ namespace CM3D2.VMDPlay.Plugin
 			GUILayoutx.SelectionList(-1, m_nonMatchingFilesWithImages);
 			GUI.enabled = true;
 			GUILayout.EndScrollView();
-			GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
+			GUILayout.BeginHorizontal( );
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button("Cancel", (GUILayoutOption[])new GUILayoutOption[1]
 			{

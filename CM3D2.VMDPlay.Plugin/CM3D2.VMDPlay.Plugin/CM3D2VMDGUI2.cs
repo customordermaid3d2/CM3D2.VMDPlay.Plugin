@@ -341,12 +341,15 @@ namespace CM3D2.VMDPlay.Plugin
 				Font font = UIUtils.GetDefaultFont();
 				UIAtlas systemDialogAtlas = UIUtils.GetSystemDialogAtlas();
 				UIAtlas val = UIUtils.FindAtlas("AtlasCommon");
+				
 				GameObject val2 = GameObject.Find("UI Root");
+
 				Vector3 localPosition = default(Vector3);
 				localPosition = new Vector3(960f - (float)PanelWidth / 2f - 50f, 100f, 0f);
 				uiPanel = NGUITools.AddChild<UIPanel>(val2);
 				uiPanel.name = "VMD Play UI";
 				uiPanel.transform.localPosition = localPosition;
+
 				GameObject val3 = uiPanel.gameObject;
 				UISprite uiBGSprite = NGUITools.AddChild<UISprite>(val3);
 				uiBGSprite.name = "BG";
@@ -354,6 +357,8 @@ namespace CM3D2.VMDPlay.Plugin
 				uiBGSprite.spriteName = "cm3d2_dialog_frame";
 				uiBGSprite.type = (UIBasicSprite.Type)1;
 				uiBGSprite.SetDimensions(PanelWidth, PanelHeight);
+
+
 				UISprite val4 = NGUITools.AddChild<UISprite>(val3);
 				val4.name = "TitleTab";
 				val4.depth = uiBGSprite.depth - 1;
@@ -364,6 +369,8 @@ namespace CM3D2.VMDPlay.Plugin
 				val4.autoResizeBoxCollider = true;
 				val4.gameObject.AddComponent<UIDragObject>().target = val3.transform;
 				val4.gameObject.AddComponent<BoxCollider>().isTrigger = true;
+
+
 				NGUITools.UpdateWidgetCollider(val4.gameObject);
 				val4.transform.localPosition = new Vector3((float)uiBGSprite.width / 2f + 4f, (float)(uiBGSprite.height - val4.width) / 2f, 0f);
 				Transform transform = val4.transform;
@@ -375,6 +382,8 @@ namespace CM3D2.VMDPlay.Plugin
 				obj.trueTypeFont = font;
 				obj.fontSize = 18;
 				obj.text = "COM3D2.VMDPlay.Plugin 0.3.11.0";
+
+
 				float num2 = (float)uiBGSprite.height / 2f;
 				UITable uiTable = NGUITools.AddChild<UITable>(val3);
 				uiTable.pivot = (UIWidget.Pivot)1;
@@ -403,6 +412,8 @@ namespace CM3D2.VMDPlay.Plugin
 				val5.pivot = 0;
 				val5.columns = 5;
 				val5.padding = new Vector2(2f, 0f);
+
+				// error
 				GameObject obj2 = UIUtils.SetCloneChild(val5.gameObject, UIUtils.GetButtonTemplateGo(), "PrevBtn");
 				obj2.SetActive(true);
 				UIButton component = obj2.GetComponent<UIButton>();
@@ -599,10 +610,12 @@ namespace CM3D2.VMDPlay.Plugin
 				componentInChildren9.text = "...";
 				EventDelegate item7 = new EventDelegate(this, "BrowseSoundFile");
 				component9.onClick.Add(item7);
+
 				val5.Reposition();
 				val8.Reposition();
 				val13.Reposition();
 				uiTable.Reposition();
+
 				uiNoMaidTable = NGUITools.AddChild<UITable>(val3);
 				uiNoMaidTable.pivot = (UIWidget.Pivot)1;
 				uiNoMaidTable.columns = 1;
@@ -613,17 +626,35 @@ namespace CM3D2.VMDPlay.Plugin
 				func("No Maid Selected.", uiNoMaidTable.gameObject, 400, 40);
 				uiNoMaidTable.Reposition();
 				uiNoMaidTable.gameObject.SetActive(false);
+
 				UpdateUIStatus();
+
 				val3.SetActive(false);
+
+
 			}
 		}
 
 		private void ShowUI(bool visible)
 		{
+			Debug.Log("ShowUI" + uiPanel == null);
 			if (uiPanel == null)
 			{
-				CreateUI();
+                try
+                {
+                    CreateUI();
+                }
+                catch (Exception e)
+                {
+					Debug.LogWarning(
+						"CreateUI"
+						);
+					Debug.LogWarning(
+						e.ToString()
+						);
+                }
 			}
+			Debug.Log("ShowUI" + uiPanel == null);
 			if (uiPanel != null)
 			{
 				isUIVisible = !isUIVisible;

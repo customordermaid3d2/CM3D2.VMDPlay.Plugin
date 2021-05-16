@@ -34,6 +34,10 @@ namespace CM3D2.VMDPlay.Plugin
 			return false;
 		}
 
+		public void PauseBgm()
+        {
+			//GameMain.Instance.SoundMgr.;
+		}
 		public void StopBgm()
 		{
 			//IL_0000: Unknown result type (might be due to invalid IL or missing references)

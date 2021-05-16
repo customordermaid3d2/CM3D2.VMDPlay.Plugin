@@ -15,6 +15,7 @@ namespace CM3D2.VMDPlay.Plugin
 		public CM3D2VMDPlugin()
         {
 			Settings.config = this.Config;
+			Debug.Log("https://github.com/customordermaid3d2/CM3D2.VMDPlay.Plugin");
 		}
 
 		public const string NAME = "COM3D2.VMDPlay.Plugin";

@@ -1,3 +1,4 @@
+using COM3D2.Lilly.Plugin.Utill;
 using MMD.VMD;
 using System;
 using System.Collections;
@@ -1190,12 +1191,8 @@ namespace CM3D2.VMDPlay.Plugin
 			}
 		}
 
-		public void LoadVMDAnimation(string path)
-		{
-			LoadVMDAnimation(path, true);
-		}
 
-		public unsafe void LoadVMDAnimation(string path, bool play)
+		public unsafe void LoadVMDAnimation(string path, bool play=false)
 		{
 			try
 			{
@@ -1229,7 +1226,7 @@ namespace CM3D2.VMDPlay.Plugin
 						animationForVMD[clipname].speed = _speed;
 						if (play)
 						{
-							PlayMp3Music();
+							//PlayMp3Music();
 							animationForVMD.Play(clipname);
 						}
 					}
@@ -1241,8 +1238,10 @@ namespace CM3D2.VMDPlay.Plugin
 			}
 		}
 
+		//private static AudioSource pAS = null;
 		private string subPath = "";
-		private static AudioSource pAS = null;
+
+		/*
 		private void PlayMp3Music()
 		{
 			if (pAS != null)
@@ -1267,11 +1266,12 @@ namespace CM3D2.VMDPlay.Plugin
 				GameMain.Instance.SoundMgr.StopAll();
 			}
 		}
-
+		*/
 		public void Play()
 		{
 			if (clipname != null && vmdAnimEnabled)
 			{
+				/*
 				if (pAS == null)
 				{
 					PlayMp3Music();
@@ -1281,32 +1281,50 @@ namespace CM3D2.VMDPlay.Plugin
 					pAS.Play();
 					GameMain.Instance.SoundMgr.StopAll();
 				}
+				*/
+				GetAnimation().Stop(clipname);
 				GetAnimation()[clipname].speed = _speed;
 				GetAnimation().Play(clipname);
 			}
 		}
 
+		public bool isPause=false;
+
 		public void Pause()
 		{
 			if (clipname != null && vmdAnimEnabled)
 			{
-				GetAnimation()[clipname].speed = 0f;
+                if (GetAnimation()[clipname].speed == 0f)
+                {
+					GetAnimation()[clipname].speed = _speed;
+				}
+                else
+                {
+					GetAnimation()[clipname].speed = 0f;
+                }
 			}
+			/*
 			if (pAS != null)
 			{
 				pAS.Pause();
 			}
+			*/
+			//AudioManager.Pause();
 		}
+
 
 		public void Stop()
 		{
 			if (clipname != null && vmdAnimEnabled)
 			{
 				GetAnimation().Stop(clipname);
+				/*
 				if (pAS != null)
 				{
 					pAS.Stop();
 				}
+				*/
+				//AudioManager.Stop();
 				if (faceController != null)
 				{
 					faceController.ResetFaceValues();
@@ -1322,9 +1340,9 @@ namespace CM3D2.VMDPlay.Plugin
 				animation[clipname].normalizedTime = 0f;
 				animation[clipname].speed = _speed;
 				animation.Play(clipname);
-				if (pAS != null)
+				if (AudioManager.audiosource != null)
 				{
-					pAS.Play();
+					AudioManager.audiosource.Play();
 					GameMain.Instance.SoundMgr.StopAll();
 				}
 				if (faceController != null)
@@ -1462,15 +1480,15 @@ namespace CM3D2.VMDPlay.Plugin
 							{
 								maid.m_goOffset.transform.localPosition = Vector3.zero;
 
-								if (pAS != null)
+								if (AudioManager.audiosource != null)
 								{
 									if (syncToBGM)
 									{
-										SetAnimPosition(pAS.time);
+										SetAnimPosition(AudioManager.audiosource.time);
 									}
 									else if (syncToAnim)
 									{
-										pAS.time = GetAnimTime();
+										AudioManager.audiosource.time = GetAnimTime();
 									}
 								}
 							}
@@ -1618,10 +1636,10 @@ namespace CM3D2.VMDPlay.Plugin
 		private void OnDestroy()
 		{
 			this.StopAllCoroutines();
-			if (pAS != null)
+			if (AudioManager.audiosource != null)
 			{
-				GameMain.Destroy(pAS);
-				pAS = null;
+				GameMain.Destroy(AudioManager.audiosource);
+				AudioManager.audiosource = null;
 			}
 			VMDAnimationMgr.Instance.controllers.Remove(this);
 			UnityEngine.Object.Destroy(animeOverride);

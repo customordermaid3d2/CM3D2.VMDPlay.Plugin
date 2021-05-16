@@ -86,6 +86,8 @@
     <Compile Include="CM3D2.VMDPlay.Plugin\VMDHSConverter.cs" />
     <Compile Include="CM3D2.VMDPlay.Plugin\VMDResources.cs" />
     <Compile Include="GearMenu\DefaultIcon.cs" />
+    <Compile Include="Utill\AudioManager.cs" />
+    <Compile Include="Utill\GUIStyleUtill.cs" />
     <Compile Include="HexDump\Utils.cs" />
     <Compile Include="MMD.PMD\PMDFormat.cs" />
     <Compile Include="MMD.PMD\PMDLoader.cs" />

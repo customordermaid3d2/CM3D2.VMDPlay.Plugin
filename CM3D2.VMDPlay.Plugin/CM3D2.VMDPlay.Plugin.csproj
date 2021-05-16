@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A5424FB5-5284-4D92-A6BD-62C7133D49EC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CM3D2.VMDPlay.Plugin</RootNamespace>
+    <AssemblyName>CM3D2.VMDPlay.Plugin</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>G:\repos\COM3D2.VibeYourMaid.Plugin\lib\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>G:\repos\COM3D2.VibeYourMaid.Plugin\lib\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="ExIni">
+      <HintPath>G:\repos\_lib\ExIni.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>G:\repos\COM3D2.DanceCameraMotion.Plugin4.6.0\COM3D2.DanceCameraMotion.Plugin\lib\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityInjector">
+      <HintPath>G:\repos\COM3D2.DanceCameraMotion.Plugin4.6.0\COM3D2.DanceCameraMotion.Plugin\lib\UnityInjector.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BoneController.cs" />
+    <Compile Include="CCDIKSolver.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\BoneAdjustment.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\CameraCtrlOff.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\CM3D2FaceAnimeController.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\CM3D2VMDGUI.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\CM3D2VMDGUI2.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\CM3D2VMDPlugin.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\CustomSoundMgr.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\DebugHelper.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\DefaultCharaAnimOverride.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\FileBrowser.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\FileBrowserType.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\GUILayoutx.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\IKEffectedBoneAdjustment.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\KeyUtil.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\ModelBaselineData.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\NGUIFileSelectionDialog.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\Settings.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\SJISToUnicode.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\ToEncoding.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\UIUtils.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\VMDAnimationController.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\VMDAnimationMgr.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\VMDHSConverter.cs" />
+    <Compile Include="CM3D2.VMDPlay.Plugin\VMDResources.cs" />
+    <Compile Include="GearMenu\Buttons.cs" />
+    <Compile Include="GearMenu\DefaultIcon.cs" />
+    <Compile Include="HexDump\Utils.cs" />
+    <Compile Include="MMD.PMD\PMDFormat.cs" />
+    <Compile Include="MMD.PMD\PMDLoader.cs" />
+    <Compile Include="MMD.VMD\VMDFormat.cs" />
+    <Compile Include="MMD.VMD\VMDLoader.cs" />
+    <Compile Include="MMDMathf.cs" />
+    <Compile Include="MMD\Format.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

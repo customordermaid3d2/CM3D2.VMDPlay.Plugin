@@ -1,15 +1,20 @@
-using ExIni;
+//using ExIni;
 using System;
 using System.IO;
 using System.Reflection;
+using BepInEx;
+using BepInEx.Configuration;
 
 namespace CM3D2.VMDPlay.Plugin
 {
+
 	internal class Settings
 	{
 		private static Settings instance;
 
-		private IniFile file;
+		public static ConfigFile config;
+
+		//private IniFile file;
 		
 		public static readonly string IniDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Config\";
 
@@ -31,9 +36,9 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public Settings()
 		{
-			Load();
+			//Load();
 		}
-
+		/*
 		private void Load()
 		{
 			//IL_0012: Unknown result type (might be due to invalid IL or missing references)
@@ -50,6 +55,7 @@ namespace CM3D2.VMDPlay.Plugin
 				file.Save(IniFileName);
 			}
 		}
+		*/
 
 		public bool GetBoolValue(string keyString, bool defaultValue, bool saveDefault = false)
 		{
@@ -96,6 +102,7 @@ namespace CM3D2.VMDPlay.Plugin
 			//IL_001d: Unknown result type (might be due to invalid IL or missing references)
 			//IL_0022: Expected O, but got Unknown
 			//IL_002e: Unknown result type (might be due to invalid IL or missing references)
+			/*
 			if (file.HasSection("VMDPlay"))
 			{
 				IniSection val = file.GetSection("VMDPlay");
@@ -119,6 +126,9 @@ namespace CM3D2.VMDPlay.Plugin
 				SetStringValue(keyString, defaultValue);
 			}
 			return defaultValue;
+			*/
+			//  public ConfigEntry<T> Bind<T>(string section, string key, T defaultValue, string description);
+			return config.Bind("VMDPlay", keyString,defaultValue,"").Value;
 		}
 
 		public void SetBoolValue(string keyString, bool value)
@@ -138,6 +148,7 @@ namespace CM3D2.VMDPlay.Plugin
 			//IL_0033: Expected O, but got Unknown
 			//IL_003f: Unknown result type (might be due to invalid IL or missing references)
 			//IL_0047: Unknown result type (might be due to invalid IL or missing references)
+			/*
 			if (!file.HasSection("VMDPlay"))
 			{
 				file.CreateSection("VMDPlay");
@@ -149,9 +160,10 @@ namespace CM3D2.VMDPlay.Plugin
 			}
 			val.GetKey(keyString).Value = value;
 			Save();
-
+			*/
+			config.Bind("VMDPlay", keyString, value, "").Value= value;
 		}
-
+		/*
 		public void Save()
 		{
 			try
@@ -167,5 +179,6 @@ namespace CM3D2.VMDPlay.Plugin
 				Console.WriteLine("Failed to save");
 			}
 		}
+		*/
 	}
 }

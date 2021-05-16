@@ -61,7 +61,7 @@ namespace CM3D2.VMDPlay.Plugin
 				//GUIUtility.get_hotControl();
 				if (ikInfoGui.visibleGUI || tempCamCtrlOn)
 				{
-					if (Input.GetKey((KeyCode)308) || Input.GetKey((KeyCode)307))
+					if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
 					{
 						if (cameraCtrlOff)
 						{

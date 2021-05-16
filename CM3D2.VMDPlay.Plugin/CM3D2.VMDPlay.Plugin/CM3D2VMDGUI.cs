@@ -426,8 +426,8 @@ namespace CM3D2.VMDPlay.Plugin
 							GUILayout.Height(25f)
 						}))
 						{
-
 							vMDAnimationController.Play();
+							this.gameObject.SetActive(false);
 						}
 						if (GUILayout.Button("Pause", (GUILayoutOption[])new GUILayoutOption[2]
 						{
@@ -457,6 +457,7 @@ namespace CM3D2.VMDPlay.Plugin
 						}))
 						{
 							VMDAnimationMgr.Instance.PlayAll();
+							this.gameObject.SetActive(false);
 						}
 						if (GUILayout.Button("Pause", (GUILayoutOption[])new GUILayoutOption[2]
 						{

@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CM3D2.VMDPlay.Plugin</RootNamespace>
-    <AssemblyName>CM3D2.VMDPlay.Plugin</AssemblyName>
+    <AssemblyName>COM3D2.VMDPlay.Plugin</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -33,14 +33,20 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>G:\repos\COM3D2.VibeYourMaid.Plugin.BepInEx\lib\0Harmony.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>G:\repos\COM3D2.VibeYourMaid.Plugin\lib\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>G:\repos\COM3D2.VibeYourMaid.Plugin\lib\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
-    <Reference Include="ExIni">
-      <HintPath>G:\repos\_lib\ExIni.dll</HintPath>
+    <Reference Include="BepInEx">
+      <HintPath>G:\repos\COM3D2.VibeYourMaid.Plugin.BepInEx\lib\BepInEx.dll</HintPath>
+    </Reference>
+    <Reference Include="COM3D2.API">
+      <HintPath>G:\repos\_lib\COM3D2.API.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -50,9 +56,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
       <HintPath>G:\repos\COM3D2.DanceCameraMotion.Plugin4.6.0\COM3D2.DanceCameraMotion.Plugin\lib\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityInjector">
-      <HintPath>G:\repos\COM3D2.DanceCameraMotion.Plugin4.6.0\COM3D2.DanceCameraMotion.Plugin\lib\UnityInjector.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -82,7 +85,6 @@
     <Compile Include="CM3D2.VMDPlay.Plugin\VMDAnimationMgr.cs" />
     <Compile Include="CM3D2.VMDPlay.Plugin\VMDHSConverter.cs" />
     <Compile Include="CM3D2.VMDPlay.Plugin\VMDResources.cs" />
-    <Compile Include="GearMenu\Buttons.cs" />
     <Compile Include="GearMenu\DefaultIcon.cs" />
     <Compile Include="HexDump\Utils.cs" />
     <Compile Include="MMD.PMD\PMDFormat.cs" />
@@ -93,5 +95,6 @@
     <Compile Include="MMD\Format.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

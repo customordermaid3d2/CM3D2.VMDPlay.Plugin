@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using UnityInjector;
-using UnityInjector.Attributes;
+//using UnityInjector;
+//using UnityInjector.Attributes;
 
 namespace GearMenu
 {
@@ -144,6 +144,7 @@ namespace GearMenu
 			.gameObject;
 
 		public static UIGrid GridUI => Grid.GetComponent<UIGrid>();
+
 
 		public static GameObject Add(PluginBase plugin, byte[] pngData, Action<GameObject> action)
 		{

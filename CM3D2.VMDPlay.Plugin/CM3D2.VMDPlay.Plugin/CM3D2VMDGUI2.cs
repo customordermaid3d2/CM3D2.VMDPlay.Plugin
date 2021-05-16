@@ -1,3 +1,5 @@
+//using GearMenu;
+using COM3D2API;
 using GearMenu;
 using System;
 using System.Collections.Generic;
@@ -55,6 +57,10 @@ namespace CM3D2.VMDPlay.Plugin
 		private bool isGear = true;
 		private bool isGearCheck = false;
 
+		public CM3D2VMDGUI2(){
+			RegisterOrClearGearMenuButton();
+		}
+
 		private void Start()
 		{
 		}
@@ -89,7 +95,7 @@ namespace CM3D2.VMDPlay.Plugin
 			}
 			if (isGear)
 			{
-				RegisterOrClearGearMenuButton();
+				//RegisterOrClearGearMenuButton();
 			}
 		}
 
@@ -627,24 +633,26 @@ namespace CM3D2.VMDPlay.Plugin
 
 		private void RegisterOrClearGearMenuButton()
 		{
-			if (!Buttons.Contains(gearMenuButtonName))
+			//if (!Buttons.Contains(gearMenuButtonName))
 			{
-				GameObject gameObject = Buttons.Add(gearMenuButtonName, "", GetGearMenuIconPng(!isUIVisible), OnGearMenuClick);
-				UpdateGearMenuIcon(gameObject);
+				//GameObject gameObject = Buttons.Add(gearMenuButtonName, "", GetGearMenuIconPng(!isUIVisible), OnGearMenuClick);
+				SystemShortcutAPI.AddButton(gearMenuButtonName, OnGearMenuClick, gearMenuButtonName, GetGearMenuIconPng(!isUIVisible));
+				//UpdateGearMenuIcon(gameObject);
 			}
 		}
 
-		private void OnGearMenuClick(GameObject gameObject)
+		//private void OnGearMenuClick(GameObject gameObject)
+		private void OnGearMenuClick()
 		{
 			ShowUI(!isUIVisible);
-			UpdateGearMenuIcon(gameObject);
+			//UpdateGearMenuIcon(gameObject);
 		}
-
 		private byte[] GetGearMenuIconPng(bool forUIVisible)
 		{
 			return DefaultIcon.Png;
 		}
 
+		/*
 		private void UpdateGearMenuIcon(GameObject gameObject)
 		{
 			if (isUIVisible)
@@ -658,5 +666,6 @@ namespace CM3D2.VMDPlay.Plugin
 				Buttons.SetText(gameObject, "VMDPlay UIを開く");
 			}
 		}
+		*/
 	}
 }

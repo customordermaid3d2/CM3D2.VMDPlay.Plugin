@@ -580,10 +580,10 @@ namespace CM3D2.VMDPlay.Plugin
 			VMDAnimationController vMDAnimationController = maid.gameObject.GetComponent<VMDAnimationController>();
 			if (vMDAnimationController == null)
 			{
-				//if (maid.body0 == null || (maid.body0).m_Bones == null || (maid.body0).Face == null || !maid.body0.isLoadedBody)
-				//{
-				//	return null;
-				//}
+				if (maid.body0 == null || (maid.body0).m_Bones == null || (maid.body0).Face == null || !maid.body0.isLoadedBody)
+				{
+					return null;
+				}
 				vMDAnimationController = maid.gameObject.AddComponent<VMDAnimationController>();
 				vMDAnimationController.Init(maid);
 				VMDAnimationMgr.Instance.controllers.Add(vMDAnimationController);

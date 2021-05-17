@@ -332,8 +332,7 @@ namespace CM3D2.VMDPlay.Plugin
         }
         */
 
-        public static 
-            위치 조정vMDAnimationController;
+        public static VMDAnimationController vMDAnimationController;
         public static bool isFavorites = false;
 
         protected Vector2 scrollPosition;
@@ -359,7 +358,7 @@ namespace CM3D2.VMDPlay.Plugin
                 SongMotionUtill.Set(
                     FavoritesName
                     , oggFilename
-                    , VMDAnimationMgr.Instance.controllers.Select(x => x.lastLoadedVMD).ToArray()
+                    , VMDAnimationMgr.Instance.controllers.Where(x=> CharacterMgrPatch.maids.Contains(x.maid) ).Select(x => x.lastLoadedVMD).ToArray()
                     );
             }
             FavoritesName = GUILayout.TextField(FavoritesName, gui[350, 25]);
@@ -476,7 +475,7 @@ namespace CM3D2.VMDPlay.Plugin
             }
             else
             {
-                //vMDAnimationController = VMDAnimationController.Install(focusChara);
+                vMDAnimationController = VMDAnimationController.Install(focusChara);
                 if (!(vMDAnimationController == null) && focusChara != null)
                 {
                     GUILayout.BeginVertical();

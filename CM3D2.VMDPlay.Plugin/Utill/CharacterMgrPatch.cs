@@ -29,10 +29,14 @@ namespace COM3D2.VMDPlay.Plugin
             if (value)
             {
                 maids.Add(__instance);
+                CM3D2VMDGUI.vMDAnimationController = VMDAnimationController.Install(__instance);
             }
             else
             {
                 maids.Remove(__instance);
+                var vMDAnimationController = VMDAnimationController.Install(__instance);
+                vMDAnimationController.Stop();
+                VMDAnimationMgr.Instance.controllers.Remove(vMDAnimationController);
             }
         }
             

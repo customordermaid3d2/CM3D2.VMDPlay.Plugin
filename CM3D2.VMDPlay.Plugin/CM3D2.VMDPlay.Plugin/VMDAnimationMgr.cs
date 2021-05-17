@@ -49,6 +49,15 @@ namespace CM3D2.VMDPlay.Plugin
 				controller.Play();
 			}
 		}
+		
+		public void ClearAll()
+		{
+			foreach (VMDAnimationController controller in controllers)
+			{
+				controller.Stop();
+				controller.lastLoadedVMD=string.Empty;
+			}
+		}
 
 		public void StopAll()
 		{

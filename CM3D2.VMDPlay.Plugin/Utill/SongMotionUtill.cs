@@ -92,6 +92,7 @@ namespace CM3D2.VMDPlay.Plugin.Utill
             list[name].Song = song;
             if (motion != null && motion.Length > 0)
             {
+                list[name].Motions.Clear();
                 list[name].Motions.AddRange(motion);
             }
             Serialize();

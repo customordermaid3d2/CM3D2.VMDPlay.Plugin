@@ -15,6 +15,10 @@ namespace CM3D2.VMDPlay.Plugin
 {
     public class CM3D2VMDGUI : UnityEngine.MonoBehaviour
     {
+        System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
+        //VistaOpenFileDialog dialog;
+        //VistaOpenFileDialog openFileDialog;
+
         public Maid focusChara;
 
         private CameraCtrlOff cameraCtrl;
@@ -358,8 +362,10 @@ namespace CM3D2.VMDPlay.Plugin
                 SongMotionUtill.Set(
                     FavoritesName
                     , oggFilename
-                    , VMDAnimationMgr.Instance.controllers.Where(x=> CharacterMgrPatch.maids.Contains(x.maid) ).Select(x => x.lastLoadedVMD).ToArray()
+                    //, VMDAnimationMgr.Instance.controllers.Where(x=> CharacterMgrPatch.maids.Contains(x.maid) ).Select(x => x.lastLoadedVMD).ToArray()
+                    , VMDAnimationMgr.Instance.controllers.Select(x => x.lastLoadedVMD).ToArray()
                     );
+                MyLog.LogMessage("add", VMDAnimationMgr.Instance.controllers.Count, CharacterMgrPatch.maids.Count, VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).Count() );
             }
             FavoritesName = GUILayout.TextField(FavoritesName, gui[350, 25]);
 
@@ -376,8 +382,18 @@ namespace CM3D2.VMDPlay.Plugin
                     {
                         oggFilename = item.Value.Song;
                         //lastFilename = item.Value.Song;
-
+                        VMDAnimationMgr.Instance.ClearAll();
+                        for (int i = 0; i < item.Value.Motions.Count && i < VMDAnimationMgr.Instance.controllers.Count; i++)
+                        {
+                            //VMDAnimationMgr.Instance.controllers[i].lastLoadedVMD = item.Value.Motions[i];
+                            //VMDAnimationMgr.Instance.controllers[i].lastLoadedVMD = item.Value.Motions[i];
+                            VMDAnimationMgr.Instance.controllers[i].LoadVMDAnimation(item.Value.Motions[i], false);
+                        }
+                        AudioManager.Load(oggFilename, vMDAnimationController.Loop);
+                        VMDAnimationMgr.Instance.PlayAll();
+                        AudioManager.Play();
                         isFavorites = false;
+                        this.gameObject.SetActive(false);
                     }
                     if (GUILayout.Button("Del", gui[50f, 25f]))
                     {
@@ -437,8 +453,7 @@ namespace CM3D2.VMDPlay.Plugin
                             GUILayout.Width(30f),
                             GUILayout.Height(25f)
             }))
-            {
-                System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
+            {                
                 dialog.Filter = "OGG files (*.ogg)|*.ogg";
 
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -475,7 +490,7 @@ namespace CM3D2.VMDPlay.Plugin
             }
             else
             {
-                vMDAnimationController = VMDAnimationController.Install(focusChara);
+                //vMDAnimationController = VMDAnimationController.Install(focusChara);
                 if (!(vMDAnimationController == null) && focusChara != null)
                 {
                     GUILayout.BeginVertical();
@@ -533,7 +548,7 @@ namespace CM3D2.VMDPlay.Plugin
 
                     if (vMDAnimationController.VMDAnimEnabled)
                     {
-                        #region VMD
+                        #region VMD =====================================================================
 
                         GUILayout.BeginHorizontal( );
                         GUILayout.Label("VMD", (GUILayoutOption[])new GUILayoutOption[2] { GUILayout.Width(50f), GUILayout.Height(25f) });
@@ -553,7 +568,7 @@ namespace CM3D2.VMDPlay.Plugin
                         lastFilename = GUILayout.TextField(lastFilename, gui[350f, 25f]);
                         if (GUILayout.Button("...", gui[30f, 25f]))
                         {
-                            System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
+                            //System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
                             dialog.Filter = "VMD files (*.vmd)|*.vmd";
 
                             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)

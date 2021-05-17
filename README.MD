@@ -1,6 +1,9 @@
 # 이게 뭐지
 
 단순하게 베핀용으로 바꾼거  
+그리고 취향에 맞게 개조중
+https://youtu.be/0nGCOD7KlPg
+https://youtu.be/LHRlHhz0dEM
 
 
 # 필요한거

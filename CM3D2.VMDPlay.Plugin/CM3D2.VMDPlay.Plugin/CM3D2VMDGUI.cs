@@ -1,234 +1,261 @@
+using CM3D2.VMDPlay.Plugin.GUIUtill;
+using CM3D2.VMDPlay.Plugin.Utill;
 using COM3D2.Lilly.Plugin;
 using COM3D2.Lilly.Plugin.Utill;
+using COM3D2.VMDPlay.Plugin;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
 
+using System.Linq;
+
 namespace CM3D2.VMDPlay.Plugin
 {
-	public class CM3D2VMDGUI : UnityEngine.MonoBehaviour
-	{
-		public Maid focusChara;
+    public class CM3D2VMDGUI : UnityEngine.MonoBehaviour
+    {
+        public Maid focusChara;
 
-		private CameraCtrlOff cameraCtrl;
+        private CameraCtrlOff cameraCtrl;
 
-		private int windowID = 8723;
+        private int windowID = 8723;
 
-		private int dialogWindowID = 8724;
+        private int dialogWindowID = 8724;
 
-		private Rect windowRect = new Rect(0f, 300f, 630f, 510f);
+        private Rect windowRect = new Rect(0f, 300f, 650f, 510f);
 
-		private string windowTitle = "COM3D2 VMDPlay Plugin";
+        private string windowTitle = "COM3D2 VMDPlay Plugin";
 
-		private Texture2D windowBG = new Texture2D(1, 1, (TextureFormat)5, false);
+        private Texture2D windowBG = new Texture2D(1, 1, (TextureFormat)5, false);
 
-		public bool visibleGUI = true;
+        public bool visibleGUI = true;
 
-		private bool isVR;
+        private bool isVR;
 
-		//private int currentTab;
+        //private int currentTab;
 
-		private float sliderLabelWidth = 100f;
+        private float sliderLabelWidth = 100f;
 
-		private float sliderWidth = 240f;
+        private float sliderWidth = 240f;
 
-		private float valueLabelWidth = 70f;
+        private float valueLabelWidth = 70f;
 
-		public bool pinObject;
+        public bool pinObject;
 
-		public Dictionary<string, Action> AdditionalMenus = new Dictionary<string, Action>();
+        public Dictionary<string, Action> AdditionalMenus = new Dictionary<string, Action>();
 
-		private static MethodInfo m_Apply = typeof(GUISkin).GetMethod("Apply", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.InvokeMethod);
+        private static MethodInfo m_Apply = typeof(GUISkin).GetMethod("Apply", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.InvokeMethod);
 
-		private Dictionary<string, GUIStyle> styleBackup = new Dictionary<string, GUIStyle>();
+        private Dictionary<string, GUIStyle> styleBackup = new Dictionary<string, GUIStyle>();
 
-		private VMDAnimationController lastController;
+        private VMDAnimationController lastController;
 
-		private string lastFilename;
-		private string oggFilename=string.Empty;
+        private string lastFilename;
+        private string oggFilename = string.Empty;
 
-		//protected FileBrowser m_fileBrowser;
+        //protected FileBrowser m_fileBrowser;
 
-		protected Texture2D m_directoryImage;
+        protected Texture2D m_directoryImage;
 
-		protected Texture2D m_fileImage;
+        protected Texture2D m_fileImage;
 
-		//private Vector2 vmdAreaScrollPos;
+        //private Vector2 vmdAreaScrollPos;
 
-		private Dictionary<string, float> sliderMax = new Dictionary<string, float>();
+        private Dictionary<string, float> sliderMax = new Dictionary<string, float>();
 
-		private void Start()
-		{
-			if (GameMain.Instance.VRMode)
-			{
-				Console.WriteLine("VMDPlayPlugin:VR Mode detect");
-				isVR = true;
-			}
-			else
-			{
-				Console.WriteLine("VMDPlayPlugin:non VR Mode detect");
-			}
-			windowBG.SetPixel(0, 0, Color.black);
-			windowBG.Apply();
-			if (cameraCtrl == null)
-			{
-				cameraCtrl = this.gameObject.AddComponent<CameraCtrlOff>();
-				cameraCtrl.ikInfoGui = this;
-				cameraCtrl.enabled = true;
-			}
-		}
+        private void Awake()
+        {
+            styleBackup = new Dictionary<string, GUIStyle>();
+            /*
+            BackupGUIStyle("Button");
+            BackupGUIStyle("Label");
+            BackupGUIStyle("Toggle");
+            */
 
-		private void OnEnable()
-		{
-			if (cameraCtrl != null)
-			{
-				cameraCtrl.enabled = true;
-			}
-		}
+        }
 
-		private void OnDisable()
-		{
-			if (cameraCtrl != null)
-			{
-				cameraCtrl.enabled = false;
-			}
-		}
+        private void Start()
+        {
+            if (GameMain.Instance.VRMode)
+            {
+                Console.WriteLine("VMDPlayPlugin:VR Mode detect");
+                isVR = true;
+            }
+            else
+            {
+                Console.WriteLine("VMDPlayPlugin:non VR Mode detect");
+            }
+            windowBG.SetPixel(0, 0, Color.black);
+            windowBG.Apply();
+            if (cameraCtrl == null)
+            {
+                cameraCtrl = this.gameObject.AddComponent<CameraCtrlOff>();
+                cameraCtrl.ikInfoGui = this;
+                cameraCtrl.enabled = true;
+            }
+        }
 
-		private void Update()
-		{
-		}
+        private void OnEnable()
+        {
+            if (cameraCtrl != null)
+            {
+                cameraCtrl.enabled = true;
+            }
+        }
 
-		public void Clear()
-		{
-			focusChara = null;
-			lastController = null;
-			lastFilename = null;
-		}
+        private void OnDisable()
+        {
+            if (cameraCtrl != null)
+            {
+                cameraCtrl.enabled = false;
+            }
+        }
 
-		private unsafe void OnGUI()
-		{
-			if (visibleGUI)
-			{
-				try
-				{
-					GUIStyle val = new GUIStyle(GUI.skin.window);
-					if (GUI.skin.GetStyle("List Item") != null)
-					{
-						GUIStyle[] array = (GUIStyle[])new GUIStyle[GUI.skin.customStyles.Length + 1];
-						for (int i = 0; i < GUI.skin.customStyles.Length; i++)
-						{
-							array[i] = GUI.skin.customStyles[i];
-						}
-						GUIStyle val2 = new GUIStyle(GUI.skin.button);
-						val2.name = "List Item";
-						array[GUI.skin.customStyles.Length] = val2;
-						GUI.skin.customStyles = array;
-						m_Apply.Invoke((object)GUI.skin, new object[0]);
-					}
-					if (isVR)
-					{
-						val.onNormal.background = windowBG;
-						val.normal.background = windowBG;
-						val.hover.background = windowBG;
-						val.focused.background = windowBG;
-						val.active.background = windowBG;
-						val.hover.textColor = Color.white;
-						val.onHover.textColor = Color.white;
-					}
-					/*
+        private void Update()
+        {
+        }
+
+        public void Clear()
+        {
+            focusChara = null;
+            lastController = null;
+            lastFilename = null;
+        }
+
+        private unsafe void OnGUI()
+        {
+            if (visibleGUI)
+            {
+                try
+                {
+                    GUIStyle val = new GUIStyle(GUI.skin.window);
+                    if (GUI.skin.GetStyle("List Item") != null)
+                    {
+                        GUIStyle[] array = (GUIStyle[])new GUIStyle[GUI.skin.customStyles.Length + 1];
+                        for (int i = 0; i < GUI.skin.customStyles.Length; i++)
+                        {
+                            array[i] = GUI.skin.customStyles[i];
+                        }
+                        GUIStyle val2 = new GUIStyle(GUI.skin.button);
+                        val2.name = "List Item";
+                        array[GUI.skin.customStyles.Length] = val2;
+                        GUI.skin.customStyles = array;
+                        m_Apply.Invoke((object)GUI.skin, new object[0]);
+                    }
+                    if (isVR)
+                    {
+                        val.onNormal.background = windowBG;
+                        val.normal.background = windowBG;
+                        val.hover.background = windowBG;
+                        val.focused.background = windowBG;
+                        val.active.background = windowBG;
+                        val.hover.textColor = Color.white;
+                        val.onHover.textColor = Color.white;
+                    }
+                    /*
 					if (m_fileBrowser != null)
 					{
 						m_fileBrowser.OnGUIAsWindow(dialogWindowID);
 					}
 					else
 					*/
-					{
-						windowRect = GUI.Window(windowID, windowRect, FuncWindowGUI, windowTitle, val);
-					}
-				}
-				catch (Exception value)
-				{
-					Console.WriteLine(value);
-				}
-			}
-		}
+                    {
+                        windowRect = GUI.Window(windowID, windowRect, FuncWindowGUI, windowTitle, val);
+                    }
+                }
+                catch (Exception value)
+                {
+                    Console.WriteLine(value);
+                }
+            }
+        }
 
-		private float CalcAdjustedSliderMax(float value)
-		{
-			if (value <= 1f)
-			{
-				return 1f;
-			}
-			if (value <= 10f)
-			{
-				return 10f;
-			}
-			return 100f;
-		}
+        private float CalcAdjustedSliderMax(float value)
+        {
+            if (value <= 1f)
+            {
+                return 1f;
+            }
+            if (value <= 10f)
+            {
+                return 10f;
+            }
+            return 100f;
+        }
 
-		private unsafe void FuncWindowGUI(int winID)
-		{
-			styleBackup = new Dictionary<string, GUIStyle>();
-			BackupGUIStyle("Button");
-			BackupGUIStyle("Label");
-			BackupGUIStyle("Toggle");
-			try
-			{
-				if (GUIUtility.hotControl == 0)
-				{
-					cameraCtrl.enabled = false;
-				}
-				if ((int)Event.current.type == 0)
-				{
-					GUI.FocusControl("");
-					GUI.FocusWindow(winID);
-					cameraCtrl.enabled = true;
-					cameraCtrl.cameraCtrlOff = true;
-				}
-				GUI.enabled = true;
-				GUIStyle style = GUI.skin.GetStyle("Button");
-				style.normal.textColor = Color.white;
-				style.alignment = (TextAnchor)4;
-				GUIStyle style2 = GUI.skin.GetStyle("Label");
-				style2.normal.textColor = Color.white;
-				style2.alignment = (TextAnchor)3;
-				style2.wordWrap = false;
-				GUIStyle style3 = GUI.skin.GetStyle("Toggle");
-				style3.normal.textColor = Color.white;
-				style3.onNormal.textColor = Color.white;
-				GUILayout.BeginVertical((GUILayoutOption[])new GUILayoutOption[0]);
-				if (focusChara != null && (focusChara.body0 == null || focusChara.body0.m_Bones == null))
-				{
-					focusChara = null;
-				}
-				if (focusChara == null)
-				{
-					focusChara = FindFirstMaid();
-				}
-				DrawVMDAnimationArea();
-				GUILayout.EndVertical();
-				GUI.DragWindow();
-			}
-			catch (Exception value)
-			{
-				Console.WriteLine(value);
-			}
-			finally
-			{
-				RestoreGUIStyle("Button");
-				RestoreGUIStyle("Label");
-				RestoreGUIStyle("Toggle");
-			}
-		}
+        //GUIStyleUtill gui;
+        GUILayoutOptionUtill gui=GUILayoutOptionUtill.Instance;
 
-		/// <summary>
-		/// 최적화 완료?
-		/// </summary>
-		/// <returns></returns>
-		private Maid FindFirstMaid()
-		{
+        private unsafe void FuncWindowGUI(int winID)
+        {
+            /*
+            styleBackup = new Dictionary<string, GUIStyle>();
+            BackupGUIStyle("Button");
+            BackupGUIStyle("Label");
+            BackupGUIStyle("Toggle");
+            */
+            try
+            {
+                if (GUIUtility.hotControl == 0)
+                {
+                    cameraCtrl.enabled = false;
+                }
+                if ((int)Event.current.type == 0)
+                {
+                    GUI.FocusControl("");
+                    GUI.FocusWindow(winID);
+                    cameraCtrl.enabled = true;
+                    cameraCtrl.cameraCtrlOff = true;
+                }
+                GUI.enabled = true;
+                /*
+                GUIStyle style = GUI.skin.GetStyle("Button");
+                style.normal.textColor = Color.white;
+                style.alignment = (TextAnchor)4;
+                GUIStyle style2 = GUI.skin.GetStyle("Label");
+                style2.normal.textColor = Color.white;
+                style2.alignment = (TextAnchor)3;
+                style2.wordWrap = false;
+                GUIStyle style3 = GUI.skin.GetStyle("Toggle");
+                style3.normal.textColor = Color.white;
+                style3.onNormal.textColor = Color.white;
+                */
+                GUILayout.BeginVertical( );
+                if (focusChara != null && (focusChara.body0 == null || focusChara.body0.m_Bones == null))
+                {
+                    focusChara = null;
+                }
+                if (focusChara == null)
+                {
+                    focusChara = FindFirstMaid();
+                }
+
+                DrawVMDAnimationArea();
+
+                GUILayout.EndVertical();
+                GUI.DragWindow();
+            }
+            catch (Exception value)
+            {
+                Console.WriteLine(value.ToString());
+            }
+            finally
+            {
+                /*
+                RestoreGUIStyle("Button");
+                RestoreGUIStyle("Label");
+                RestoreGUIStyle("Toggle");
+                */
+            }
+        }
+
+        /// <summary>
+        /// 최적화 완료?
+        /// </summary>
+        /// <returns></returns>
+        private Maid FindFirstMaid()
+        {
             /*
 			CharacterMgr val = GameMain.Instance.CharacterMgr;
 			for (int i = 0; i < val.GetMaidCount(); i++)
@@ -240,21 +267,21 @@ namespace CM3D2.VMDPlay.Plugin
 				}
 			}
 			*/
-            if (CharacterMgrPatch.maids.Count>0)
+            if (CharacterMgrPatch.maids.Count > 0)
             {
-				return CharacterMgrPatch.maids[0];
-			}
-			return null;
-		}
+                return CharacterMgrPatch.maids[0];
+            }
+            return null;
+        }
 
-		/// <summary>
-		/// 최적화 완료?
-		/// </summary>
-		/// <param name="next"></param>
-		/// <returns></returns>
-		private Maid FindPrevNextMaid(bool next)
-		{
-			/*
+        /// <summary>
+        /// 최적화 완료?
+        /// </summary>
+        /// <param name="next"></param>
+        /// <returns></returns>
+        private Maid FindPrevNextMaid(bool next)
+        {
+            /*
 			List<Maid> list = new List<Maid>();
 			CharacterMgr val = GameMain.Instance.CharacterMgr;
 			for (int i = 0; i < val.GetMaidCount(); i++)
@@ -266,258 +293,277 @@ namespace CM3D2.VMDPlay.Plugin
 				}
 			}
 			*/
-			if (CharacterMgrPatch.maids.Count == 0)
-			{
-				return null;
-			}
-			if (focusChara != null)
-			{
-				int num = CharacterMgrPatch.maids.IndexOf(focusChara);
-				if (num >= 0)
-				{
-					num += (next ? 1 : (-1));
-					num = (num + CharacterMgrPatch.maids.Count) % CharacterMgrPatch.maids.Count;
-					return CharacterMgrPatch.maids[num];
-				}
-			}
-			return CharacterMgrPatch.maids[0];
-		}
-
-		private void BackupGUIStyle(string name)
-		{
-			GUIStyle value = new GUIStyle(GUI.skin.GetStyle(name));
-			styleBackup.Add(name, value);
-		}
-
-		private void RestoreGUIStyle(string name)
-		{
-			if (styleBackup.ContainsKey(name))
-			{
-				GUIStyle val = styleBackup[name];
-				GUIStyle style = GUI.skin.GetStyle(name);
-				style.normal.textColor = val.normal.textColor;
-				style.alignment = val.alignment;
-				style.wordWrap = val.wordWrap;
-			}
-		}
-
-		VMDAnimationController vMDAnimationController;
-
-		private void DrawVMDAnimationArea()
-		{
-			//EnsureResourceLoaded();
-			GUI.skin.GetStyle("Button");
-
-
-			#region OGG ===========================================
-
-			GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
-			GUILayout.Label("OGG", (GUILayoutOption[])new GUILayoutOption[2] { GUILayout.Width(50f), GUILayout.Height(25f) });
-
-			if (GUILayout.Button("load", (GUILayoutOption[])new GUILayoutOption[2] { GUILayout.Width(50f), GUILayout.Height(25f) }))
-			{
-                if (vMDAnimationController!=null)
+            if (CharacterMgrPatch.maids.Count == 0)
+            {
+                return null;
+            }
+            if (focusChara != null)
+            {
+                int num = CharacterMgrPatch.maids.IndexOf(focusChara);
+                if (num >= 0)
                 {
-					AudioManager.Load(oggFilename, vMDAnimationController.Loop);
+                    num += (next ? 1 : (-1));
+                    num = (num + CharacterMgrPatch.maids.Count) % CharacterMgrPatch.maids.Count;
+                    return CharacterMgrPatch.maids[num];
+                }
+            }
+            return CharacterMgrPatch.maids[0];
+        }
+
+        /*
+        private void BackupGUIStyle(string name)
+        {
+            GUIStyle value = new GUIStyle(GUI.skin.GetStyle(name));
+            styleBackup.Add(name, value);
+        }
+        */
+
+        /*
+        private void RestoreGUIStyle(string name)
+        {
+            if (styleBackup.ContainsKey(name))
+            {
+                GUIStyle val = styleBackup[name];
+                GUIStyle style = GUI.skin.GetStyle(name);
+                style.normal.textColor = val.normal.textColor;
+                style.alignment = val.alignment;
+                style.wordWrap = val.wordWrap;
+            }
+        }
+        */
+
+        public static 
+            위치 조정vMDAnimationController;
+        public static bool isFavorites = false;
+
+        protected Vector2 scrollPosition;
+
+        private string FavoritesName = string.Empty;
+
+        private void DrawVMDAnimationArea()
+        {
+            //EnsureResourceLoaded();
+            //GUI.skin.GetStyle("Button");
+            scrollPosition = GUILayout.BeginScrollView(scrollPosition);
+
+            #region Favorites
+
+            GUILayout.BeginHorizontal();
+
+            if (GUILayout.Button("Favorites", gui[100,25]))
+            {
+                isFavorites = !isFavorites;
+            }
+            if (GUILayout.Button("add", gui[50f, 25f]))
+            {
+                SongMotionUtill.Set(
+                    FavoritesName
+                    , oggFilename
+                    , VMDAnimationMgr.Instance.controllers.Select(x => x.lastLoadedVMD).ToArray()
+                    );
+            }
+            FavoritesName = GUILayout.TextField(FavoritesName, gui[350, 25]);
+
+            GUILayout.EndHorizontal();
+                      
+
+            if (isFavorites)
+            {               
+
+                foreach (var item in SongMotionUtill.GetList())
+                {
+                    GUILayout.BeginHorizontal();
+                    if (GUILayout.Button(item.Key, gui[550f, 25f]))
+                    {
+                        oggFilename = item.Value.Song;
+                        //lastFilename = item.Value.Song;
+
+                        isFavorites = false;
+                    }
+                    if (GUILayout.Button("Del", gui[50f, 25f]))
+                    {
+                        SongMotionUtill.Del(item.Key);
+                    }
+                    GUILayout.EndHorizontal();
+                }
+
+               
+            }
+
+            #endregion
+
+            #region OGG ===========================================
+
+            GUILayout.BeginHorizontal( );
+
+            GUILayout.Label("OGG", (GUILayoutOption[])new GUILayoutOption[2] { GUILayout.Width(50f), GUILayout.Height(25f) });
+
+            if (GUILayout.Button("load", (GUILayoutOption[])new GUILayoutOption[2] { GUILayout.Width(50f), GUILayout.Height(25f) }))
+            {
+                if (vMDAnimationController != null)
+                {
+                    AudioManager.Load(oggFilename, vMDAnimationController.Loop);
                 }
                 else
                 {
-					AudioManager.Load(oggFilename ,true );
+                    AudioManager.Load(oggFilename, true);
                 }
-			}
-			if (AudioManager.isPlay())
-			{
-				if (GUILayout.Button("Pause", (GUILayoutOption[])new GUILayoutOption[2] { GUILayout.Width(50f), GUILayout.Height(25f) }))
-				{
-						AudioManager.Pause();
-				}
-			}
-			else
-			{
-				if (GUILayout.Button("play", (GUILayoutOption[])new GUILayoutOption[2] { GUILayout.Width(50f), GUILayout.Height(25f) }))
-				{
-					AudioManager.Play();
-
-				}
-			}
-            if (oggFilename==null)
+            }
+            if (AudioManager.isPlay())
             {
-				oggFilename = string.Empty;
-			}
-			oggFilename = GUILayout.TextField(oggFilename, (GUILayoutOption[])new GUILayoutOption[2]
-			{
-							GUILayout.Width(350f),
-							GUILayout.Height(25f)
-			});
-			if (GUILayout.Button("...", (GUILayoutOption[])new GUILayoutOption[2]
-			{
-							GUILayout.Width(30f),
-							GUILayout.Height(25f)
-			}))
-			{
-				System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
-				dialog.Filter = "OGG files (*.ogg)|*.ogg";
+                if (GUILayout.Button("Pause", (GUILayoutOption[])new GUILayoutOption[2] { GUILayout.Width(50f), GUILayout.Height(25f) }))
+                {
+                    AudioManager.Pause();
+                }
+            }
+            else
+            {
+                if (GUILayout.Button("play", (GUILayoutOption[])new GUILayoutOption[2] { GUILayout.Width(50f), GUILayout.Height(25f) }))
+                {
+                    AudioManager.Play();
 
-				if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-				{
-					oggFilename = dialog.FileName;
-				}
-				/*
-				m_fileBrowser = new FileBrowser(new Rect((float)(Screen.width / 2 - 300), 200f, 600f, 500f), "Choose .OGG File", FileSelectedCallbackOgg);
-				m_fileBrowser.SelectionPattern = "*.OGG";
-				//m_fileBrowser.DirectoryImage = m_directoryImage;
-				//m_fileBrowser.FileImage = m_fileImage;
-				if (File.Exists(oggFilename))
-				{
-					m_fileBrowser.CurrentDirectory = Path.GetDirectoryName(oggFilename);
-				}
-				else if (!string.IsNullOrEmpty(vMDAnimationController.lastLoadedVMD))
-				{
-					m_fileBrowser.CurrentDirectory = Path.GetDirectoryName(vMDAnimationController.lastLoadedVMD);
-				}
-				else
-				{
-					string stringValue = Settings.Instance.GetStringValue("DefaultDir", "", true);
-					if (stringValue != null && stringValue != "")
-					{
-						m_fileBrowser.CurrentDirectory = stringValue;
-					}
-				}
-				*/
-			}
-			GUILayout.EndHorizontal();
+                }
+            }
+            if (oggFilename == null)
+            {
+                oggFilename = string.Empty;
+            }
+            oggFilename = GUILayout.TextField(oggFilename, (GUILayoutOption[])new GUILayoutOption[2]
+            {
+                            GUILayout.Width(350f),
+                            GUILayout.Height(25f)
+            });
+            if (GUILayout.Button("...", (GUILayoutOption[])new GUILayoutOption[2]
+            {
+                            GUILayout.Width(30f),
+                            GUILayout.Height(25f)
+            }))
+            {
+                System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
+                dialog.Filter = "OGG files (*.ogg)|*.ogg";
 
-			#endregion =================================
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    oggFilename = dialog.FileName;
+                    if (vMDAnimationController != null)
+                    {
+                        AudioManager.Load(oggFilename, vMDAnimationController.Loop);
+                    }
+                    else
+                    {
+                        AudioManager.Load(oggFilename, true);
+                    }
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            #endregion =================================
 
 
+            if (focusChara == null)
+            {
+                GUILayout.BeginHorizontal( );
+                GUILayout.Label("Character not selected.", (GUILayoutOption[])new GUILayoutOption[1]
+                {
+                    GUILayout.Width(200f)
+                });
+                //GUILayout.Space(50f);
+                if (GUILayout.Button("Close", gui[50f, 25f]))
+                {
+                    this.gameObject.SetActive(false);
+                }
+                GUILayout.EndHorizontal();
+            }
+            else
+            {
+                //vMDAnimationController = VMDAnimationController.Install(focusChara);
+                if (!(vMDAnimationController == null) && focusChara != null)
+                {
+                    GUILayout.BeginVertical();
+                    if (vMDAnimationController != lastController)
+                    {
+                        lastFilename = vMDAnimationController.lastLoadedVMD;
+                        lastController = vMDAnimationController;
+                    }
+                    if (lastFilename == null)
+                    {
+                        lastFilename = "";
+                    }
 
-			if (focusChara == null)
-			{
-				GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
-				GUILayout.Label("Character not selected.", (GUILayoutOption[])new GUILayoutOption[1]
-				{
-					GUILayout.Width(300f)
-				});
-				GUILayout.Space(250f);
-				if (GUILayout.Button("Close", (GUILayoutOption[])new GUILayoutOption[2]
-				{
-							GUILayout.Width(50f),
-							GUILayout.Height(25f)
-				}))
-				{
-					this.gameObject.SetActive(false);
-				}
-				GUILayout.EndHorizontal();
-			}
-			else
-			{
-				vMDAnimationController = VMDAnimationController.Install(focusChara);
-				if (!(vMDAnimationController == null) && focusChara != null)
-				{
-                    #region Top
+                    #region Maid Select
 
-                    GUILayout.BeginVertical((GUILayoutOption[])new GUILayoutOption[0]);
-					if (vMDAnimationController != lastController)
-					{
-						lastFilename = vMDAnimationController.lastLoadedVMD;
-						lastController = vMDAnimationController;
-					}
-					if (lastFilename == null)
-					{
-						lastFilename = "";
-					}
-					GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
-					if (GUILayout.Button("<", (GUILayoutOption[])new GUILayoutOption[2]
-					{
-						GUILayout.Width(20f),
-						GUILayout.Height(25f)
-					}))
-					{
-						focusChara = FindPrevNextMaid(false);
-					}
-					if (GUILayout.Button(">", (GUILayoutOption[])new GUILayoutOption[2]
-					{
-						GUILayout.Width(20f),
-						GUILayout.Height(25f)
-					}))
-					{
-						focusChara = FindPrevNextMaid(true);
-					}
-					GUILayout.Label((focusChara.status.lastName + focusChara.status.firstName) , (GUILayoutOption[])new GUILayoutOption[1]
-					{
-						GUILayout.Width(150f)
-					});
-					if (GUILayout.Button(vMDAnimationController.VMDAnimEnabled ? "On" : "Off", (GUILayoutOption[])new GUILayoutOption[2]
-					{
-						GUILayout.Width(50f),
-						GUILayout.Height(25f)
-					}))
-					{
-						vMDAnimationController.VMDAnimEnabled = !vMDAnimationController.VMDAnimEnabled;
-					}
+                    GUILayout.BeginHorizontal( );
+
+                    if (GUILayout.Button("<", gui[20f, 25f]))
+                    {
+                        focusChara = FindPrevNextMaid(false);
+                    }
+                    if (GUILayout.Button(">", gui[20f, 25f]))
+                    {
+                        focusChara = FindPrevNextMaid(true);
+                    }
+                    if (GUILayout.Button(vMDAnimationController.VMDAnimEnabled ? "On" : "Off", gui[50f, 25f]))
+                    {
+                        vMDAnimationController.VMDAnimEnabled = !vMDAnimationController.VMDAnimEnabled;
+                        //isFavorites = vMDAnimationController.VMDAnimEnabled;
+                    }
+                    GUILayout.Label((focusChara.status.fullNameJpStyle), (GUILayoutOption[])new GUILayoutOption[1]
+                    {
+                        GUILayout.Width(200f)
+                    });
+                    /*
                     if (vMDAnimationController.VMDAnimEnabled)
-					{
-						GUILayout.Space(30f);
-						if (vMDAnimationController.lastLoadedVMD != null && File.Exists(vMDAnimationController.lastLoadedVMD))
-						{
-							GUILayout.Label(Path.GetFileNameWithoutExtension(vMDAnimationController.lastLoadedVMD), (GUILayoutOption[])new GUILayoutOption[0]);
-						}
-					}
-					if (GUILayout.Button("Close", (GUILayoutOption[])new GUILayoutOption[2]
-					{
-							GUILayout.Width(50f),
-							GUILayout.Height(25f)
-					}))
-					{
-						this.gameObject.SetActive(false);
-					}
-					GUILayout.EndHorizontal();
+                    {
+                        GUILayout.Space(50f);
+                        if (vMDAnimationController.lastLoadedVMD != null && File.Exists(vMDAnimationController.lastLoadedVMD))
+                        {
+                            GUILayout.Label(Path.GetFileNameWithoutExtension(vMDAnimationController.lastLoadedVMD),  );
+                        }
+                    }
+                    */
+                    GUILayout.Space(50f);
+                    if (GUILayout.Button("Close", gui[50f, 25f]))
+                    {
+                        this.gameObject.SetActive(false);
+                    }
+                    //GUILayout.Space(50f);
 
-					#endregion
+                    GUILayout.EndHorizontal();
 
-					if (vMDAnimationController.VMDAnimEnabled)
-					{
+                    #endregion
 
-                        #region maid
+                    if (vMDAnimationController.VMDAnimEnabled)
+                    {
+                        #region VMD
 
-                        GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
-						if (GUILayout.Button("Load", (GUILayoutOption[])new GUILayoutOption[2]{GUILayout.Width(50f),GUILayout.Height(25f)}))
-						{
-							vMDAnimationController.LoadVMDAnimation(lastFilename,true);
-						}
-						if (GUILayout.Button("Reload", (GUILayoutOption[])new GUILayoutOption[2]
-						{
-							GUILayout.Width(50f),
-							GUILayout.Height(25f)
-						}))
-						{
-							vMDAnimationController.ReloadVMDAnimation();
-							lastFilename = vMDAnimationController.lastLoadedVMD;
-						}
-						if (lastFilename == null)
-						{
-							lastFilename = string.Empty;
-						}
-						lastFilename = GUILayout.TextField(lastFilename, (GUILayoutOption[])new GUILayoutOption[2]
-						{
-							GUILayout.Width(350f),
-							GUILayout.Height(25f)
-						});
-						if (GUILayout.Button("...", (GUILayoutOption[])new GUILayoutOption[2]
-						{
-							GUILayout.Width(30f),
-							GUILayout.Height(25f)
-						}))
-						{
-							System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
-							dialog.Filter = "VMD files (*.vmd)|*.vmd";
+                        GUILayout.BeginHorizontal( );
+                        GUILayout.Label("VMD", (GUILayoutOption[])new GUILayoutOption[2] { GUILayout.Width(50f), GUILayout.Height(25f) });
+                        if (GUILayout.Button("Load", (GUILayoutOption[])new GUILayoutOption[2] { GUILayout.Width(50f), GUILayout.Height(25f) }))
+                        {
+                            vMDAnimationController.LoadVMDAnimation(lastFilename, true);
+                        }
+                        if (GUILayout.Button("Reload", gui[50f, 25f]))
+                        {
+                            vMDAnimationController.ReloadVMDAnimation();
+                            lastFilename = vMDAnimationController.lastLoadedVMD;
+                        }
+                        if (lastFilename == null)
+                        {
+                            lastFilename = string.Empty;
+                        }
+                        lastFilename = GUILayout.TextField(lastFilename, gui[350f, 25f]);
+                        if (GUILayout.Button("...", gui[30f, 25f]))
+                        {
+                            System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
+                            dialog.Filter = "VMD files (*.vmd)|*.vmd";
 
-							if (dialog.ShowDialog()== System.Windows.Forms.DialogResult.OK)
+                            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                             {
-								lastFilename = dialog.FileName;
-							}
-							// 개선 필요
-							/*
+                                lastFilename = dialog.FileName;
+                                vMDAnimationController.ReloadVMDAnimation();
+                            }
+                            // 개선 필요
+                            /*
 							m_fileBrowser = new FileBrowser(new Rect((float)(Screen.width / 2 - 300), 200f, 600f, 500f), "Choose .vmd File", FileSelectedCallback);
 							m_fileBrowser.SelectionPattern = "*.vmd";							
 							m_fileBrowser.DirectoryImage = m_directoryImage;
@@ -539,134 +585,142 @@ namespace CM3D2.VMDPlay.Plugin
 								}
 							}
 							*/
-						}
-						GUILayout.EndHorizontal();
+                        }
+                        GUILayout.EndHorizontal();
 
+                        #endregion
 
-						GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
-						GUILayout.Label("(Player)", (GUILayoutOption[])new GUILayoutOption[1]
-						{
-							GUILayout.Width(50f)
-						});
-						if (GUILayout.Button("Play", (GUILayoutOption[])new GUILayoutOption[2]
-						{
-							GUILayout.Width(50f),
-							GUILayout.Height(25f)
-						}))
-						{
-							vMDAnimationController.Play();
-							AudioManager.Play(vMDAnimationController.Loop);
-							this.gameObject.SetActive(false);
-						}
-						if (GUILayout.Button("Pause", (GUILayoutOption[])new GUILayoutOption[2]
-						{
-							GUILayout.Width(50f),
-							GUILayout.Height(25f)
-						}))
-						{
-							vMDAnimationController.Pause();
-							AudioManager.Pause(vMDAnimationController.Loop);
-						}
-						if (GUILayout.Button("Stop", (GUILayoutOption[])new GUILayoutOption[2]
-						{
-							GUILayout.Width(50f),
-							GUILayout.Height(25f)
-						}))
-						{
-							vMDAnimationController.Stop();
-							AudioManager.Stop();
-						}
-						GUILayout.Space(30f);
-						GUILayout.Label("(All)", (GUILayoutOption[])new GUILayoutOption[1]
-						{
-							GUILayout.Width(50f)
-						});
-						if (GUILayout.Button("Play", (GUILayoutOption[])new GUILayoutOption[2]
-						{
-							GUILayout.Width(50f),
-							GUILayout.Height(25f)
-						}))
-						{
-							VMDAnimationMgr.Instance.PlayAll();
-							AudioManager.Play();
-							this.gameObject.SetActive(false);
-						}
-						if (GUILayout.Button("Pause", (GUILayoutOption[])new GUILayoutOption[2]
-						{
-							GUILayout.Width(50f),
-							GUILayout.Height(25f)
-						}))
-						{
-							VMDAnimationMgr.Instance.PauseAll();
-							AudioManager.Pause(vMDAnimationController.Loop);
+                        #region play
 
-						}
-						if (GUILayout.Button("Stop", (GUILayoutOption[])new GUILayoutOption[2]
-						{
-							GUILayout.Width(50f),
-							GUILayout.Height(25f)
-						}))
-						{
-							VMDAnimationMgr.Instance.StopAll();
-							AudioManager.Stop();
-						}
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
-						vMDAnimationController.speed = AddSliderWithText("vmdAnimSpeed", "Speed", vMDAnimationController.speed, 5f);
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
-						GUILayout.Label("Loop", (GUILayoutOption[])new GUILayoutOption[1]
-						{
-							GUILayout.Width(40f)
-						});
-						if (GUILayout.Button(vMDAnimationController.Loop ? "On" : "Off", (GUILayoutOption[])new GUILayoutOption[1]
-						{
-							GUILayout.Width(40f)
-						}))
-						{
-							vMDAnimationController.Loop = !vMDAnimationController.Loop;
-							AudioManager.SetLoop(vMDAnimationController.Loop);
-						}
-						GUILayout.Space(20f);
-						GUILayout.Label("Face", (GUILayoutOption[])new GUILayoutOption[1]
-						{
-							GUILayout.Width(40f)
-						});
-						if (GUILayout.Button(vMDAnimationController.faceAnimeEnabled ? "On" : "Off", (GUILayoutOption[])new GUILayoutOption[1]
-						{
-							GUILayout.Width(40f)
-						}))
-						{
-							vMDAnimationController.faceAnimeEnabled = !vMDAnimationController.faceAnimeEnabled;
-						}
-						GUILayout.Space(10f);
-						GUILayout.Label("IK (foot)", (GUILayoutOption[])new GUILayoutOption[1]
-						{
-							GUILayout.Width(80f)
-						});
-						if (GUILayout.Button(vMDAnimationController.enableIK ? "On" : "Off", (GUILayoutOption[])new GUILayoutOption[1]
-						{
-							GUILayout.Width(40f)
-						}))
-						{
-							vMDAnimationController.enableIK = !vMDAnimationController.enableIK;
-						}
-						GUILayout.Space(10f);
-						if (vMDAnimationController.enableIK)
-						{
-							GUILayout.Label("IK (toe)", (GUILayoutOption[])new GUILayoutOption[1]
-							{
-								GUILayout.Width(60f)
-							});
-							if (GUILayout.Button(vMDAnimationController.IKWeight.disableToeIK ? "Off" : "On", (GUILayoutOption[])new GUILayoutOption[1]
-							{
-								GUILayout.Width(40f)
-							}))
-							{
-								vMDAnimationController.IKWeight.disableToeIK = !vMDAnimationController.IKWeight.disableToeIK;
-							}
-						}
-						/*GUILayout.Space(10f);
+                        GUILayout.BeginHorizontal( );
+                        GUILayout.Label("(Player)", (GUILayoutOption[])new GUILayoutOption[1]
+                        {
+                            GUILayout.Width(50f)
+                        });
+                        if (GUILayout.Button("Play", (GUILayoutOption[])new GUILayoutOption[2]
+                        {
+                            GUILayout.Width(50f),
+                            GUILayout.Height(25f)
+                        }))
+                        {
+                            vMDAnimationController.Play();
+                            AudioManager.Play(vMDAnimationController.Loop);
+                            this.gameObject.SetActive(false);
+                        }
+                        if (GUILayout.Button("Pause", (GUILayoutOption[])new GUILayoutOption[2]
+                        {
+                            GUILayout.Width(50f),
+                            GUILayout.Height(25f)
+                        }))
+                        {
+                            vMDAnimationController.Pause();
+                            AudioManager.Pause(vMDAnimationController.Loop);
+                        }
+                        if (GUILayout.Button("Stop", (GUILayoutOption[])new GUILayoutOption[2]
+                        {
+                            GUILayout.Width(50f),
+                            GUILayout.Height(25f)
+                        }))
+                        {
+                            vMDAnimationController.Stop();
+                            AudioManager.Stop();
+                        }
+                        GUILayout.Space(30f);
+                        GUILayout.Label("(All)", (GUILayoutOption[])new GUILayoutOption[1]
+                        {
+                            GUILayout.Width(50f)
+                        });
+                        if (GUILayout.Button("Play", (GUILayoutOption[])new GUILayoutOption[2]
+                        {
+                            GUILayout.Width(50f),
+                            GUILayout.Height(25f)
+                        }))
+                        {
+                            VMDAnimationMgr.Instance.PlayAll();
+                            AudioManager.Play();
+                            this.gameObject.SetActive(false);
+                        }
+                        if (GUILayout.Button("Pause", (GUILayoutOption[])new GUILayoutOption[2]
+                        {
+                            GUILayout.Width(50f),
+                            GUILayout.Height(25f)
+                        }))
+                        {
+                            VMDAnimationMgr.Instance.PauseAll();
+                            AudioManager.Pause(vMDAnimationController.Loop);
+
+                        }
+                        if (GUILayout.Button("Stop", (GUILayoutOption[])new GUILayoutOption[2]
+                        {
+                            GUILayout.Width(50f),
+                            GUILayout.Height(25f)
+                        }))
+                        {
+                            VMDAnimationMgr.Instance.StopAll();
+                            AudioManager.Stop();
+                        }
+                        GUILayout.EndHorizontal();
+
+                        #endregion
+
+                        #region option
+
+                        GUILayout.BeginHorizontal( );
+                        vMDAnimationController.speed = AddSliderWithText("vmdAnimSpeed", "Speed", vMDAnimationController.speed, 5f);
+                        GUILayout.EndHorizontal();
+                        GUILayout.BeginHorizontal( );
+                        GUILayout.Label("Loop", (GUILayoutOption[])new GUILayoutOption[1]
+                        {
+                            GUILayout.Width(40f)
+                        });
+                        if (GUILayout.Button(vMDAnimationController.Loop ? "On" : "Off", (GUILayoutOption[])new GUILayoutOption[1]
+                        {
+                            GUILayout.Width(40f)
+                        }))
+                        {
+                            vMDAnimationController.Loop = !vMDAnimationController.Loop;
+                            AudioManager.SetLoop(vMDAnimationController.Loop);
+                        }
+                        GUILayout.Space(20f);
+                        GUILayout.Label("Face", (GUILayoutOption[])new GUILayoutOption[1]
+                        {
+                            GUILayout.Width(40f)
+                        });
+                        if (GUILayout.Button(vMDAnimationController.faceAnimeEnabled ? "On" : "Off", (GUILayoutOption[])new GUILayoutOption[1]
+                        {
+                            GUILayout.Width(40f)
+                        }))
+                        {
+                            vMDAnimationController.faceAnimeEnabled = !vMDAnimationController.faceAnimeEnabled;
+                        }
+                        GUILayout.Space(10f);
+                        GUILayout.Label("IK (foot)", (GUILayoutOption[])new GUILayoutOption[1]
+                        {
+                            GUILayout.Width(80f)
+                        });
+                        if (GUILayout.Button(vMDAnimationController.enableIK ? "On" : "Off", (GUILayoutOption[])new GUILayoutOption[1]
+                        {
+                            GUILayout.Width(40f)
+                        }))
+                        {
+                            vMDAnimationController.enableIK = !vMDAnimationController.enableIK;
+                        }
+                        GUILayout.Space(10f);
+                        if (vMDAnimationController.enableIK)
+                        {
+                            GUILayout.Label("IK (toe)", (GUILayoutOption[])new GUILayoutOption[1]
+                            {
+                                GUILayout.Width(60f)
+                            });
+                            if (GUILayout.Button(vMDAnimationController.IKWeight.disableToeIK ? "Off" : "On", (GUILayoutOption[])new GUILayoutOption[1]
+                            {
+                                GUILayout.Width(40f)
+                            }))
+                            {
+                                vMDAnimationController.IKWeight.disableToeIK = !vMDAnimationController.IKWeight.disableToeIK;
+                            }
+                        }
+                        /*GUILayout.Space(10f);
 						GUILayout.Label("IK(Head)", (GUILayoutOption[])new GUILayoutOption[1]
 						{
 								GUILayout.Width(60f)
@@ -678,20 +732,24 @@ namespace CM3D2.VMDPlay.Plugin
 						{
 							vMDAnimationController.enableHeadRotate = !vMDAnimationController.enableHeadRotate;
 						}*/
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
-						GUILayout.Label("Sync Anm to BGM", (GUILayoutOption[])new GUILayoutOption[1]
-						{
-								GUILayout.Width(120f)
-						});
-						if (GUILayout.Button(vMDAnimationController.SyncToBGM ? "On" : "Off", (GUILayoutOption[])new GUILayoutOption[1]
-						{
-								GUILayout.Width(40f)
-						}))
-						{
-							vMDAnimationController.SyncToBGM = !vMDAnimationController.SyncToBGM;
-						}
-						/*GUILayout.Space(30f);
+                        GUILayout.EndHorizontal();
+
+
+
+
+                        GUILayout.BeginHorizontal( );
+                        GUILayout.Label("Sync Anm to BGM", (GUILayoutOption[])new GUILayoutOption[1]
+                        {
+                                GUILayout.Width(120f)
+                        });
+                        if (GUILayout.Button(vMDAnimationController.SyncToBGM ? "On" : "Off", (GUILayoutOption[])new GUILayoutOption[1]
+                        {
+                                GUILayout.Width(40f)
+                        }))
+                        {
+                            vMDAnimationController.SyncToBGM = !vMDAnimationController.SyncToBGM;
+                        }
+                        /*GUILayout.Space(30f);
 						GUILayout.Label("Sync BGM to Anm", (GUILayoutOption[])new GUILayoutOption[1]
 						{
 								GUILayout.Width(120f)
@@ -703,68 +761,71 @@ namespace CM3D2.VMDPlay.Plugin
 						{
 							vMDAnimationController.SyncToAnim = !vMDAnimationController.SyncToAnim;
 						}*/
-						GUILayout.EndHorizontal();
-						if (vMDAnimationController.enableIK)
-						{
-							GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
-							vMDAnimationController.IKWeight.footIKPosWeight = AddSliderWithText("vmdIKFootPosWeight", "IK Weight(pos)", vMDAnimationController.IKWeight.footIKPosWeight, 1f);
-							GUILayout.EndHorizontal();
-							GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
-							vMDAnimationController.IKWeight.footIKRotWeight = AddSliderWithText("vmdIKFootRotWeight", "IK Weight(rot)", vMDAnimationController.IKWeight.footIKRotWeight, 1f);
-							GUILayout.EndHorizontal();
-						}
-						GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
-						GUILayout.Label("Config: (needs Reload): ", (GUILayoutOption[])new GUILayoutOption[1]
-						{
-							GUILayout.Width(150f)
-						});
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
-						float num = AddSliderWithText("vmdCenterYPos", "(PMD)Center pos(y)", vMDAnimationController.centerBasePos.y, 15f);
-						if (num != vMDAnimationController.centerBasePos.y)
-						{
-							vMDAnimationController.centerBasePos = new Vector3(0f, num, 0f);
-						}
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
-						float num2 = AddSliderWithTextFixedScale("(PMD)Hip pos(y)", vMDAnimationController.hipPositionAdjust.y, 1f, 6f);
-						if (num2 != vMDAnimationController.hipPositionAdjust.y)
-						{
-							vMDAnimationController.hipPositionAdjust = new Vector3(0f, num2, 0f);
-						}
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
-						float num3 = AddSliderWithText("vmdModelScale", "Model Scale", vMDAnimationController.quickAdjust.ScaleModel, 2f);
-						if (num3 != vMDAnimationController.quickAdjust.ScaleModel)
-						{
-							vMDAnimationController.quickAdjust.ScaleModel = num3;
-						}
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
-						vMDAnimationController.quickAdjust.Shoulder = AddSliderWithTextFixedScale("Shoulder Tilt", vMDAnimationController.quickAdjust.Shoulder, -10f, 40f);
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
-						vMDAnimationController.quickAdjust.ArmUp = AddSliderWithTextFixedScale("Upper Arm Tilt", vMDAnimationController.quickAdjust.ArmUp, -10f, 40f);
-						GUILayout.EndHorizontal();
-						GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
-						vMDAnimationController.quickAdjust.ArmLow = AddSliderWithTextFixedScale("Lower Arm Tilt", vMDAnimationController.quickAdjust.ArmLow, -10f, 40f);
-						GUILayout.EndHorizontal();
+                        GUILayout.EndHorizontal();
+                        if (vMDAnimationController.enableIK)
+                        {
+                            GUILayout.BeginHorizontal( );
+                            vMDAnimationController.IKWeight.footIKPosWeight = AddSliderWithText("vmdIKFootPosWeight", "IK Weight(pos)", vMDAnimationController.IKWeight.footIKPosWeight, 1f);
+                            GUILayout.EndHorizontal();
+                            GUILayout.BeginHorizontal( );
+                            vMDAnimationController.IKWeight.footIKRotWeight = AddSliderWithText("vmdIKFootRotWeight", "IK Weight(rot)", vMDAnimationController.IKWeight.footIKRotWeight, 1f);
+                            GUILayout.EndHorizontal();
+                        }
+                        GUILayout.BeginHorizontal( );
+                        GUILayout.Label("Config: (needs Reload): ", (GUILayoutOption[])new GUILayoutOption[1]
+                        {
+                            GUILayout.Width(150f)
+                        });
+                        GUILayout.EndHorizontal();
+                        GUILayout.BeginHorizontal( );
+                        float num = AddSliderWithText("vmdCenterYPos", "(PMD)Center pos(y)", vMDAnimationController.centerBasePos.y, 15f);
+                        if (num != vMDAnimationController.centerBasePos.y)
+                        {
+                            vMDAnimationController.centerBasePos = new Vector3(0f, num, 0f);
+                        }
+                        GUILayout.EndHorizontal();
+                        GUILayout.BeginHorizontal( );
+                        float num2 = AddSliderWithTextFixedScale("(PMD)Hip pos(y)", vMDAnimationController.hipPositionAdjust.y, 1f, 6f);
+                        if (num2 != vMDAnimationController.hipPositionAdjust.y)
+                        {
+                            vMDAnimationController.hipPositionAdjust = new Vector3(0f, num2, 0f);
+                        }
+                        GUILayout.EndHorizontal();
+                        GUILayout.BeginHorizontal( );
+                        float num3 = AddSliderWithText("vmdModelScale", "Model Scale", vMDAnimationController.quickAdjust.ScaleModel, 2f);
+                        if (num3 != vMDAnimationController.quickAdjust.ScaleModel)
+                        {
+                            vMDAnimationController.quickAdjust.ScaleModel = num3;
+                        }
+                        GUILayout.EndHorizontal();
+                        GUILayout.BeginHorizontal( );
+                        vMDAnimationController.quickAdjust.Shoulder = AddSliderWithTextFixedScale("Shoulder Tilt", vMDAnimationController.quickAdjust.Shoulder, -10f, 40f);
+                        GUILayout.EndHorizontal();
+                        GUILayout.BeginHorizontal( );
+                        vMDAnimationController.quickAdjust.ArmUp = AddSliderWithTextFixedScale("Upper Arm Tilt", vMDAnimationController.quickAdjust.ArmUp, -10f, 40f);
+                        GUILayout.EndHorizontal();
+                        GUILayout.BeginHorizontal( );
+                        vMDAnimationController.quickAdjust.ArmLow = AddSliderWithTextFixedScale("Lower Arm Tilt", vMDAnimationController.quickAdjust.ArmLow, -10f, 40f);
+                        GUILayout.EndHorizontal();
                         //GUILayout.Label("Other Config", (GUILayoutOption[])new GUILayoutOption[1]
                         //{
                         //	GUILayout.Width(150f)
                         //});
-                        //GUILayout.BeginHorizontal((GUILayoutOption[])new GUILayoutOption[0]);
+                        //GUILayout.BeginHorizontal( );
                         //vMDAnimationController.BgmVolume = AddSliderWithTextFixedScale("BGM volume", vMDAnimationController.BgmVolume, 0f, 1f);
                         //GUILayout.EndHorizontal();
 
                         #endregion
                     }
-                    GUILayout.EndVertical();
-				}
-			}
-		}
 
-		/*
+                    GUILayout.EndVertical();
+                }
+            }
+
+            GUILayout.EndScrollView();
+        }
+
+        /*
 		private void EnsureResourceLoaded()
 		{
 			if (m_fileImage == null)
@@ -778,7 +839,7 @@ namespace CM3D2.VMDPlay.Plugin
 			}
 		}
 		*/
-		/*
+        /*
 		protected void FileSelectedCallback(string path)
 		{
 			m_fileBrowser = null;
@@ -792,120 +853,120 @@ namespace CM3D2.VMDPlay.Plugin
 		}
 		*/
 
-		public float AddSliderGeneral(string prop, string label, float value, float defaultMin, float defaultMax, bool fixedScale, bool useText)
-		{
-			GUILayout.Label(label, (GUILayoutOption[])new GUILayoutOption[1]
-			{
-				GUILayout.Width(sliderLabelWidth)
-			});
-			GUILayout.Space(5f);
-			float num;
-			float num2;
-			if (fixedScale)
-			{
-				num = defaultMin;
-				num2 = defaultMax;
-			}
-			else
-			{
-				num = defaultMin;
-				num2 = GetSliderMax(prop, defaultMax);
-			}
-			float result = GUILayout.HorizontalSlider(value, num, num2, (GUILayoutOption[])new GUILayoutOption[1]
-			{
-				GUILayout.Width(sliderWidth)
-			});
-			GUILayout.Space(5f);
-			if (useText)
-			{
-				string text = value.ToString("F4");
-				string text2 = GUILayout.TextField(text, (GUILayoutOption[])new GUILayoutOption[1]
-				{
-					GUILayout.Width(valueLabelWidth)
-				});
-				if (text2 != text)
-				{
-					try
-					{
-						result = float.Parse(text2);
-					}
-					catch (Exception)
-					{
-					}
-				}
-			}
-			else
-			{
-				GUILayout.Label(value.ToString("F4"), (GUILayoutOption[])new GUILayoutOption[1]
-				{
-					GUILayout.Width(valueLabelWidth)
-				});
-			}
-			GUILayout.Space(5f);
-			if (!fixedScale)
-			{
-				if (GUILayout.Button("0-1", (GUILayoutOption[])new GUILayoutOption[2]
-				{
-					GUILayout.Width(50f),
-					GUILayout.Height(25f)
-				}))
-				{
-					SetSliderMax(prop, 1f);
-				}
-				if (GUILayout.Button("0-10", (GUILayoutOption[])new GUILayoutOption[2]
-				{
-					GUILayout.Width(50f),
-					GUILayout.Height(25f)
-				}))
-				{
-					SetSliderMax(prop, 10f);
-				}
-				if (GUILayout.Button("x2", (GUILayoutOption[])new GUILayoutOption[2]
-				{
-					GUILayout.Width(50f),
-					GUILayout.Height(25f)
-				}))
-				{
-					SetSliderMax(prop, GetSliderMax(prop, 1f) * 2f);
-				}
-			}
-			return result;
-		}
+        public float AddSliderGeneral(string prop, string label, float value, float defaultMin, float defaultMax, bool fixedScale, bool useText)
+        {
+            GUILayout.Label(label, (GUILayoutOption[])new GUILayoutOption[1]
+            {
+                GUILayout.Width(sliderLabelWidth)
+            });
+            GUILayout.Space(5f);
+            float num;
+            float num2;
+            if (fixedScale)
+            {
+                num = defaultMin;
+                num2 = defaultMax;
+            }
+            else
+            {
+                num = defaultMin;
+                num2 = GetSliderMax(prop, defaultMax);
+            }
+            float result = GUILayout.HorizontalSlider(value, num, num2, (GUILayoutOption[])new GUILayoutOption[1]
+            {
+                GUILayout.Width(sliderWidth)
+            });
+            GUILayout.Space(5f);
+            if (useText)
+            {
+                string text = value.ToString("F4");
+                string text2 = GUILayout.TextField(text, (GUILayoutOption[])new GUILayoutOption[1]
+                {
+                    GUILayout.Width(valueLabelWidth)
+                });
+                if (text2 != text)
+                {
+                    try
+                    {
+                        result = float.Parse(text2);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+            }
+            else
+            {
+                GUILayout.Label(value.ToString("F4"), (GUILayoutOption[])new GUILayoutOption[1]
+                {
+                    GUILayout.Width(valueLabelWidth)
+                });
+            }
+            GUILayout.Space(5f);
+            if (!fixedScale)
+            {
+                if (GUILayout.Button("0-1", (GUILayoutOption[])new GUILayoutOption[2]
+                {
+                    GUILayout.Width(50f),
+                    GUILayout.Height(25f)
+                }))
+                {
+                    SetSliderMax(prop, 1f);
+                }
+                if (GUILayout.Button("0-10", (GUILayoutOption[])new GUILayoutOption[2]
+                {
+                    GUILayout.Width(50f),
+                    GUILayout.Height(25f)
+                }))
+                {
+                    SetSliderMax(prop, 10f);
+                }
+                if (GUILayout.Button("x2", (GUILayoutOption[])new GUILayoutOption[2]
+                {
+                    GUILayout.Width(50f),
+                    GUILayout.Height(25f)
+                }))
+                {
+                    SetSliderMax(prop, GetSliderMax(prop, 1f) * 2f);
+                }
+            }
+            return result;
+        }
 
-		public float AddSliderWithLabel(string prop, string label, float value, float defaultMax)
-		{
-			return AddSliderGeneral(prop, label, value, 0f, defaultMax, false, false);
-		}
+        public float AddSliderWithLabel(string prop, string label, float value, float defaultMax)
+        {
+            return AddSliderGeneral(prop, label, value, 0f, defaultMax, false, false);
+        }
 
-		public float AddSliderWithText(string prop, string label, float value, float defaultMax)
-		{
-			return AddSliderGeneral(prop, label, value, 0f, defaultMax, false, true);
-		}
+        public float AddSliderWithText(string prop, string label, float value, float defaultMax)
+        {
+            return AddSliderGeneral(prop, label, value, 0f, defaultMax, false, true);
+        }
 
-		public float AddSliderWithLabelFixedScale(string label, float value, float min, float max)
-		{
-			return AddSliderGeneral("", label, value, min, max, true, false);
-		}
+        public float AddSliderWithLabelFixedScale(string label, float value, float min, float max)
+        {
+            return AddSliderGeneral("", label, value, min, max, true, false);
+        }
 
-		public float AddSliderWithTextFixedScale(string label, float value, float min, float max)
-		{
-			return AddSliderGeneral("", label, value, min, max, true, true);
-		}
+        public float AddSliderWithTextFixedScale(string label, float value, float min, float max)
+        {
+            return AddSliderGeneral("", label, value, min, max, true, true);
+        }
 
-		public float GetSliderMax(string key, float defaultMax)
-		{
-			if (sliderMax.ContainsKey(key))
-			{
-				return sliderMax[key];
-			}
-			return defaultMax;
-		}
+        public float GetSliderMax(string key, float defaultMax)
+        {
+            if (sliderMax.ContainsKey(key))
+            {
+                return sliderMax[key];
+            }
+            return defaultMax;
+        }
 
-		public void SetSliderMax(string key, float value)
-		{
-			sliderMax[key] = value;
-		}
-		
+        public void SetSliderMax(string key, float value)
+        {
+            sliderMax[key] = value;
+        }
 
-	}
+
+    }
 }

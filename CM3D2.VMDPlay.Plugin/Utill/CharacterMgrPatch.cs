@@ -1,4 +1,6 @@
-﻿using COM3D2.Lilly.Plugin.Utill;
+﻿using CM3D2.VMDPlay.Plugin;
+using COM3D2.Lilly.Plugin;
+using COM3D2.Lilly.Plugin.Utill;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
@@ -8,7 +10,7 @@ using System.Text;
 using UnityEngine;
 using Yotogis;
 
-namespace COM3D2.Lilly.Plugin
+namespace COM3D2.VMDPlay.Plugin
 {
     /// <summary>
     /// 캐릭터 설정 관련
@@ -20,14 +22,46 @@ namespace COM3D2.Lilly.Plugin
 
         // private void SetActive(Maid f_maid, int f_nActiveSlotNo, bool f_bMan)
         [HarmonyPatch(typeof(CharacterMgr), "SetActive")]
-        [HarmonyPostfix]
+        [HarmonyPrefix]
         public static void SetActive(Maid f_maid, int f_nActiveSlotNo, bool f_bMan)
         {
+            
             if (!f_bMan)
             {
+                CM3D2VMDGUI.vMDAnimationController = VMDAnimationController.Install(f_maid);
+                if (maidList.ContainsKey(f_nActiveSlotNo))
+                {
+                    if (maidList[f_nActiveSlotNo] == f_maid)
+                    {
+                        return;
+                    }
+                    if (maidList[f_nActiveSlotNo] != null)
+                    {
+                        if (maids.Contains(maidList[f_nActiveSlotNo]))
+                        {
+                            maids.Remove(maidList[f_nActiveSlotNo]);
+                        }
+                        maidList.Remove(f_nActiveSlotNo);
+                    }
+                }
+                if (maids.Contains(f_maid))
+                {
+                    foreach (var item in maidList)
+                    {
+                        if (item.Value== f_maid)
+                        {
+                            maidList.Remove(item.Key);
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    maids.Add( f_maid);
+                }
                 maidList.Add(f_nActiveSlotNo, f_maid);
-                maids.Add( f_maid);
             }
+            MyLog.LogMessage("CharacterMgrPatch.SetActive", MyUtill.GetMaidFullName(f_maid), f_nActiveSlotNo, f_bMan, maidList.Count, maids.Count, VMDAnimationMgr.Instance.controllers.Count);
         }
 
         // public void Deactivate(int f_nActiveSlotNo, bool f_bMan)
@@ -37,9 +71,17 @@ namespace COM3D2.Lilly.Plugin
         {
             if (!f_bMan)
             {
-                maids.Remove(maidList[f_nActiveSlotNo]);
-                maidList.Remove(f_nActiveSlotNo);
+                if (maidList.ContainsKey(f_nActiveSlotNo))
+                {
+                    VMDAnimationMgr.Instance.controllers.Remove(VMDAnimationController.Install(maidList[f_nActiveSlotNo]));
+                    if (maids.Contains(maidList[f_nActiveSlotNo]))
+                    {
+                        maids.Remove(maidList[f_nActiveSlotNo]);
+                    }
+                    maidList.Remove(f_nActiveSlotNo);
+                }
             }
+            MyLog.LogMessage("CharacterMgrPatch.Deactivate",f_nActiveSlotNo, f_bMan, maidList.Count, maids.Count, VMDAnimationMgr.Instance.controllers.Count);
         }       
     }
 }

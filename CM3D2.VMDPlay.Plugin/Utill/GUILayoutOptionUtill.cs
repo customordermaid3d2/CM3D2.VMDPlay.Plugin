@@ -6,25 +6,32 @@ using UnityEngine;
 
 namespace CM3D2.VMDPlay.Plugin.GUIUtill
 {
-    public class GUIStyleUtill
-    {
-        private static GUIStyleUtill instance;
+    public class GUILayoutOptionUtill
+    { 
 
-        public static GUIStyleUtill Instance
+        private static GUILayoutOptionUtill instance;
+
+        public static GUILayoutOptionUtill Instance
         {
             get
             {
                 if (instance == null)
                 {
-                    instance = new GUIStyleUtill();
+                    instance = new GUILayoutOptionUtill();
                 }
                 return instance;
             }
         }
 
-        private static Dictionary<string, GUIStyle> gs = new Dictionary<string, GUIStyle>();
+        private static Dictionary<string, GUILayoutOption[]> gs = new Dictionary<string, GUILayoutOption[]>();
 
-        public GUIStyle this[string key]
+        private GUILayoutOptionUtill()
+        {
+
+        }
+
+
+        public GUILayoutOption[] this[string key]
         {
             get
             {
@@ -36,37 +43,39 @@ namespace CM3D2.VMDPlay.Plugin.GUIUtill
             }
         }
 
-        public GUIStyle this[float Width, float Height]
+        public GUILayoutOption[] this[float Width, float Height]
         {
             get
             {
                 string key = Width + "," + Height;
                 if (!gs.ContainsKey(key))
                 {
-                    GUIStyle GUIStyle = new GUIStyle();
-                    GUIStyle.fixedWidth = Width;
-                    GUIStyle.fixedHeight = Height;
+                    GUILayoutOption[] GUIStyle = new GUILayoutOption[]
+                    {
+                        GUILayout.Width(Width),
+                        GUILayout.Height(Height)
+                    };
                     gs.Add(key, GUIStyle);
                 }
                 return gs[key];
             }
         }
         
-        public GUIStyle this[Type type, float value]
+        public GUILayoutOption[] this[Type type, float value]
         {
             get
             {
                 string key = type + "," + value;
                 if (!gs.ContainsKey(key))
                 {
-                    GUIStyle GUIStyle = new GUIStyle();
+                    GUILayoutOption[] GUIStyle = new GUILayoutOption[1];
                     switch (type)
                     {
                         case Type.Width:
-                            GUIStyle.fixedWidth = value;
+                            GUIStyle[0] = GUILayout.Width(value);
                             break;
                         case Type.Height:
-                            GUIStyle.fixedHeight = value;
+                            GUIStyle[0] = GUILayout.Height(value);
                             break;
                         default:
                             break;

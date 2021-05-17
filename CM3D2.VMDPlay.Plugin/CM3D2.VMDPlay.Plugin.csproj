@@ -92,6 +92,7 @@
     <Compile Include="GearMenu\DefaultIcon.cs" />
     <Compile Include="Utill\AudioManager.cs" />
     <Compile Include="Utill\CharacterMgrPatch.cs" />
+    <Compile Include="Utill\GUILayoutOptionUtill.cs" />
     <Compile Include="Utill\GUIStyleUtill.cs" />
     <Compile Include="HexDump\Utils.cs" />
     <Compile Include="MMD.PMD\PMDFormat.cs" />

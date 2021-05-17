@@ -19,17 +19,17 @@ namespace CM3D2.VMDPlay.Plugin
         //VistaOpenFileDialog dialog;
         //VistaOpenFileDialog openFileDialog;
 
-        public Maid focusChara;
+        public static Maid focusChara;
 
         private CameraCtrlOff cameraCtrl;
 
-        private int windowID = 8723;
+        private int windowID = 87238;
 
-        private int dialogWindowID = 8724;
+        private int dialogWindowID = 87248;
 
         private Rect windowRect = new Rect(0f, 300f, 650f, 510f);
 
-        private string windowTitle = "COM3D2 VMDPlay Plugin";
+        private string windowTitle = "COM3D2 VMDPlay Plugin Lilly";
 
         private Texture2D windowBG = new Texture2D(1, 1, (TextureFormat)5, false);
 
@@ -55,7 +55,7 @@ namespace CM3D2.VMDPlay.Plugin
 
         private VMDAnimationController lastController;
 
-        private string lastFilename;
+        private string lastFilename = string.Empty;
         private string oggFilename = string.Empty;
 
         //protected FileBrowser m_fileBrowser;
@@ -362,8 +362,8 @@ namespace CM3D2.VMDPlay.Plugin
                 SongMotionUtill.Set(
                     FavoritesName
                     , oggFilename
-                    //, VMDAnimationMgr.Instance.controllers.Where(x=> CharacterMgrPatch.maids.Contains(x.maid) ).Select(x => x.lastLoadedVMD).ToArray()
-                    , VMDAnimationMgr.Instance.controllers.Select(x => x.lastLoadedVMD).ToArray()
+                    , VMDAnimationMgr.Instance.controllers.Where(x=> CharacterMgrPatch.maids.Contains(x.maid) ).Select(x => x.lastLoadedVMD).ToArray()
+                   // , VMDAnimationMgr.Instance.controllers.Select(x => x.lastLoadedVMD).ToArray()
                     );
                 MyLog.LogMessage("add", VMDAnimationMgr.Instance.controllers.Count, CharacterMgrPatch.maids.Count, VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).Count() );
             }
@@ -380,18 +380,23 @@ namespace CM3D2.VMDPlay.Plugin
                     GUILayout.BeginHorizontal();
                     if (GUILayout.Button(item.Key, gui[550f, 25f]))
                     {
-                        oggFilename = item.Value.Song;
                         //lastFilename = item.Value.Song;
+                        
                         VMDAnimationMgr.Instance.ClearAll();
-                        for (int i = 0; i < item.Value.Motions.Count && i < VMDAnimationMgr.Instance.controllers.Count; i++)
+                        var v=VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).ToList();
+                        for (int i = 0; i < item.Value.Motions.Count && i < v.Count; i++)
                         {
                             //VMDAnimationMgr.Instance.controllers[i].lastLoadedVMD = item.Value.Motions[i];
                             //VMDAnimationMgr.Instance.controllers[i].lastLoadedVMD = item.Value.Motions[i];
-                            VMDAnimationMgr.Instance.controllers[i].LoadVMDAnimation(item.Value.Motions[i], false);
+                            v[i].LoadVMDAnimation(item.Value.Motions[i], false);
                         }
+
+                        oggFilename = item.Value.Song;
                         AudioManager.Load(oggFilename, vMDAnimationController.Loop);
+                        
                         VMDAnimationMgr.Instance.PlayAll();
                         AudioManager.Play();
+                        
                         isFavorites = false;
                         this.gameObject.SetActive(false);
                     }
@@ -490,7 +495,7 @@ namespace CM3D2.VMDPlay.Plugin
             }
             else
             {
-                //vMDAnimationController = VMDAnimationController.Install(focusChara);
+                vMDAnimationController = VMDAnimationController.Install(focusChara);
                 if (!(vMDAnimationController == null) && focusChara != null)
                 {
                     GUILayout.BeginVertical();

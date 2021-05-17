@@ -86,7 +86,7 @@ namespace CM3D2.VMDPlay.Plugin
 			else
 			{
 				gui.gameObject.SetActive(false);
-				gui.focusChara = null;
+				CM3D2VMDGUI.focusChara = null;
 			}
 			if (gui2 == null)
 			{

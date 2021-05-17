@@ -1,3 +1,4 @@
+using COM3D2.Lilly.Plugin;
 using COM3D2.Lilly.Plugin.Utill;
 using MMD.VMD;
 using System;
@@ -580,6 +581,7 @@ namespace CM3D2.VMDPlay.Plugin
 			VMDAnimationController vMDAnimationController = maid.gameObject.GetComponent<VMDAnimationController>();
 			if (vMDAnimationController == null)
 			{
+				MyLog.LogMessage("Install",vMDAnimationController != null);
 				if (maid.body0 == null || (maid.body0).m_Bones == null || (maid.body0).Face == null || !maid.body0.isLoadedBody)
 				{
 					return null;

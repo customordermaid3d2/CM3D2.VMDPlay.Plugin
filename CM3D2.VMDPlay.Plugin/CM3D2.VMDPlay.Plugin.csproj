@@ -68,8 +68,8 @@
     <Compile Include="CM3D2.VMDPlay.Plugin\BoneAdjustment.cs" />
     <Compile Include="CM3D2.VMDPlay.Plugin\CameraCtrlOff.cs" />
     <Compile Include="CM3D2.VMDPlay.Plugin\CM3D2FaceAnimeController.cs" />
-    <Compile Include="CM3D2.VMDPlay.Plugin\CM3D2VMDGUI.cs" />
-    <Compile Include="CM3D2.VMDPlay.Plugin\CM3D2VMDGUI2.cs" />
+    <Compile Include="GUIUtill\CM3D2VMDGUI.cs" />
+    <Compile Include="GUIUtill\CM3D2VMDGUI2.cs" />
     <Compile Include="Main\CM3D2VMDPlugin.cs" />
     <Compile Include="CM3D2.VMDPlay.Plugin\CustomSoundMgr.cs" />
     <Compile Include="CM3D2.VMDPlay.Plugin\DebugHelper.cs" />

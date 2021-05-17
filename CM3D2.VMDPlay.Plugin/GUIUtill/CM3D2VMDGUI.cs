@@ -368,7 +368,10 @@ namespace CM3D2.VMDPlay.Plugin
                 MyLog.LogMessage("add", VMDAnimationMgr.Instance.controllers.Count, CharacterMgrPatch.maids.Count, VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).Count() );
             }
             FavoritesName = GUILayout.TextField(FavoritesName, gui[350, 25]);
-
+            if (GUILayout.Button("reload", gui[50, 25]))
+            {
+                SongMotionUtill.Deserialize();
+            }
             GUILayout.EndHorizontal();
                       
 

@@ -1,5 +1,7 @@
 using BepInEx;
 using CM3D2.VMDPlay.Plugin.Utill;
+using COM3D2.Lilly.Plugin;
+using HarmonyLib;
 using UnityEngine;
 //using UnityInjector.Attributes;
 
@@ -15,6 +17,10 @@ namespace CM3D2.VMDPlay.Plugin
 	{
 		public static CM3D2VMDPlugin Instance;
 
+		public const string NAME = "COM3D2.VMDPlay.Plugin";
+
+		public const string VERSION = "0.3.11.0";
+
 		public CM3D2VMDPlugin()
         {
 			Instance = this;
@@ -23,13 +29,10 @@ namespace CM3D2.VMDPlay.Plugin
 			Debug.Log("https://github.com/customordermaid3d2/CM3D2.VMDPlay.Plugin");
 		}
 
-		public const string NAME = "COM3D2.VMDPlay.Plugin";
-
-		public const string VERSION = "0.3.11.0";
-
 		private void Awake()
 		{
 			SongMotionDic.Deserialize();
+			Harmony.CreateAndPatchAll(typeof(CharacterMgrPatch));
 		}
 
 		private void Start()

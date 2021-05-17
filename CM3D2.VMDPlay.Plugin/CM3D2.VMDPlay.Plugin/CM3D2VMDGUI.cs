@@ -1,3 +1,4 @@
+using COM3D2.Lilly.Plugin;
 using COM3D2.Lilly.Plugin.Utill;
 using System;
 using System.Collections.Generic;
@@ -222,8 +223,13 @@ namespace CM3D2.VMDPlay.Plugin
 			}
 		}
 
+		/// <summary>
+		/// 최적화 완료?
+		/// </summary>
+		/// <returns></returns>
 		private Maid FindFirstMaid()
 		{
+            /*
 			CharacterMgr val = GameMain.Instance.CharacterMgr;
 			for (int i = 0; i < val.GetMaidCount(); i++)
 			{
@@ -233,11 +239,22 @@ namespace CM3D2.VMDPlay.Plugin
 					return val2;
 				}
 			}
+			*/
+            if (CharacterMgrPatch.maids.Count>0)
+            {
+				return CharacterMgrPatch.maids[0];
+			}
 			return null;
 		}
 
+		/// <summary>
+		/// 최적화 완료?
+		/// </summary>
+		/// <param name="next"></param>
+		/// <returns></returns>
 		private Maid FindPrevNextMaid(bool next)
 		{
+			/*
 			List<Maid> list = new List<Maid>();
 			CharacterMgr val = GameMain.Instance.CharacterMgr;
 			for (int i = 0; i < val.GetMaidCount(); i++)
@@ -248,21 +265,22 @@ namespace CM3D2.VMDPlay.Plugin
 					list.Add(val2);
 				}
 			}
-			if (list.Count == 0)
+			*/
+			if (CharacterMgrPatch.maids.Count == 0)
 			{
 				return null;
 			}
 			if (focusChara != null)
 			{
-				int num = list.IndexOf(focusChara);
+				int num = CharacterMgrPatch.maids.IndexOf(focusChara);
 				if (num >= 0)
 				{
 					num += (next ? 1 : (-1));
-					num = (num + list.Count) % list.Count;
-					return list[num];
+					num = (num + CharacterMgrPatch.maids.Count) % CharacterMgrPatch.maids.Count;
+					return CharacterMgrPatch.maids[num];
 				}
 			}
-			return list[0];
+			return CharacterMgrPatch.maids[0];
 		}
 
 		private void BackupGUIStyle(string name)

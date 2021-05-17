@@ -101,7 +101,9 @@
     <Compile Include="MMDMathf.cs" />
     <Compile Include="MMD\Format.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utill\SongMotionDic.cs" />
+    <Compile Include="Utill\MyLog.cs" />
+    <Compile Include="Utill\MyUtill.cs" />
+    <Compile Include="Utill\SongMotionUtill.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

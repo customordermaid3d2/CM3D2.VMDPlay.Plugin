@@ -1,3 +1,4 @@
+using CM3D2.VMDPlay.Plugin.Utill;
 using COM3D2.Lilly.Plugin;
 using COM3D2.Lilly.Plugin.Utill;
 using MMD.VMD;
@@ -232,18 +233,22 @@ namespace CM3D2.VMDPlay.Plugin
 
 		}
 
+		/*
 		public class DestroyListener : UnityEngine.MonoBehaviour
 		{
 			public VMDAnimationController controller;
+			public Maid maid;
 
 			private void OnDestroy()
 			{
+				MaidControlleUtill.Remove(maid);
 				VMDAnimationMgr.Instance.gui.Clear();
 				Console.WriteLine("Destroy VMD Controller. {0}", controller);
 				UnityEngine.Object.Destroy(controller);
 			}
 
 		}
+		*/
 
 		public Maid maid;
 
@@ -269,6 +274,7 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public bool enableIK = true;
 
+		// 뼈가 없는 경우 대비한듯
 		public Dictionary<string, string> boneNameMap;
 
 		private Transform t_hips;
@@ -333,7 +339,7 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public Dictionary<string, BoneAdjustment> boneAdjust = new Dictionary<string, BoneAdjustment>();
 
-		public string lastLoadedVMD;
+		public string lastLoadedVMD = string.Empty;
 
 		public Animation animationForVMD;
 
@@ -392,83 +398,7 @@ namespace CM3D2.VMDPlay.Plugin
 			}
 		}
 
-		private List<string> boneNames = new List<string>
-		{
-			"Bip01",
-			"Bip01/Bip01 Spine",
-			"Bip01/Bip01 Spine/Bip01 Spine0a",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 Neck",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 Neck/Bip01 Head",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger0",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger01",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger02",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger1",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger11",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger12",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger2",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger21",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger22",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger3",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger31",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger32",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger4",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger41",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 L Clavicle/Bip01 L UpperArm/Bip01 L Forearm/Bip01 L Hand/Bip01 L Finger42",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger0",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger01",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger02",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger1",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger11",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger12",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger2",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger21",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger22",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger3",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger31",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger32",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger4",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger41",
-			"Bip01/Bip01 Spine/Bip01 Spine0a/Bip01 Spine1/Bip01 Spine1a/Bip01 R Clavicle/Bip01 R UpperArm/Bip01 R Forearm/Bip01 R Hand/Bip01 R Finger42",
-			"Bip01/Bip01 Pelvis",
-			"Bip01/Bip01 Pelvis/Bip01 L Thigh",
-			"Bip01/Bip01 Pelvis/Bip01 L Thigh/Bip01 L Calf",
-			"Bip01/Bip01 Pelvis/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot",
-			"Bip01/Bip01 Pelvis/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01 L Toe0",
-			"Bip01/Bip01 Pelvis/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01 L Toe0/Bip01 L Toe01",
-			"Bip01/Bip01 Pelvis/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01 L Toe0/Bip01 L Toe01/Bip01 L Toe0Nub",
-			"Bip01/Bip01 Pelvis/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01 L Toe1",
-			"Bip01/Bip01 Pelvis/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01 L Toe1/Bip01 L Toe11",
-			"Bip01/Bip01 Pelvis/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01 L Toe1/Bip01 L Toe11/Bip01 L Toe1Nub",
-			"Bip01/Bip01 Pelvis/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01 L Toe2",
-			"Bip01/Bip01 Pelvis/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01 L Toe2/Bip01 L Toe21",
-			"Bip01/Bip01 Pelvis/Bip01 L Thigh/Bip01 L Calf/Bip01 L Foot/Bip01 L Toe2/Bip01 L Toe21/Bip01 L Toe2Nub",
-			"Bip01/Bip01 Pelvis/Bip01 R Thigh",
-			"Bip01/Bip01 Pelvis/Bip01 R Thigh/Bip01 R Calf",
-			"Bip01/Bip01 Pelvis/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot",
-			"Bip01/Bip01 Pelvis/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01 R Toe0",
-			"Bip01/Bip01 Pelvis/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01 R Toe0/Bip01 R Toe01",
-			"Bip01/Bip01 Pelvis/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01 R Toe0/Bip01 R Toe01/Bip01 R Toe0Nub",
-			"Bip01/Bip01 Pelvis/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01 R Toe1",
-			"Bip01/Bip01 Pelvis/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01 R Toe1/Bip01 R Toe11",
-			"Bip01/Bip01 Pelvis/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01 R Toe1/Bip01 R Toe11/Bip01 R Toe1Nub",
-			"Bip01/Bip01 Pelvis/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01 R Toe2",
-			"Bip01/Bip01 Pelvis/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01 R Toe2/Bip01 R Toe21",
-			"Bip01/Bip01 Pelvis/Bip01 R Thigh/Bip01 R Calf/Bip01 R Foot/Bip01 R Toe2/Bip01 R Toe21/Bip01 R Toe2Nub",
-			"_FOOT_IK_L",
-			"_FOOT_IK_R",
-			"_FOOT_IK_L/_TOE_IK_L",
-			"_FOOT_IK_R/_TOE_IK_R"
-		};
+		private List<string> boneNames = new List<string>(BodyUtill.boneNames);
 
 		private static FieldInfo f_m_nSubMeshCount = typeof(TMorph).GetField("m_nSubMeshCount", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.GetField);
 
@@ -576,65 +506,83 @@ namespace CM3D2.VMDPlay.Plugin
 			}
 		}
 
-//todo
-// 여기서 이거 구현 막지 말고. 딕셔너리 추가해서 관리하기
-// 리스트에서 제거용 메소드 는 별도 추가 필요
-// 컨트롤 목록도 막자
-		public unsafe static VMDAnimationController Install(Maid maid)
-		{
-///패치의 사전에서 검색하기
-			VMDAnimationController vMDAnimationController = maid.gameObject.GetComponent<VMDAnimationController>();
-			if (vMDAnimationController == null)
-			{
-				//MyLog.LogMessage("Install",vMDAnimationController != null);
-				if (maid.body0 == null || (maid.body0).m_Bones == null || (maid.body0).Face == null || !maid.body0.isLoadedBody)
-				{
-					return null;
-				}
-//이거ㄴ 빼자
-//				vMDAnimationController = maid.gameObject.AddComponent<VMDAnimationController>();
-				vMDAnimationController.Init(maid);
-// 이거 패치 클래스에서 사전형으로 변경
-				VMDAnimationMgr.Instance.controllers.Add(vMDAnimationController);
-//제거
-//				(maid.body0).m_Bones.gameObject.AddComponent<DestroyListener>().controller = vMDAnimationController;
-			}
-			return vMDAnimationController;
-		}
 
-		private void Init(Maid maid)
+		public void Init(Maid maid)
 		{
+			MyLog.LogWarning("VMDAnimationController.Init0", maid.body0.isLoadedBody);
+			//while (maid.body0.isLoadedBody)
+			//{
+			//	yield return (object)new WaitForEndOfFrame();
+			//}
 			this.maid = maid;
-			_shoulderKey = new string[2]
-			{
-				"Bip01 L Clavicle",
-				"Bip01 R Clavicle"
-			};
-			_armUpKey = new string[2]
-			{
-				"Bip01 L UpperArm",
-				"Bip01 R UpperArm"
-			};
-			_armLowKey = new string[2]
-			{
-				"Bip01 L Forearm",
-				"Bip01 R Forearm"
-			};
-			quickAdjust = new QuickAdjust(this);
+            try
+            {
+
+                _shoulderKey = new string[2]
+                {
+                "Bip01 L Clavicle",
+                "Bip01 R Clavicle"
+                };
+                _armUpKey = new string[2]
+                {
+                "Bip01 L UpperArm",
+                "Bip01 R UpperArm"
+                };
+                _armLowKey = new string[2]
+                {
+                "Bip01 L Forearm",
+                "Bip01 R Forearm"
+                };
+                quickAdjust = new QuickAdjust(this);
+
+            }
+            catch (Exception e)
+            {
+				MyLog.LogError("VMDAnimationController.Init1", e.ToString());
+
+			}
 			ResetBoneNameMap();
 			ResetRotationMap();
-			CreateClone();
-			animeOverride = DefaultCharaAnimOverride.Get(maid);
-			GameObject val = new GameObject("_face");
-			val.transform.parent = vmdAnimationGo.transform;
-			val.transform.localPosition = Vector3.zero;
-			val.transform.localRotation = Quaternion.identity;
-			faceController = val.AddComponent<CM3D2FaceAnimeController>();
-			faceController.Init(maid);
-			this.StartCoroutine(DisableDefaultAnimIKCo());
+
+            try
+            {
+                CreateClone();// 이대 아직 maid.body0 는 null임. LoadBody_R 메소드 이후면 됨
+            }
+			catch (Exception e)
+			{
+				MyLog.LogError("VMDAnimationController.2", e.ToString());
+
+			}
+
+			try
+            {
+                animeOverride = DefaultCharaAnimOverride.Get(maid);
+            }
+			catch (Exception e)
+			{
+				MyLog.LogError("VMDAnimationController.Init3", e.ToString());
+
+			}
+
+            try
+            {
+                GameObject val = new GameObject("_face");
+                val.transform.parent = vmdAnimationGo.transform;
+                val.transform.localPosition = Vector3.zero;
+                val.transform.localRotation = Quaternion.identity;
+                faceController = val.AddComponent<CM3D2FaceAnimeController>();
+                faceController.Init(maid); // 이제 여기 시점 찿을 차례
+
+            }
+			catch (Exception e)
+			{
+				MyLog.LogError("VMDAnimationController.Init4", e.ToString());
+
+			}
+			//this.StartCoroutine(DisableDefaultAnimIKCo());
 		}
 
-		private unsafe void CreateClone()
+		public void CreateClone()
 		{
 			vmdAnimationGo = new GameObject("vmdAnimation");
 			vmdAnimationGo.transform.parent = (maid.body0).m_Bones.transform.parent;
@@ -762,221 +710,8 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public void ResetBoneNameMap()
 		{
-			Dictionary<string, string> dictionary = boneNameMap = new Dictionary<string, string>
-			{
-				{
-					"Bip01",
-					"センター"
-				},
-				{
-					"Bip01 Spine",
-					"上半身"
-				},
-				{
-					"Bip01 Spine1",
-					"上半身2"
-				},
-				{
-					"Bip01 Spine1a",
-					"上半身2先"
-				},
-				{
-					"Bip01 Neck",
-					"首"
-				},
-				{
-					"Bip01 Head",
-					"頭"
-				},
-				{
-					"Bip01 L Clavicle",
-					"左肩"
-				},
-				{
-					"Bip01 L UpperArm",
-					"左腕"
-				},
-				{
-					"Bip01 L Forearm",
-					"左ひじ"
-				},
-				{
-					"Bip01 L Hand",
-					"左手首"
-				},
-				{
-					"Bip01 R Clavicle",
-					"右肩"
-				},
-				{
-					"Bip01 R UpperArm",
-					"右腕"
-				},
-				{
-					"Bip01 R Forearm",
-					"右ひじ"
-				},
-				{
-					"Bip01 R Hand",
-					"右手首"
-				},
-				{
-					"Bip01 Pelvis",
-					"下半身"
-				},
-				{
-					"Bip01 L Thigh",
-					"左足"
-				},
-				{
-					"Bip01 L Calf",
-					"左ひざ"
-				},
-				{
-					"Bip01 L Foot",
-					"左足首"
-				},
-				{
-					"Bip01 R Thigh",
-					"右足"
-				},
-				{
-					"Bip01 R Calf",
-					"右ひざ"
-				},
-				{
-					"Bip01 R Foot",
-					"右足首"
-				},
-				{
-					"Bip01 L Finger01",
-					"左親指１"
-				},
-				{
-					"Bip01 L Finger02",
-					"左親指２"
-				},
-				{
-					"Bip01 L Finger1",
-					"左人指１"
-				},
-				{
-					"Bip01 L Finger11",
-					"左人指２"
-				},
-				{
-					"Bip01 L Finger12",
-					"左人指３"
-				},
-				{
-					"Bip01 L Finger2",
-					"左中指１"
-				},
-				{
-					"Bip01 L Finger21",
-					"左中指２"
-				},
-				{
-					"Bip01 L Finger22",
-					"左中指３"
-				},
-				{
-					"Bip01 L Finger3",
-					"左薬指１"
-				},
-				{
-					"Bip01 L Finger31",
-					"左薬指２"
-				},
-				{
-					"Bip01 L Finger32",
-					"左薬指３"
-				},
-				{
-					"Bip01 L Finger4",
-					"左小指１"
-				},
-				{
-					"Bip01 L Finger41",
-					"左小指２"
-				},
-				{
-					"Bip01 L Finger42",
-					"左小指３"
-				},
-				{
-					"Bip01 R Finger01",
-					"右親指１"
-				},
-				{
-					"Bip01 R Finger02",
-					"右親指２"
-				},
-				{
-					"Bip01 R Finger1",
-					"右人指１"
-				},
-				{
-					"Bip01 R Finger11",
-					"右人指２"
-				},
-				{
-					"Bip01 R Finger12",
-					"右人指３"
-				},
-				{
-					"Bip01 R Finger2",
-					"右中指１"
-				},
-				{
-					"Bip01 R Finger21",
-					"右中指２"
-				},
-				{
-					"Bip01 R Finger22",
-					"右中指３"
-				},
-				{
-					"Bip01 R Finger3",
-					"右薬指１"
-				},
-				{
-					"Bip01 R Finger31",
-					"右薬指２"
-				},
-				{
-					"Bip01 R Finger32",
-					"右薬指３"
-				},
-				{
-					"Bip01 R Finger4",
-					"右小指１"
-				},
-				{
-					"Bip01 R Finger41",
-					"右小指２"
-				},
-				{
-					"Bip01 R Finger42",
-					"右小指３"
-				},
-				{
-					"_FOOT_IK_L",
-					"左足ＩＫ"
-				},
-				{
-					"_FOOT_IK_R",
-					"右足ＩＫ"
-				},
-				{
-					"_TOE_IK_L",
-					"左つま先ＩＫ"
-				},
-				{
-					"_TOE_IK_R",
-					"右つま先ＩＫ"
-				}
-			};
+			//Dictionary<string, string> dictionary =
+			boneNameMap = new Dictionary<string, string>(BodyUtill.boneNameMap);
 		}
 
 		public void AddBoneNameMap(string boneName, string vmxBone)
@@ -1646,12 +1381,15 @@ namespace CM3D2.VMDPlay.Plugin
 		private void OnDestroy()
 		{
 			this.StopAllCoroutines();
+			/*
 			if (AudioManager.audiosource != null)
 			{
 				GameMain.Destroy(AudioManager.audiosource);
 				AudioManager.audiosource = null;
 			}
-			VMDAnimationMgr.Instance.controllers.Remove(this);
+			*/
+			//VMDAnimationMgr.Instance.controllers.Remove(this);
+			MaidControlleUtill.Remove(maid);
 			UnityEngine.Object.Destroy(animeOverride);
 			UnityEngine.Object.Destroy(vmdAnimationGo);
 			UnityEngine.Object.Destroy(faceController.gameObject);

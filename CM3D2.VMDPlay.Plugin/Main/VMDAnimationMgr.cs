@@ -1,3 +1,4 @@
+using CM3D2.VMDPlay.Plugin.Utill;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,12 +17,11 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public CustomSoundMgr SoundMgr = new CustomSoundMgr();
 
-//todo : 이거 막지 말고 딕셔녀리 추가하자
-		public List<VMDAnimationController> controllers = new List<VMDAnimationController>();
+		//todo : 이거 막지 말고 딕셔녀리 추가하자
+		//public List<VMDAnimationController> controllers = new List<VMDAnimationController>();
+		//public Dictionary<Maid, VMDAnimationController> maidControllers = new Dictionary<Maid, VMDAnimationController>();		
 
 		public static VMDAnimationMgr Instance => _instance;
-
-		public VMDAnimationController CurrentController => GetCurrentController();
 
 		private void Start()
 		{
@@ -38,14 +38,9 @@ namespace CM3D2.VMDPlay.Plugin
 			return _instance;
 		}
 
-		public VMDAnimationController GetCurrentController()
-		{
-			return VMDAnimationController.Install(GameMain.Instance.CharacterMgr.GetMaid(0));
-		}
-
 		public void PlayAll()
 		{
-			foreach (VMDAnimationController controller in controllers)
+			foreach (var controller in MaidControlleUtill.Controllers)
 			{
 				controller.Play();
 			}
@@ -53,7 +48,7 @@ namespace CM3D2.VMDPlay.Plugin
 		
 		public void ClearAll()
 		{
-			foreach (VMDAnimationController controller in controllers)
+			foreach (var controller in MaidControlleUtill.Controllers)
 			{
 				controller.Stop();
 				controller.lastLoadedVMD=string.Empty;
@@ -62,7 +57,7 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public void StopAll()
 		{
-			foreach (VMDAnimationController controller in controllers)
+			foreach (var controller in MaidControlleUtill.Controllers)
 			{
 				controller.Stop();
 			}
@@ -70,7 +65,7 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public void PauseAll()
 		{
-			foreach (VMDAnimationController controller in controllers)
+			foreach (var controller in MaidControlleUtill.Controllers)
 			{
 				controller.Pause();
 			}
@@ -87,7 +82,7 @@ namespace CM3D2.VMDPlay.Plugin
 			else
 			{
 				gui.gameObject.SetActive(false);
-				CM3D2VMDGUI.focusChara = null;
+				//CM3D2VMDGUI.focusChara = null;
 			}
 			if (gui2 == null)
 			{

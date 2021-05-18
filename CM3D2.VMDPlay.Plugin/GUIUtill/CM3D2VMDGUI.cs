@@ -131,8 +131,9 @@ namespace CM3D2.VMDPlay.Plugin
         {
             if (visibleGUI)
             {
-                try
-                {
+               // try
+               // {
+                    /*
                     GUIStyle val = new GUIStyle(GUI.skin.window);
                     if (GUI.skin.GetStyle("List Item") != null)
                     {
@@ -157,6 +158,7 @@ namespace CM3D2.VMDPlay.Plugin
                         val.hover.textColor = Color.white;
                         val.onHover.textColor = Color.white;
                     }
+                    */
                     /*
 					if (m_fileBrowser != null)
 					{
@@ -164,14 +166,15 @@ namespace CM3D2.VMDPlay.Plugin
 					}
 					else
 					*/
-                    {
-                        windowRect = GUI.Window(windowID, windowRect, FuncWindowGUI, windowTitle, val);
-                    }
-                }
-                catch (Exception value)
-                {
-                    Console.WriteLine(value);
-                }
+                 //   {
+                        windowRect = GUI.Window(windowID, windowRect, FuncWindowGUI, windowTitle);
+                        //windowRect = GUI.Window(windowID, windowRect, FuncWindowGUI, windowTitle, val);
+                //    }
+                //}
+                //catch (Exception value)
+                //{
+                //    Console.WriteLine(value);
+                //}
             }
         }
 
@@ -205,7 +208,7 @@ namespace CM3D2.VMDPlay.Plugin
                 {
                     cameraCtrl.enabled = false;
                 }
-                if ((int)Event.current.type == 0)
+                if (Event.current.type == EventType.MouseDown)
                 {
                     GUI.FocusControl("");
                     GUI.FocusWindow(winID);
@@ -372,6 +375,10 @@ namespace CM3D2.VMDPlay.Plugin
             {
                 SongMotionUtill.Deserialize();
             }
+            if (GUILayout.Button("chack", gui[50, 25]))
+            {
+                MyLog.LogMessage("chack", VMDAnimationMgr.Instance.controllers.Count);
+            }
             GUILayout.EndHorizontal();
                       
 
@@ -419,9 +426,9 @@ namespace CM3D2.VMDPlay.Plugin
 
             GUILayout.BeginHorizontal( );
 
-            GUILayout.Label("OGG", (GUILayoutOption[])new GUILayoutOption[2] { GUILayout.Width(50f), GUILayout.Height(25f) });
+            GUILayout.Label("OGG", gui[50, 25]);
 
-            if (GUILayout.Button("load", (GUILayoutOption[])new GUILayoutOption[2] { GUILayout.Width(50f), GUILayout.Height(25f) }))
+            if (GUILayout.Button("load", gui[50, 25]))
             {
                 if (vMDAnimationController != null)
                 {
@@ -451,16 +458,8 @@ namespace CM3D2.VMDPlay.Plugin
             {
                 oggFilename = string.Empty;
             }
-            oggFilename = GUILayout.TextField(oggFilename, (GUILayoutOption[])new GUILayoutOption[2]
-            {
-                            GUILayout.Width(350f),
-                            GUILayout.Height(25f)
-            });
-            if (GUILayout.Button("...", (GUILayoutOption[])new GUILayoutOption[2]
-            {
-                            GUILayout.Width(30f),
-                            GUILayout.Height(25f)
-            }))
+            oggFilename = GUILayout.TextField(oggFilename, gui[350, 25]);
+            if (GUILayout.Button("...", gui[30, 25]))
             {                
                 dialog.Filter = "OGG files (*.ogg)|*.ogg";
 
@@ -595,34 +594,19 @@ namespace CM3D2.VMDPlay.Plugin
                         #region play
 
                         GUILayout.BeginHorizontal( );
-                        GUILayout.Label("(Player)", (GUILayoutOption[])new GUILayoutOption[1]
-                        {
-                            GUILayout.Width(50f)
-                        });
-                        if (GUILayout.Button("Play", (GUILayoutOption[])new GUILayoutOption[2]
-                        {
-                            GUILayout.Width(50f),
-                            GUILayout.Height(25f)
-                        }))
+                        GUILayout.Label("(Player)", gui[50f, 25f]);
+                        if (GUILayout.Button("Play", gui[50f, 25f]))
                         {
                             vMDAnimationController.Play();
                             AudioManager.Play(vMDAnimationController.Loop);
                             this.gameObject.SetActive(false);
                         }
-                        if (GUILayout.Button("Pause", (GUILayoutOption[])new GUILayoutOption[2]
-                        {
-                            GUILayout.Width(50f),
-                            GUILayout.Height(25f)
-                        }))
+                        if (GUILayout.Button("Pause", gui[50f, 25f]))
                         {
                             vMDAnimationController.Pause();
                             AudioManager.Pause(vMDAnimationController.Loop);
                         }
-                        if (GUILayout.Button("Stop", (GUILayoutOption[])new GUILayoutOption[2]
-                        {
-                            GUILayout.Width(50f),
-                            GUILayout.Height(25f)
-                        }))
+                        if (GUILayout.Button("Stop", gui[50f, 25f]))
                         {
                             vMDAnimationController.Stop();
                             AudioManager.Stop();
@@ -632,31 +616,19 @@ namespace CM3D2.VMDPlay.Plugin
                         {
                             GUILayout.Width(50f)
                         });
-                        if (GUILayout.Button("Play", (GUILayoutOption[])new GUILayoutOption[2]
-                        {
-                            GUILayout.Width(50f),
-                            GUILayout.Height(25f)
-                        }))
+                        if (GUILayout.Button("Play", gui[50f, 25f]))
                         {
                             VMDAnimationMgr.Instance.PlayAll();
                             AudioManager.Play();
                             this.gameObject.SetActive(false);
                         }
-                        if (GUILayout.Button("Pause", (GUILayoutOption[])new GUILayoutOption[2]
-                        {
-                            GUILayout.Width(50f),
-                            GUILayout.Height(25f)
-                        }))
+                        if (GUILayout.Button("Pause", gui[50f, 25f]))
                         {
                             VMDAnimationMgr.Instance.PauseAll();
                             AudioManager.Pause(vMDAnimationController.Loop);
 
                         }
-                        if (GUILayout.Button("Stop", (GUILayoutOption[])new GUILayoutOption[2]
-                        {
-                            GUILayout.Width(50f),
-                            GUILayout.Height(25f)
-                        }))
+                        if (GUILayout.Button("Stop", gui[50f, 25f]))
                         {
                             VMDAnimationMgr.Instance.StopAll();
                             AudioManager.Stop();
@@ -671,14 +643,8 @@ namespace CM3D2.VMDPlay.Plugin
                         vMDAnimationController.speed = AddSliderWithText("vmdAnimSpeed", "Speed", vMDAnimationController.speed, 5f);
                         GUILayout.EndHorizontal();
                         GUILayout.BeginHorizontal( );
-                        GUILayout.Label("Loop", (GUILayoutOption[])new GUILayoutOption[1]
-                        {
-                            GUILayout.Width(40f)
-                        });
-                        if (GUILayout.Button(vMDAnimationController.Loop ? "On" : "Off", (GUILayoutOption[])new GUILayoutOption[1]
-                        {
-                            GUILayout.Width(40f)
-                        }))
+                        GUILayout.Label("Loop", gui[GUILayoutOptionUtill.Type.Width, 40f]);
+                        if (GUILayout.Button(vMDAnimationController.Loop ? "On" : "Off", gui[GUILayoutOptionUtill.Type.Width, 40f]))
                         {
                             vMDAnimationController.Loop = !vMDAnimationController.Loop;
                             AudioManager.SetLoop(vMDAnimationController.Loop);
@@ -688,10 +654,7 @@ namespace CM3D2.VMDPlay.Plugin
                         {
                             GUILayout.Width(40f)
                         });
-                        if (GUILayout.Button(vMDAnimationController.faceAnimeEnabled ? "On" : "Off", (GUILayoutOption[])new GUILayoutOption[1]
-                        {
-                            GUILayout.Width(40f)
-                        }))
+                        if (GUILayout.Button(vMDAnimationController.faceAnimeEnabled ? "On" : "Off", gui[GUILayoutOptionUtill.Type.Width, 40f]))
                         {
                             vMDAnimationController.faceAnimeEnabled = !vMDAnimationController.faceAnimeEnabled;
                         }
@@ -700,10 +663,7 @@ namespace CM3D2.VMDPlay.Plugin
                         {
                             GUILayout.Width(80f)
                         });
-                        if (GUILayout.Button(vMDAnimationController.enableIK ? "On" : "Off", (GUILayoutOption[])new GUILayoutOption[1]
-                        {
-                            GUILayout.Width(40f)
-                        }))
+                        if (GUILayout.Button(vMDAnimationController.enableIK ? "On" : "Off", gui[GUILayoutOptionUtill.Type.Width, 40f]))
                         {
                             vMDAnimationController.enableIK = !vMDAnimationController.enableIK;
                         }
@@ -714,10 +674,7 @@ namespace CM3D2.VMDPlay.Plugin
                             {
                                 GUILayout.Width(60f)
                             });
-                            if (GUILayout.Button(vMDAnimationController.IKWeight.disableToeIK ? "Off" : "On", (GUILayoutOption[])new GUILayoutOption[1]
-                            {
-                                GUILayout.Width(40f)
-                            }))
+                            if (GUILayout.Button(vMDAnimationController.IKWeight.disableToeIK ? "Off" : "On", gui[GUILayoutOptionUtill.Type.Width, 40f]))
                             {
                                 vMDAnimationController.IKWeight.disableToeIK = !vMDAnimationController.IKWeight.disableToeIK;
                             }
@@ -744,10 +701,7 @@ namespace CM3D2.VMDPlay.Plugin
                         {
                                 GUILayout.Width(120f)
                         });
-                        if (GUILayout.Button(vMDAnimationController.SyncToBGM ? "On" : "Off", (GUILayoutOption[])new GUILayoutOption[1]
-                        {
-                                GUILayout.Width(40f)
-                        }))
+                        if (GUILayout.Button(vMDAnimationController.SyncToBGM ? "On" : "Off", gui[GUILayoutOptionUtill.Type.Width,40f]))
                         {
                             vMDAnimationController.SyncToBGM = !vMDAnimationController.SyncToBGM;
                         }
@@ -764,6 +718,9 @@ namespace CM3D2.VMDPlay.Plugin
 							vMDAnimationController.SyncToAnim = !vMDAnimationController.SyncToAnim;
 						}*/
                         GUILayout.EndHorizontal();
+
+
+
                         if (vMDAnimationController.enableIK)
                         {
                             GUILayout.BeginHorizontal( );

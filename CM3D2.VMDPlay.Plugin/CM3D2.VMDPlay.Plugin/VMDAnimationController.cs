@@ -578,7 +578,15 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public unsafe static VMDAnimationController Install(Maid maid)
 		{
-			VMDAnimationController vMDAnimationController = maid.gameObject.GetComponent<VMDAnimationController>();
+			VMDAnimationController vMDAnimationController = null;// maid.gameObject.GetComponent<VMDAnimationController>();
+            if (VMDAnimationMgr.Instance.maidcontrollers.ContainsKey(maid))
+            {
+				vMDAnimationController = VMDAnimationMgr.Instance.maidcontrollers[maid];
+            }
+            else
+            {
+				vMDAnimationController = maid.gameObject.GetComponent<VMDAnimationController>();
+            }			
 			if (vMDAnimationController == null)
 			{
 				MyLog.LogMessage("Install",vMDAnimationController != null);
@@ -589,6 +597,14 @@ namespace CM3D2.VMDPlay.Plugin
 				vMDAnimationController = maid.gameObject.AddComponent<VMDAnimationController>();
 				vMDAnimationController.Init(maid);
 				VMDAnimationMgr.Instance.controllers.Add(vMDAnimationController);
+				if (VMDAnimationMgr.Instance.maidcontrollers.ContainsKey(maid))
+				{
+					VMDAnimationMgr.Instance.maidcontrollers[maid]=vMDAnimationController ;
+				}
+				else
+				{					
+					VMDAnimationMgr.Instance.maidcontrollers.Add(maid,vMDAnimationController);
+				}
 				(maid.body0).m_Bones.gameObject.AddComponent<DestroyListener>().controller = vMDAnimationController;
 			}
 			return vMDAnimationController;

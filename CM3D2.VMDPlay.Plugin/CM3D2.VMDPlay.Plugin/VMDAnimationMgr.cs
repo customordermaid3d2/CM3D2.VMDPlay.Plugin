@@ -17,6 +17,7 @@ namespace CM3D2.VMDPlay.Plugin
 		public CustomSoundMgr SoundMgr = new CustomSoundMgr();
 
 		public List<VMDAnimationController> controllers = new List<VMDAnimationController>();
+		public Dictionary<Maid,VMDAnimationController> maidcontrollers = new Dictionary<Maid, VMDAnimationController>();
 
 		public static VMDAnimationMgr Instance => _instance;
 

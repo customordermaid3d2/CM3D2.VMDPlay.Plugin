@@ -133,6 +133,7 @@ namespace CM3D2.VMDPlay.Plugin
             {
                 try
                 {
+/*
                     GUIStyle val = new GUIStyle(GUI.skin.window);
                     if (GUI.skin.GetStyle("List Item") != null)
                     {
@@ -147,6 +148,7 @@ namespace CM3D2.VMDPlay.Plugin
                         GUI.skin.customStyles = array;
                         m_Apply.Invoke((object)GUI.skin, new object[0]);
                     }
+*/
                     if (isVR)
                     {
                         val.onNormal.background = windowBG;

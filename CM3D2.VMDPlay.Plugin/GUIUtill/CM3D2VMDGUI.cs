@@ -131,8 +131,8 @@ namespace CM3D2.VMDPlay.Plugin
         {
             if (visibleGUI)
             {
-                try
-                {
+                //try
+                //{
 /*
                     GUIStyle val = new GUIStyle(GUI.skin.window);
                     if (GUI.skin.GetStyle("List Item") != null)
@@ -169,11 +169,13 @@ namespace CM3D2.VMDPlay.Plugin
                     {
                         windowRect = GUI.Window(windowID, windowRect, FuncWindowGUI, windowTitle, val);
                     }
+/*
                 }
                 catch (Exception value)
                 {
                     Console.WriteLine(value);
                 }
+*/
             }
         }
 

@@ -20,6 +20,8 @@ namespace COM3D2.VMDPlay.Plugin
         // public static Dictionary<int, Maid> maidList = new Dictionary<int, Maid>();
         public static List<Maid> maids = new List<Maid>();
 public static dictionary<maid,VMDAnimationController.Install> dmv=new ();
+// todo 일반 리스트도 추가. 이거 두개 다른 클래승서 구현해야되나
+
         // private void SetActive(Maid f_maid, int f_nActiveSlotNo, bool f_bMan)
         [HarmonyPatch(typeof(Maid), "Visible", MethodType.Setter)]
         [HarmonyPrefix]

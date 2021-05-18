@@ -576,6 +576,8 @@ namespace CM3D2.VMDPlay.Plugin
 			}
 		}
 
+// 여기서 이거 구현 막고. 패치에서 구현하자
+// 컨트롤 목록도 막자
 		public unsafe static VMDAnimationController Install(Maid maid)
 		{
 			VMDAnimationController vMDAnimationController = maid.gameObject.GetComponent<VMDAnimationController>();
@@ -588,6 +590,7 @@ namespace CM3D2.VMDPlay.Plugin
 				}
 				vMDAnimationController = maid.gameObject.AddComponent<VMDAnimationController>();
 				vMDAnimationController.Init(maid);
+// 이거 막기
 				VMDAnimationMgr.Instance.controllers.Add(vMDAnimationController);
 				(maid.body0).m_Bones.gameObject.AddComponent<DestroyListener>().controller = vMDAnimationController;
 			}

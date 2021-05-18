@@ -577,7 +577,8 @@ namespace CM3D2.VMDPlay.Plugin
 		}
 
 //todo
-// 여기서 이거 구현 막고. 패치에서 구현하자
+// 여기서 이거 구현 막지 말고. 딕셔너리 추가해서 관리하기
+// 리스트에서 제거용 메소드 는 별도 추가 필요
 // 컨트롤 목록도 막자
 		public unsafe static VMDAnimationController Install(Maid maid)
 		{

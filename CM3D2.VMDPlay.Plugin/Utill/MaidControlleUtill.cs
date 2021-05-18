@@ -23,24 +23,17 @@ namespace CM3D2.VMDPlay.Plugin.Utill
         /// <summary>
         /// 활성화 대상만
         /// </summary>
-        public static List<VMDAnimationController> Controllers { get; private set; } = new List<VMDAnimationController>();
-        
-
-        public static int Count { get=> Maids.Count; } 
-        public static VMDAnimationController VMDAnimationController {
+        public static List<VMDAnimationController> Controllers { 
             get
             {
-                if (Count>0)
-                {
-                    if (maidControllers.ContainsKey(Maids[index]))
-                    {
-                        return maidControllers[Maids[index]];
-                    }
-                    return Controllers[index];
-                }
-                return null;
-            }        
-        }
+                return maidControllers.Values.ToList();
+            }  
+        }         
+
+        public static int Count { get=> Maids.Count; }
+
+        public static VMDAnimationController VMDAnimationController;
+
         public static string LastLoadedVMD { get => Controllers[index].lastLoadedVMD; set => Controllers[index].lastLoadedVMD = value; }
 
         public static Maid Maid { get; private set; } = null;
@@ -62,33 +55,48 @@ namespace CM3D2.VMDPlay.Plugin.Utill
             }
         }
 
+        public unsafe static VMDAnimationController Install(Maid maid)
+        {
+            VMDAnimationController vMDAnimationController = maid.gameObject.GetComponent<VMDAnimationController>();
+            if (vMDAnimationController == null)
+            {
+                if (maid.body0 == null || (maid.body0).m_Bones == null || (maid.body0).Face == null || !maid.body0.isLoadedBody)
+                {
+                    return null;
+                }
+                vMDAnimationController = maid.gameObject.AddComponent<VMDAnimationController>();
+                vMDAnimationController.Init(maid);
+                //VMDAnimationMgr.Instance.controllers.Add(vMDAnimationController);
+                (maid.body0).m_Bones.gameObject.AddComponent<DestroyListener>().controller = vMDAnimationController;
+            }
+            return vMDAnimationController;
+        }
+
         public static VMDAnimationController GetVMDAC(Maid maid)
         {
-            VMDAnimationController VMDAnimationController;
-            MyLog.LogMessage("GetVMDAC", maid.body0 != null, (maid.body0).m_Bones != null, (maid.body0).Face != null, !maid.body0.isLoadedBody);
-
-            if (maidControllers.ContainsKey(maid))
+            Maid = maid;
+            VMDAnimationController vMDAnimationController = maid.gameObject.GetComponent<VMDAnimationController>();
+            if (vMDAnimationController == null)
             {
-                if (!Controllers.Contains(maidControllers[maid]))
+                //if (maid.body0 == null || (maid.body0).m_Bones == null || (maid.body0).Face == null || !maid.body0.isLoadedBody)
+                //{
+                //    return null;
+                //}
+                vMDAnimationController = maid.gameObject.AddComponent<VMDAnimationController>();
+                vMDAnimationController.Init(maid);
+                if (maidControllers.ContainsKey(maid))
                 {
-                    Controllers.Add(maidControllers[maid]);
+                    maidControllers[maid] = vMDAnimationController;
                 }
-                VMDAnimationController= maidControllers[maid];
-            }
-            else
-            {
-                VMDAnimationController = new VMDAnimationController();
-                VMDAnimationController.Init(maid);
-
-                maidControllers.Add(maid, VMDAnimationController);
-                Controllers.Add(VMDAnimationController); 
+                else
+                {
+                    maidControllers.Add(maid, vMDAnimationController);
+                }
+                //VMDAnimationMgr.Instance.controllers.Add(vMDAnimationController);
+                (maid.body0).m_Bones.gameObject.AddComponent<DestroyListener>().controller = vMDAnimationController;
             }
             Maids.Add(maid);
-            //Count= Maids.Count;
-            MaidControlleUtill.Maid = maid;
-            //VMDAnimationController = maidControllers[maid];
-            MyLog.LogMessage("GetVMDAC", maidControllers.Count, Controllers.Count, Maids.Count, index, VMDAnimationController!=null);
-            return VMDAnimationController;
+            return vMDAnimationController;
         }
 
         public static void Remove(Maid maid)

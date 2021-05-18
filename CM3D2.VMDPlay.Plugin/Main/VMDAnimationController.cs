@@ -233,7 +233,7 @@ namespace CM3D2.VMDPlay.Plugin
 
 		}
 
-		/*
+		/**/
 		public class DestroyListener : UnityEngine.MonoBehaviour
 		{
 			public VMDAnimationController controller;
@@ -248,7 +248,7 @@ namespace CM3D2.VMDPlay.Plugin
 			}
 
 		}
-		*/
+		
 
 		public Maid maid;
 

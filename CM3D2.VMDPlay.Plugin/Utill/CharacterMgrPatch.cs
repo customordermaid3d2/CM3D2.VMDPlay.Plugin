@@ -34,6 +34,12 @@ namespace COM3D2.VMDPlay.Plugin
             }
             else
             {
+            if(  CM3D2VMDGUI.focusChara==__instance)
+            if(maids.count>0)
+            CM3D2VMDGUI.focusChara=maid[0];
+            else
+            CM3D2VMDGUI.focusChara=null;
+            
                 maids.Remove(__instance);
                //var vMDAnimationController = VMDAnimationController.Install(__instance);
                //if (vMDAnimationController != null)

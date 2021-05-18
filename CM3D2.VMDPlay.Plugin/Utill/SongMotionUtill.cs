@@ -29,7 +29,7 @@ namespace CM3D2.VMDPlay.Plugin.Utill
             {
                 this.Motions = motions ?? new List<string>();
             }
-
+/* 코드 정리
             public SongMotion(string key, List<string> motions = null)
             {
                 this.Song = string.Empty;
@@ -40,7 +40,7 @@ namespace CM3D2.VMDPlay.Plugin.Utill
                 this.Song = song ?? string.Empty;
                 this.Motions = motions ?? new List<string>();
             }
-
+*/
             public string this[int motion_index]
             {
                 get

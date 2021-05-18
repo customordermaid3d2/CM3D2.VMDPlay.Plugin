@@ -259,6 +259,7 @@ namespace CM3D2.VMDPlay.Plugin
 
         /// <summary>
         /// 최적화 완료?
+/// CharacterMgrPatch.cs 으로 옮겨서 구현하자
         /// </summary>
         /// <returns></returns>
         private Maid FindFirstMaid()
@@ -283,6 +284,7 @@ namespace CM3D2.VMDPlay.Plugin
 
         /// <summary>
         /// 최적화 완료?
+/// CharacterMgrPatch.cs로 옮겨서 구현하자
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>

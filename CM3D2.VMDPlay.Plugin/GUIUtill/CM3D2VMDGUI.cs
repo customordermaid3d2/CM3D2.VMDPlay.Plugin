@@ -19,7 +19,7 @@ namespace CM3D2.VMDPlay.Plugin
         //VistaOpenFileDialog dialog;
         //VistaOpenFileDialog openFileDialog;
 
-        //public static Maid focusChara;
+        public static Maid focusChara;
 
         private CameraCtrlOff cameraCtrl;
 
@@ -122,7 +122,7 @@ namespace CM3D2.VMDPlay.Plugin
 
         public void Clear()
         {
-            //focusChara = null;
+            focusChara = null;
             lastController = null;
             lastFilename = null;
         }
@@ -131,59 +131,47 @@ namespace CM3D2.VMDPlay.Plugin
         {
             if (visibleGUI)
             {
-                //try
-                //{
-                //GUIStyle val = new GUIStyle(GUI.skin.window);
-                /*
-                                    if (GUI.skin.GetStyle("List Item") != null)
-                                    {
-                                        GUIStyle[] array = (GUIStyle[])new GUIStyle[GUI.skin.customStyles.Length + 1];
-                                        for (int i = 0; i < GUI.skin.customStyles.Length; i++)
-                                        {
-                                            array[i] = GUI.skin.customStyles[i];
-                                        }
-                                        GUIStyle val2 = new GUIStyle(GUI.skin.button);
-                                        val2.name = "List Item";
-                                        array[GUI.skin.customStyles.Length] = val2;
-                                        GUI.skin.customStyles = array;
-                                        m_Apply.Invoke((object)GUI.skin, new object[0]);
-                                    }
-                */
-                /*
-                                    if (isVR)
-                                    {
-                                        val.onNormal.background = windowBG;
-                                        val.normal.background = windowBG;
-                                        val.hover.background = windowBG;
-                                        val.focused.background = windowBG;
-                                        val.active.background = windowBG;
-                                        val.hover.textColor = Color.white;
-                                        val.onHover.textColor = Color.white;
-                                    }
-                */
-                /*
-                if (m_fileBrowser != null)
+                try
                 {
-                    m_fileBrowser.OnGUIAsWindow(dialogWindowID);
+                    GUIStyle val = new GUIStyle(GUI.skin.window);
+                    if (GUI.skin.GetStyle("List Item") != null)
+                    {
+                        GUIStyle[] array = (GUIStyle[])new GUIStyle[GUI.skin.customStyles.Length + 1];
+                        for (int i = 0; i < GUI.skin.customStyles.Length; i++)
+                        {
+                            array[i] = GUI.skin.customStyles[i];
+                        }
+                        GUIStyle val2 = new GUIStyle(GUI.skin.button);
+                        val2.name = "List Item";
+                        array[GUI.skin.customStyles.Length] = val2;
+                        GUI.skin.customStyles = array;
+                        m_Apply.Invoke((object)GUI.skin, new object[0]);
+                    }
+                    if (isVR)
+                    {
+                        val.onNormal.background = windowBG;
+                        val.normal.background = windowBG;
+                        val.hover.background = windowBG;
+                        val.focused.background = windowBG;
+                        val.active.background = windowBG;
+                        val.hover.textColor = Color.white;
+                        val.onHover.textColor = Color.white;
+                    }
+                    /*
+					if (m_fileBrowser != null)
+					{
+						m_fileBrowser.OnGUIAsWindow(dialogWindowID);
+					}
+					else
+					*/
+                    {
+                        windowRect = GUI.Window(windowID, windowRect, FuncWindowGUI, windowTitle, val);
+                    }
                 }
-                else
-                */
-                //{
-                windowRect = GUI.Window(windowID, windowRect, FuncWindowGUI,                    
-                        windowTitle
-                        +","+ MaidControlleUtill.Count
-                        +","+ (MaidControlleUtill.Maid !=null)
-                        +","+ (MaidControlleUtill.VMDAnimationController !=null)
-                        );
-                //windowRect = GUI.Window(windowID, windowRect, FuncWindowGUI, windowTitle, val);
-                //}
-                /*
-                                }
-                                catch (Exception value)
-                                {
-                                    Console.WriteLine(value);
-                                }
-                */
+                catch (Exception value)
+                {
+                    Console.WriteLine(value);
+                }
             }
         }
 
@@ -200,10 +188,17 @@ namespace CM3D2.VMDPlay.Plugin
             return 100f;
         }
 
-        GUILayoutOptionUtill gui = GUILayoutOptionUtill.Instance;
+        //GUIStyleUtill gui;
+        GUILayoutOptionUtill gui=GUILayoutOptionUtill.Instance;
 
         private unsafe void FuncWindowGUI(int winID)
         {
+            /*
+            styleBackup = new Dictionary<string, GUIStyle>();
+            BackupGUIStyle("Button");
+            BackupGUIStyle("Label");
+            BackupGUIStyle("Toggle");
+            */
             try
             {
                 if (GUIUtility.hotControl == 0)
@@ -218,8 +213,27 @@ namespace CM3D2.VMDPlay.Plugin
                     cameraCtrl.cameraCtrlOff = true;
                 }
                 GUI.enabled = true;
-
-                GUILayout.BeginVertical();
+                /*
+                GUIStyle style = GUI.skin.GetStyle("Button");
+                style.normal.textColor = Color.white;
+                style.alignment = (TextAnchor)4;
+                GUIStyle style2 = GUI.skin.GetStyle("Label");
+                style2.normal.textColor = Color.white;
+                style2.alignment = (TextAnchor)3;
+                style2.wordWrap = false;
+                GUIStyle style3 = GUI.skin.GetStyle("Toggle");
+                style3.normal.textColor = Color.white;
+                style3.onNormal.textColor = Color.white;
+                */
+                GUILayout.BeginVertical( );
+                if (focusChara != null && (focusChara.body0 == null || focusChara.body0.m_Bones == null))
+                {
+                    focusChara = null;
+                }
+                if (focusChara == null)
+                {
+                    focusChara = FindFirstMaid();
+                }
 
                 DrawVMDAnimationArea();
 
@@ -230,11 +244,99 @@ namespace CM3D2.VMDPlay.Plugin
             {
                 Console.WriteLine(value.ToString());
             }
+            finally
+            {
+                /*
+                RestoreGUIStyle("Button");
+                RestoreGUIStyle("Label");
+                RestoreGUIStyle("Toggle");
+                */
+            }
         }
 
+        /// <summary>
+        /// ÃÖÀûÈ­ ¿Ï·á?
+        /// </summary>
+        /// <returns></returns>
+        private Maid FindFirstMaid()
+        {
+            /*
+			CharacterMgr val = GameMain.Instance.CharacterMgr;
+			for (int i = 0; i < val.GetMaidCount(); i++)
+			{
+				Maid val2 = val.GetMaid(i);
+				if (val2 != null && val2.body0.isLoadedBody)
+				{
+					return val2;
+				}
+			}
+			*/
+            if (CharacterMgrPatch.maids.Count > 0)
+            {
+                return CharacterMgrPatch.maids[0];
+            }
+            return null;
+        }
 
+        /// <summary>
+        /// ÃÖÀûÈ­ ¿Ï·á?
+        /// </summary>
+        /// <param name="next"></param>
+        /// <returns></returns>
+        private Maid FindPrevNextMaid(bool next)
+        {
+            /*
+			List<Maid> list = new List<Maid>();
+			CharacterMgr val = GameMain.Instance.CharacterMgr;
+			for (int i = 0; i < val.GetMaidCount(); i++)
+			{
+				Maid val2 = val.GetMaid(i);
+				if (val2 != null && val2.body0.isLoadedBody)
+				{
+					list.Add(val2);
+				}
+			}
+			*/
+            if (CharacterMgrPatch.maids.Count == 0)
+            {
+                return null;
+            }
+            if (focusChara != null)
+            {
+                int num = CharacterMgrPatch.maids.IndexOf(focusChara);
+                if (num >= 0)
+                {
+                    num += (next ? 1 : (-1));
+                    num = (num + CharacterMgrPatch.maids.Count) % CharacterMgrPatch.maids.Count;
+                    return CharacterMgrPatch.maids[num];
+                }
+            }
+            return CharacterMgrPatch.maids[0];
+        }
 
-        
+        /*
+        private void BackupGUIStyle(string name)
+        {
+            GUIStyle value = new GUIStyle(GUI.skin.GetStyle(name));
+            styleBackup.Add(name, value);
+        }
+        */
+
+        /*
+        private void RestoreGUIStyle(string name)
+        {
+            if (styleBackup.ContainsKey(name))
+            {
+                GUIStyle val = styleBackup[name];
+                GUIStyle style = GUI.skin.GetStyle(name);
+                style.normal.textColor = val.normal.textColor;
+                style.alignment = val.alignment;
+                style.wordWrap = val.wordWrap;
+            }
+        }
+        */
+
+        public static VMDAnimationController vMDAnimationController;
         public static bool isFavorites = false;
 
         protected Vector2 scrollPosition;
@@ -251,7 +353,7 @@ namespace CM3D2.VMDPlay.Plugin
 
             GUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Favorites", gui[100, 25]))
+            if (GUILayout.Button("Favorites", gui[100,25]))
             {
                 isFavorites = !isFavorites;
             }
@@ -260,27 +362,21 @@ namespace CM3D2.VMDPlay.Plugin
                 SongMotionUtill.Set(
                     FavoritesName
                     , oggFilename
-                    //, VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).Select(x => x.lastLoadedVMD).ToArray()
-                    , MaidControlleUtill.Controllers.Select(x => x.lastLoadedVMD).ToArray()
-                    // , VMDAnimationMgr.Instance.controllers.Select(x => x.lastLoadedVMD).ToArray()
+                    , VMDAnimationMgr.Instance.controllers.Where(x=> CharacterMgrPatch.maids.Contains(x.maid) ).Select(x => x.lastLoadedVMD).ToArray()
+                   // , VMDAnimationMgr.Instance.controllers.Select(x => x.lastLoadedVMD).ToArray()
                     );
-                //MyLog.LogMessage("add", VMDAnimationMgr.Instance.controllers.Count, CharacterMgrPatch.maids.Count, VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).Count());
-                MyLog.LogMessage("add", MaidControlleUtill.Count);
+                MyLog.LogMessage("add", VMDAnimationMgr.Instance.controllers.Count, CharacterMgrPatch.maids.Count, VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).Count() );
             }
             FavoritesName = GUILayout.TextField(FavoritesName, gui[350, 25]);
             if (GUILayout.Button("reload", gui[50, 25]))
             {
                 SongMotionUtill.Deserialize();
             }
-            if (GUILayout.Button("check", gui[50, 25]))
-            {
-                MaidControlleUtill.Test();
-            }
             GUILayout.EndHorizontal();
-
+                      
 
             if (isFavorites)
-            {
+            {               
 
                 foreach (var item in SongMotionUtill.GetList())
                 {
@@ -288,10 +384,9 @@ namespace CM3D2.VMDPlay.Plugin
                     if (GUILayout.Button(item.Key, gui[550f, 25f]))
                     {
                         //lastFilename = item.Value.Song;
-
+                        
                         VMDAnimationMgr.Instance.ClearAll();
-                        //var v = VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).ToList();
-                        var v = MaidControlleUtill.Controllers;
+                        var v=VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).ToList();
                         for (int i = 0; i < item.Value.Motions.Count && i < v.Count; i++)
                         {
                             //VMDAnimationMgr.Instance.controllers[i].lastLoadedVMD = item.Value.Motions[i];
@@ -300,11 +395,11 @@ namespace CM3D2.VMDPlay.Plugin
                         }
 
                         oggFilename = item.Value.Song;
-                        AudioManager.Load(oggFilename, MaidControlleUtill.VMDAnimationController.Loop);
-
+                        AudioManager.Load(oggFilename, vMDAnimationController.Loop);
+                        
                         VMDAnimationMgr.Instance.PlayAll();
                         AudioManager.Play();
-
+                        
                         isFavorites = false;
                         this.gameObject.SetActive(false);
                     }
@@ -315,22 +410,22 @@ namespace CM3D2.VMDPlay.Plugin
                     GUILayout.EndHorizontal();
                 }
 
-
+               
             }
 
             #endregion
 
             #region OGG ===========================================
 
-            GUILayout.BeginHorizontal();
+            GUILayout.BeginHorizontal( );
 
             GUILayout.Label("OGG", (GUILayoutOption[])new GUILayoutOption[2] { GUILayout.Width(50f), GUILayout.Height(25f) });
 
             if (GUILayout.Button("load", (GUILayoutOption[])new GUILayoutOption[2] { GUILayout.Width(50f), GUILayout.Height(25f) }))
             {
-                if (MaidControlleUtill.VMDAnimationController != null)
+                if (vMDAnimationController != null)
                 {
-                    AudioManager.Load(oggFilename, MaidControlleUtill.VMDAnimationController.Loop);
+                    AudioManager.Load(oggFilename, vMDAnimationController.Loop);
                 }
                 else
                 {
@@ -366,20 +461,21 @@ namespace CM3D2.VMDPlay.Plugin
                             GUILayout.Width(30f),
                             GUILayout.Height(25f)
             }))
-            {
+            {                
                 dialog.Filter = "OGG files (*.ogg)|*.ogg";
 
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     oggFilename = dialog.FileName;
-                    if (MaidControlleUtill.VMDAnimationController != null)
+                    if (vMDAnimationController != null)
                     {
-                        AudioManager.Load(oggFilename, MaidControlleUtill.VMDAnimationController.Loop);
+                        AudioManager.Load(oggFilename, vMDAnimationController.Loop);
                     }
                     else
                     {
                         AudioManager.Load(oggFilename, true);
                     }
+                    AudioManager.Play();
                 }
             }
             GUILayout.EndHorizontal();
@@ -387,9 +483,9 @@ namespace CM3D2.VMDPlay.Plugin
             #endregion =================================
 
 
-            if (MaidControlleUtill.Count==0)
+            if (focusChara == null)
             {
-                GUILayout.BeginHorizontal();
+                GUILayout.BeginHorizontal( );
                 GUILayout.Label("Character not selected.", (GUILayoutOption[])new GUILayoutOption[1]
                 {
                     GUILayout.Width(200f)
@@ -403,15 +499,14 @@ namespace CM3D2.VMDPlay.Plugin
             }
             else
             {
-                //var vMDAnimationController = MaidControlleUtill.VMDAnimationController;
-                if (MaidControlleUtill.Count > 0)
+                vMDAnimationController = VMDAnimationController.Install(focusChara);
+                if (!(vMDAnimationController == null) && focusChara != null)
                 {
                     GUILayout.BeginVertical();
-                    VMDAnimationController vMDAnimationController=MaidControlleUtill.VMDAnimationController;
-                    if (MaidControlleUtill.VMDAnimationController != lastController)
+                    if (vMDAnimationController != lastController)
                     {
-                        lastFilename = MaidControlleUtill.VMDAnimationController.lastLoadedVMD;
-                        lastController = MaidControlleUtill.VMDAnimationController;
+                        lastFilename = vMDAnimationController.lastLoadedVMD;
+                        lastController = vMDAnimationController;
                     }
                     if (lastFilename == null)
                     {
@@ -420,22 +515,22 @@ namespace CM3D2.VMDPlay.Plugin
 
                     #region Maid Select
 
-                    GUILayout.BeginHorizontal();
+                    GUILayout.BeginHorizontal( );
 
                     if (GUILayout.Button("<", gui[20f, 25f]))
                     {
-                         MaidControlleUtill.PrevNextMaid(false);
+                        focusChara = FindPrevNextMaid(false);
                     }
                     if (GUILayout.Button(">", gui[20f, 25f]))
                     {
-                         MaidControlleUtill.PrevNextMaid(true);
+                        focusChara = FindPrevNextMaid(true);
                     }
                     if (GUILayout.Button(vMDAnimationController.VMDAnimEnabled ? "On" : "Off", gui[50f, 25f]))
                     {
                         vMDAnimationController.VMDAnimEnabled = !vMDAnimationController.VMDAnimEnabled;
                         //isFavorites = vMDAnimationController.VMDAnimEnabled;
                     }
-                    GUILayout.Label((MaidControlleUtill.Maid.status.fullNameJpStyle), (GUILayoutOption[])new GUILayoutOption[1]
+                    GUILayout.Label((focusChara.status.fullNameJpStyle), (GUILayoutOption[])new GUILayoutOption[1]
                     {
                         GUILayout.Width(200f)
                     });
@@ -464,7 +559,7 @@ namespace CM3D2.VMDPlay.Plugin
                     {
                         #region VMD =====================================================================
 
-                        GUILayout.BeginHorizontal();
+                        GUILayout.BeginHorizontal( );
                         GUILayout.Label("VMD", (GUILayoutOption[])new GUILayoutOption[2] { GUILayout.Width(50f), GUILayout.Height(25f) });
                         if (GUILayout.Button("Load", (GUILayoutOption[])new GUILayoutOption[2] { GUILayout.Width(50f), GUILayout.Height(25f) }))
                         {
@@ -489,30 +584,9 @@ namespace CM3D2.VMDPlay.Plugin
                             {
                                 lastFilename = dialog.FileName;
                                 vMDAnimationController.ReloadVMDAnimation();
+                                vMDAnimationController.Play();
                             }
-                            // ê°œì„  í•„ìš”
-                            /*
-							m_fileBrowser = new FileBrowser(new Rect((float)(Screen.width / 2 - 300), 200f, 600f, 500f), "Choose .vmd File", FileSelectedCallback);
-							m_fileBrowser.SelectionPattern = "*.vmd";							
-							m_fileBrowser.DirectoryImage = m_directoryImage;
-							m_fileBrowser.FileImage = m_fileImage;
-							if (File.Exists(lastFilename))
-							{
-								m_fileBrowser.CurrentDirectory = Path.GetDirectoryName(lastFilename);
-							}
-							else if (!string.IsNullOrEmpty(vMDAnimationController.lastLoadedVMD))
-							{
-								m_fileBrowser.CurrentDirectory = Path.GetDirectoryName(vMDAnimationController.lastLoadedVMD);
-							}
-							else
-							{
-								string stringValue = Settings.Instance.GetStringValue("DefaultDir", "", true);
-								if (stringValue != null && stringValue != "")
-								{
-									m_fileBrowser.CurrentDirectory = stringValue;
-								}
-							}
-							*/
+
                         }
                         GUILayout.EndHorizontal();
 
@@ -520,7 +594,7 @@ namespace CM3D2.VMDPlay.Plugin
 
                         #region play
 
-                        GUILayout.BeginHorizontal();
+                        GUILayout.BeginHorizontal( );
                         GUILayout.Label("(Player)", (GUILayoutOption[])new GUILayoutOption[1]
                         {
                             GUILayout.Width(50f)
@@ -593,10 +667,10 @@ namespace CM3D2.VMDPlay.Plugin
 
                         #region option
 
-                        GUILayout.BeginHorizontal();
+                        GUILayout.BeginHorizontal( );
                         vMDAnimationController.speed = AddSliderWithText("vmdAnimSpeed", "Speed", vMDAnimationController.speed, 5f);
                         GUILayout.EndHorizontal();
-                        GUILayout.BeginHorizontal();
+                        GUILayout.BeginHorizontal( );
                         GUILayout.Label("Loop", (GUILayoutOption[])new GUILayoutOption[1]
                         {
                             GUILayout.Width(40f)
@@ -665,7 +739,7 @@ namespace CM3D2.VMDPlay.Plugin
 
 
 
-                        GUILayout.BeginHorizontal();
+                        GUILayout.BeginHorizontal( );
                         GUILayout.Label("Sync Anm to BGM", (GUILayoutOption[])new GUILayoutOption[1]
                         {
                                 GUILayout.Width(120f)
@@ -692,47 +766,47 @@ namespace CM3D2.VMDPlay.Plugin
                         GUILayout.EndHorizontal();
                         if (vMDAnimationController.enableIK)
                         {
-                            GUILayout.BeginHorizontal();
+                            GUILayout.BeginHorizontal( );
                             vMDAnimationController.IKWeight.footIKPosWeight = AddSliderWithText("vmdIKFootPosWeight", "IK Weight(pos)", vMDAnimationController.IKWeight.footIKPosWeight, 1f);
                             GUILayout.EndHorizontal();
-                            GUILayout.BeginHorizontal();
+                            GUILayout.BeginHorizontal( );
                             vMDAnimationController.IKWeight.footIKRotWeight = AddSliderWithText("vmdIKFootRotWeight", "IK Weight(rot)", vMDAnimationController.IKWeight.footIKRotWeight, 1f);
                             GUILayout.EndHorizontal();
                         }
-                        GUILayout.BeginHorizontal();
+                        GUILayout.BeginHorizontal( );
                         GUILayout.Label("Config: (needs Reload): ", (GUILayoutOption[])new GUILayoutOption[1]
                         {
                             GUILayout.Width(150f)
                         });
                         GUILayout.EndHorizontal();
-                        GUILayout.BeginHorizontal();
+                        GUILayout.BeginHorizontal( );
                         float num = AddSliderWithText("vmdCenterYPos", "(PMD)Center pos(y)", vMDAnimationController.centerBasePos.y, 15f);
                         if (num != vMDAnimationController.centerBasePos.y)
                         {
                             vMDAnimationController.centerBasePos = new Vector3(0f, num, 0f);
                         }
                         GUILayout.EndHorizontal();
-                        GUILayout.BeginHorizontal();
+                        GUILayout.BeginHorizontal( );
                         float num2 = AddSliderWithTextFixedScale("(PMD)Hip pos(y)", vMDAnimationController.hipPositionAdjust.y, 1f, 6f);
                         if (num2 != vMDAnimationController.hipPositionAdjust.y)
                         {
                             vMDAnimationController.hipPositionAdjust = new Vector3(0f, num2, 0f);
                         }
                         GUILayout.EndHorizontal();
-                        GUILayout.BeginHorizontal();
+                        GUILayout.BeginHorizontal( );
                         float num3 = AddSliderWithText("vmdModelScale", "Model Scale", vMDAnimationController.quickAdjust.ScaleModel, 2f);
                         if (num3 != vMDAnimationController.quickAdjust.ScaleModel)
                         {
                             vMDAnimationController.quickAdjust.ScaleModel = num3;
                         }
                         GUILayout.EndHorizontal();
-                        GUILayout.BeginHorizontal();
+                        GUILayout.BeginHorizontal( );
                         vMDAnimationController.quickAdjust.Shoulder = AddSliderWithTextFixedScale("Shoulder Tilt", vMDAnimationController.quickAdjust.Shoulder, -10f, 40f);
                         GUILayout.EndHorizontal();
-                        GUILayout.BeginHorizontal();
+                        GUILayout.BeginHorizontal( );
                         vMDAnimationController.quickAdjust.ArmUp = AddSliderWithTextFixedScale("Upper Arm Tilt", vMDAnimationController.quickAdjust.ArmUp, -10f, 40f);
                         GUILayout.EndHorizontal();
-                        GUILayout.BeginHorizontal();
+                        GUILayout.BeginHorizontal( );
                         vMDAnimationController.quickAdjust.ArmLow = AddSliderWithTextFixedScale("Lower Arm Tilt", vMDAnimationController.quickAdjust.ArmLow, -10f, 40f);
                         GUILayout.EndHorizontal();
                         //GUILayout.Label("Other Config", (GUILayoutOption[])new GUILayoutOption[1]

@@ -1,5 +1,4 @@
 //using GearMenu;
-using CM3D2.VMDPlay.Plugin.Utill;
 using COM3D2API;
 using GearMenu;
 using System;
@@ -11,7 +10,7 @@ namespace CM3D2.VMDPlay.Plugin
 {
 	public class CM3D2VMDGUI2 : UnityEngine.MonoBehaviour
 	{
-		//public Maid focusChara;
+		public Maid focusChara;
 
 		public bool pinObject;
 
@@ -76,15 +75,14 @@ namespace CM3D2.VMDPlay.Plugin
 
 		private void Update()
 		{
-
-			//if (focusChara == null)
-			//{
-			//	focusChara = FindFirstMaid();
-				if (MaidControlleUtill.Maid != null)
-			//	{
+			if (focusChara == null)
+			{
+				focusChara = FindFirstMaid();
+				if (focusChara != null)
+				{
 					UpdateUIStatus();
-			//	}
-			//}
+				}
+			}
 		}
 
 		private void OnLevelWasLoaded(int level)
@@ -103,7 +101,7 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public void Clear()
 		{
-			//focusChara = null;
+			focusChara = null;
 			lastController = null;
 			lastFilename = null;
 		}
@@ -122,11 +120,38 @@ namespace CM3D2.VMDPlay.Plugin
 			return null;
 		}
 
-
+		private Maid FindPrevNextMaid(bool next)
+		{
+			List<Maid> list = new List<Maid>();
+			CharacterMgr val = GameMain.Instance.CharacterMgr;
+			for (int i = 0; i < val.GetMaidCount(); i++)
+			{
+				Maid val2 = val.GetMaid(i);
+				if (val2 != null && val2.body0.isLoadedBody)
+				{
+					list.Add(val2);
+				}
+			}
+			if (list.Count == 0)
+			{
+				return null;
+			}
+			if (focusChara != null)
+			{
+				int num = list.IndexOf(focusChara);
+				if (num >= 0)
+				{
+					num += (next ? 1 : (-1));
+					num = (num + list.Count) % list.Count;
+					return list[num];
+				}
+			}
+			return list[0];
+		}
 
 		public void SetPrevNextMaid(bool next)
 		{
-			MaidControlleUtill.PrevNextMaid();
+			focusChara = FindPrevNextMaid(next);
 			UpdateUIStatus();
 		}
 
@@ -134,7 +159,7 @@ namespace CM3D2.VMDPlay.Plugin
 		{
 			if (!(uiPanel == null))
 			{
-				if (MaidControlleUtill.Maid == null)
+				if (focusChara == null)
 				{
 					uiMainTable.gameObject.SetActive(false);
 					uiNoMaidTable.gameObject.SetActive(true);
@@ -143,8 +168,8 @@ namespace CM3D2.VMDPlay.Plugin
 				{
 					uiMainTable.gameObject.SetActive(true);
 					uiNoMaidTable.gameObject.SetActive(false);
-					uiMaidNameLabel.text = MaidControlleUtill.Maid.status.fullNameEnStyle;
-					VMDAnimationController vMDAnimationController = MaidControlleUtill.VMDAnimationController;
+					uiMaidNameLabel.text = focusChara.status.lastName + focusChara.status.firstName;
+					VMDAnimationController vMDAnimationController = VMDAnimationController.Install(focusChara);
 					if (vMDAnimationController != lastController)
 					{
 						lastFilename = vMDAnimationController.lastLoadedVMD;
@@ -171,12 +196,14 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public void ToggleVMDEnabled()
 		{
-			if (!(MaidControlleUtill.VMDAnimationController == null))
+			if (!(focusChara == null))
 			{
-
-				MaidControlleUtill.VMDAnimationController.VMDAnimEnabled = !MaidControlleUtill.VMDAnimationController.VMDAnimEnabled;
-				UpdateUIStatus();
-				
+				VMDAnimationController vMDAnimationController = VMDAnimationController.Install(focusChara);
+				if (vMDAnimationController != null)
+				{
+					vMDAnimationController.VMDAnimEnabled = !vMDAnimationController.VMDAnimEnabled;
+					UpdateUIStatus();
+				}
 			}
 		}
 
@@ -300,7 +327,11 @@ namespace CM3D2.VMDPlay.Plugin
 
 		private VMDAnimationController GetCurrentController()
 		{
-			return MaidControlleUtill.VMDAnimationController;
+			if (focusChara == null)
+			{
+				return null;
+			}
+			return VMDAnimationController.Install(focusChara);
 		}
 
 		private void CreateUI()

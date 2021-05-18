@@ -37,7 +37,6 @@ namespace CM3D2.VMDPlay.Plugin
 			MyLog.LogMessage("Awake");
 			SongMotionUtill.Deserialize();
 			Harmony.CreateAndPatchAll(typeof(CharacterMgrPatch));
-			Harmony.CreateAndPatchAll(typeof(TBodyPatch));
 		}
 
 		private void Start()
@@ -51,7 +50,6 @@ namespace CM3D2.VMDPlay.Plugin
 		public void togGUI()
 		{
 			VMDAnimationMgr.Instance.ToggleGUI();
-			
 		}
 
 		

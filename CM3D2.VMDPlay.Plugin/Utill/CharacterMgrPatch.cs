@@ -1,5 +1,4 @@
 ﻿using CM3D2.VMDPlay.Plugin;
-using CM3D2.VMDPlay.Plugin.Utill;
 using COM3D2.Lilly.Plugin;
 using COM3D2.Lilly.Plugin.Utill;
 using HarmonyLib;
@@ -19,34 +18,31 @@ namespace COM3D2.VMDPlay.Plugin
     public static class CharacterMgrPatch // 이름은 마음대로 지어도 되긴 한데 나같은 경우 정리를 위해서 해킹 대상 클래스 이름에다가 접미사를 붇임
     {
         // public static Dictionary<int, Maid> maidList = new Dictionary<int, Maid>();
-        //public static List<Maid> maids = new List<Maid>();
+        public static List<Maid> maids = new List<Maid>();
 
         // private void SetActive(Maid f_maid, int f_nActiveSlotNo, bool f_bMan)
         [HarmonyPatch(typeof(Maid), "Visible", MethodType.Setter)]
         [HarmonyPrefix]
         public static void Visible(Maid __instance, bool value)
         {
-            MyLog.LogMessage("Maid.Visible", MyUtill.GetMaidFullName(__instance), value);
-            MyLog.LogMessage("Visible", __instance.body0 == null, (__instance.body0).m_Bones == null, (__instance.body0).Face == null, !__instance.body0.isLoadedBody);
-            MyLog.LogMessage("Visible", __instance.IsCrcBody, __instance.boMAN, MaidControlleUtill.Count);
-            try
+            if (value&& !__instance.boMAN)
             {
-            if (value)//&& __instance.boMAN
-                {
-               // MaidControlleUtill.GetVMDAC(__instance);
+                maids.Add(__instance);
+                CM3D2VMDGUI.focusChara = __instance;
+                
+                //CM3D2VMDGUI.vMDAnimationController = VMDAnimationController.Install(__instance);
             }
             else
             {
-                if (!__instance.boMAN)
-                {
-                MaidControlleUtill.Remove(__instance);
-                }
+                maids.Remove(__instance);
+               //var vMDAnimationController = VMDAnimationController.Install(__instance);
+               //if (vMDAnimationController != null)
+               //{
+               //    vMDAnimationController.Stop();
+               //    VMDAnimationMgr.Instance.controllers.Remove(vMDAnimationController);
+               //}
             }
-            }
-            catch(Exception e){
-                MyLog.LogError(e);
-            }
-
+            MyLog.LogMessage("Visible", MyUtill.GetMaidFullName(__instance), value, __instance.IsCrcBody, __instance.boMAN, maids.Count,VMDAnimationMgr.Instance.controllers.Count,(CM3D2VMDGUI.vMDAnimationController!=null));
         }
 
         /*

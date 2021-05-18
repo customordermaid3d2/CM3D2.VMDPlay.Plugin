@@ -139,7 +139,7 @@ namespace CM3D2.VMDPlay.Plugin
 		{
 			while (true)
 			{
-				while (maid.IsBusy|| !maid.body0.isLoadedBody)
+				while (maid.IsBusy)
 				{
 					yield return (object)new WaitForEndOfFrame();
 				}

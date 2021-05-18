@@ -16,6 +16,7 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public CustomSoundMgr SoundMgr = new CustomSoundMgr();
 
+//todo : 이거 막기. 또는 패치에 있는거 가져와서 get 이용. => 이용하면 되겠네
 		public List<VMDAnimationController> controllers = new List<VMDAnimationController>();
 
 		public static VMDAnimationMgr Instance => _instance;

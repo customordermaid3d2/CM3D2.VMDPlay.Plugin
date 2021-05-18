@@ -226,6 +226,7 @@ namespace CM3D2.VMDPlay.Plugin
                 style3.onNormal.textColor = Color.white;
                 */
                 GUILayout.BeginVertical( );
+/*
                 if (focusChara != null && (focusChara.body0 == null || focusChara.body0.m_Bones == null))
                 {
                     focusChara = null;
@@ -234,7 +235,7 @@ namespace CM3D2.VMDPlay.Plugin
                 {
                     focusChara = FindFirstMaid();
                 }
-
+*/
                 DrawVMDAnimationArea();
 
                 GUILayout.EndVertical();
@@ -255,7 +256,7 @@ namespace CM3D2.VMDPlay.Plugin
         }
 
         /// <summary>
-        /// √÷¿˚»≠ øœ∑·?
+        /// ÏµúÏ†ÅÌôî ÏôÑÎ£å?
         /// </summary>
         /// <returns></returns>
         private Maid FindFirstMaid()
@@ -279,7 +280,7 @@ namespace CM3D2.VMDPlay.Plugin
         }
 
         /// <summary>
-        /// √÷¿˚»≠ øœ∑·?
+        /// ÏµúÏ†ÅÌôî ÏôÑÎ£å?
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
@@ -584,7 +585,7 @@ namespace CM3D2.VMDPlay.Plugin
                                 lastFilename = dialog.FileName;
                                 vMDAnimationController.ReloadVMDAnimation();
                             }
-                            // ∞≥º± « ø‰
+                            // Í∞úÏÑ† ÌïÑÏöî
                             /*
 							m_fileBrowser = new FileBrowser(new Rect((float)(Screen.width / 2 - 300), 200f, 600f, 500f), "Choose .vmd File", FileSelectedCallback);
 							m_fileBrowser.SelectionPattern = "*.vmd";							

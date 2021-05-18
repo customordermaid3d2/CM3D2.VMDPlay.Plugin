@@ -133,7 +133,7 @@ namespace CM3D2.VMDPlay.Plugin
             {
                 //try
                 //{
-                GUIStyle val = new GUIStyle(GUI.skin.window);
+                //GUIStyle val = new GUIStyle(GUI.skin.window);
                 /*
                                     if (GUI.skin.GetStyle("List Item") != null)
                                     {
@@ -169,7 +169,12 @@ namespace CM3D2.VMDPlay.Plugin
                 else
                 */
                 //{
-                windowRect = GUI.Window(windowID, windowRect, FuncWindowGUI, windowTitle);
+                windowRect = GUI.Window(windowID, windowRect, FuncWindowGUI,                    
+                        windowTitle
+                        +","+ MaidControlleUtill.Count
+                        +","+ (MaidControlleUtill.Maid !=null)
+                        +","+ (MaidControlleUtill.VMDAnimationController !=null)
+                        );
                 //windowRect = GUI.Window(windowID, windowRect, FuncWindowGUI, windowTitle, val);
                 //}
                 /*
@@ -266,6 +271,10 @@ namespace CM3D2.VMDPlay.Plugin
             if (GUILayout.Button("reload", gui[50, 25]))
             {
                 SongMotionUtill.Deserialize();
+            }
+            if (GUILayout.Button("check", gui[50, 25]))
+            {
+                MaidControlleUtill.Test();
             }
             GUILayout.EndHorizontal();
 
@@ -394,11 +403,12 @@ namespace CM3D2.VMDPlay.Plugin
             }
             else
             {
-                var vMDAnimationController = MaidControlleUtill.VMDAnimationController;
-                if (vMDAnimationController != null && MaidControlleUtill.Count > 0)
+                //var vMDAnimationController = MaidControlleUtill.VMDAnimationController;
+                if (MaidControlleUtill.Count > 0)
                 {
                     GUILayout.BeginVertical();
-                    if (vMDAnimationController != lastController)
+                    VMDAnimationController vMDAnimationController=MaidControlleUtill.VMDAnimationController;
+                    if (MaidControlleUtill.VMDAnimationController != lastController)
                     {
                         lastFilename = MaidControlleUtill.VMDAnimationController.lastLoadedVMD;
                         lastController = MaidControlleUtill.VMDAnimationController;

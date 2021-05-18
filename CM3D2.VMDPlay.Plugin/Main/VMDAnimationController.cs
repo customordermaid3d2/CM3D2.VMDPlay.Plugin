@@ -432,7 +432,9 @@ namespace CM3D2.VMDPlay.Plugin
 			}
 		}
 
-		public bool VMDAnimEnabled
+
+
+        public bool VMDAnimEnabled
 		{
 			get
 			{

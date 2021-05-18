@@ -26,34 +26,45 @@ namespace CM3D2.VMDPlay.Plugin.Utill
         public static List<VMDAnimationController> Controllers { get; private set; } = new List<VMDAnimationController>();
         
 
-        public static int Count { get; private set; } = 0;
-        public static VMDAnimationController VMDAnimationController { get; private set; }
+        public static int Count { get=> Maids.Count; } 
+        public static VMDAnimationController VMDAnimationController {
+            get
+            {
+                if (Count>0)
+                {
+                    if (maidControllers.ContainsKey(Maids[index]))
+                    {
+                        return maidControllers[Maids[index]];
+                    }
+                    return Controllers[index];
+                }
+                return null;
+            }        
+        }
         public static string LastLoadedVMD { get => Controllers[index].lastLoadedVMD; set => Controllers[index].lastLoadedVMD = value; }
 
-        static Maid maid=null;
+        public static Maid Maid { get; private set; } = null;
 
-        public static Maid Maid
+        internal static void Test()
         {
-            get {
-                return maid;
-            }
-            private set
+            foreach (var item in Maids)
             {
-                if (maid != null && maidControllers.ContainsKey(value))
-                {
-                    VMDAnimationController= maidControllers[value];
-                    maid = value;
-                }
-                else
-                {
-                    VMDAnimationController = null;
-                    maid = null;
-                }
+                MyLog.LogMessage("Test.Maids1", MyUtill.GetMaidFullName(item));
+            }
+            foreach (var item in Controllers)
+            {
+                MyLog.LogMessage("Test.Maids2", MyUtill.GetMaidFullName(item.maid));
+            }
+            foreach (var item in maidControllers)
+            {
+                MyLog.LogMessage("Test.Maids3", MyUtill.GetMaidFullName(item.Key));
+                MyLog.LogMessage("Test.Maids4", MyUtill.GetMaidFullName(item.Value.maid));
             }
         }
 
         public static VMDAnimationController GetVMDAC(Maid maid)
         {
+            VMDAnimationController VMDAnimationController;
             MyLog.LogMessage("GetVMDAC", maid.body0 != null, (maid.body0).m_Bones != null, (maid.body0).Face != null, !maid.body0.isLoadedBody);
 
             if (maidControllers.ContainsKey(maid))
@@ -73,10 +84,10 @@ namespace CM3D2.VMDPlay.Plugin.Utill
                 Controllers.Add(VMDAnimationController); 
             }
             Maids.Add(maid);
-            Count= Maids.Count;
+            //Count= Maids.Count;
             MaidControlleUtill.Maid = maid;
-
-            MyLog.LogMessage("GetVMDAC", maidControllers.Count, Controllers.Count, Maids.Count, index);
+            //VMDAnimationController = maidControllers[maid];
+            MyLog.LogMessage("GetVMDAC", maidControllers.Count, Controllers.Count, Maids.Count, index, VMDAnimationController!=null);
             return VMDAnimationController;
         }
 
@@ -93,17 +104,18 @@ namespace CM3D2.VMDPlay.Plugin.Utill
                     Controllers.Remove(maidControllers[maid]);
                 }
             }
-            Count = Maids.Count;
+            //Count = Maids.Count;
             if (Count==0)
             {
                 MaidControlleUtill.Maid = null;
                 //VMDAnimationController = null;
+                //return;
             }
             if (MaidControlleUtill.Maid == maid)
             {
                 PrevNextMaid();
             }
-            MyLog.LogMessage("Remove", maidControllers.Count, Controllers.Count, Maids.Count, index);
+            MyLog.LogMessage("Remove", maidControllers.Count, Controllers.Count, Maids.Count, index, VMDAnimationController != null);
         }
        
 
@@ -120,11 +132,12 @@ namespace CM3D2.VMDPlay.Plugin.Utill
                 index += (next ? 1 : (-1));
                 index = (index + Count) % Count;
                 //VMDAnimationController = maidControllers[Maid];
+                MyLog.LogMessage("PrevNextMaid", maidControllers.Count, Controllers.Count, Maids.Count, index, VMDAnimationController != null);
                 return Maid = Maids[index];
             }
-            //VMDAnimationController = null;
-            Maid = null;
-            return null;
+            //VMDAnimationController = null;            
+            MyLog.LogMessage("PrevNextMaid", maidControllers.Count, Controllers.Count, Maids.Count, index, VMDAnimationController != null);
+            return Maid = null;
         }
 
     }

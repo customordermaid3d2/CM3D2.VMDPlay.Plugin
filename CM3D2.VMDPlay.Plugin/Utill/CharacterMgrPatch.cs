@@ -19,7 +19,7 @@ namespace COM3D2.VMDPlay.Plugin
     {
         // public static Dictionary<int, Maid> maidList = new Dictionary<int, Maid>();
         public static List<Maid> maids = new List<Maid>();
-
+public static dictionary<maid,VMDAnimationController.Install> dmv=new ();
         // private void SetActive(Maid f_maid, int f_nActiveSlotNo, bool f_bMan)
         [HarmonyPatch(typeof(Maid), "Visible", MethodType.Setter)]
         [HarmonyPrefix]
@@ -29,8 +29,14 @@ namespace COM3D2.VMDPlay.Plugin
             {
                 maids.Add(__instance);
                 CM3D2VMDGUI.focusChara = __instance;
-                
-                //CM3D2VMDGUI.vMDAnimationController = VMDAnimationController.Install(__instance);
+                try{
+                CM3D2VMDGUI.vMDAnimationController = VMDAnimationController.Install(__instance);
+if(!=){
+dmv.add();
+}
+                }catch(){
+
+                }
             }
             else
             {

@@ -162,7 +162,7 @@ namespace CM3D2.VMDPlay.Plugin
 							{
 								MyLog.LogWarning("FixedUpdate null");
 								controller.VMDAnimEnabled = false;
-								controller.CreateClone();
+								controller.Init();
 								return;
 							}
 							if (obj.name.Contains("Foot"))
@@ -617,9 +617,12 @@ namespace CM3D2.VMDPlay.Plugin
 			return vMDAnimationController;
 		}
 
-		private void Init(Maid maid)
+		private void Init(Maid maid=null)
 		{
-			this.maid = maid;
+            if (maid!=null)
+            {
+				this.maid = maid;
+            }
 			_shoulderKey = new string[2]
 			{
 				"Bip01 L Clavicle",

@@ -187,12 +187,12 @@ namespace COM3D2.Lilly.Plugin
 		public static string EvaluateRelativePath(String mainDirPath, String absoluteFilePath)
 		{
 			// 입력값 검증
-			if (String.IsNullOrEmpty(mainDirPath)) throw new ArgumentNullException("mainDirPath 입력값이 null 또는 공백입니다.");
-			if (String.IsNullOrEmpty(absoluteFilePath)) throw new ArgumentNullException("absoluteFilePath 입력값이 null 또는 공백입니다.");
-			if (Path.GetPathRoot(mainDirPath) != Path.GetPathRoot(absoluteFilePath)) throw new ArgumentException("입력값의 루트가 다르므로 처리할 수 없습니다.");
-			if (Path.IsPathRooted(mainDirPath) == false) throw new ArgumentException("mainDirPath 이 절대경로가 아닙니다.");
-			//if (Path.IsPathRooted(absoluteFilePath) == false) throw new ArgumentException("absoluteFilePath 이 절대경로가 아닙니다.");
-			if (Path.IsPathRooted(absoluteFilePath) == false) return absoluteFilePath;
+			if (String.IsNullOrEmpty(mainDirPath)) return absoluteFilePath; //new ArgumentNullException("mainDirPath 입력값이 null 또는 공백입니다.");
+			if (String.IsNullOrEmpty(absoluteFilePath)) return absoluteFilePath; //throw new ArgumentNullException("absoluteFilePath 입력값이 null 또는 공백입니다.");
+			if (Path.GetPathRoot(mainDirPath) != Path.GetPathRoot(absoluteFilePath)) return absoluteFilePath; //throw new ArgumentException("입력값의 루트가 다르므로 처리할 수 없습니다.");
+			if (Path.IsPathRooted(mainDirPath) == false) return absoluteFilePath; //throw new ArgumentException("mainDirPath 이 절대경로가 아닙니다.");
+			if (Path.IsPathRooted(absoluteFilePath) == false)  return absoluteFilePath;//throw new ArgumentException("absoluteFilePath 이 절대경로가 아닙니다.");
+			
 
 			// 입력값 보정, C:\test 일때 test가 파일인지 디렉토리인지 애매하다
 			mainDirPath = mainDirPath.Trim();

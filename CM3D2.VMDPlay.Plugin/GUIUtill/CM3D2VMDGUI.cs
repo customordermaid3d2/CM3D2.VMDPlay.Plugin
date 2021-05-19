@@ -365,10 +365,11 @@ namespace CM3D2.VMDPlay.Plugin
                 SongMotionUtill.Set(
                     FavoritesName
                     , oggFilename
-                    , VMDAnimationMgr.Instance.controllers.Where(x=> CharacterMgrPatch.maids.Contains(x.maid) ).Select(x => x.lastLoadedVMD).ToArray()
-                   // , VMDAnimationMgr.Instance.controllers.Select(x => x.lastLoadedVMD).ToArray()
+                    //, VMDAnimationMgr.Instance.controllers.Where(x=> CharacterMgrPatch.maids.Contains(x.maid) ).Select(x => x.lastLoadedVMD).ToArray()
+                    , VMDAnimationMgr.Instance.maidcontrollers.Values.Select(x => x.lastLoadedVMD).ToArray()
                     );
-                MyLog.LogMessage("add", VMDAnimationMgr.Instance.controllers.Count, CharacterMgrPatch.maids.Count, VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).Count() );
+               // MyLog.LogMessage("add", VMDAnimationMgr.Instance.controllers.Count, CharacterMgrPatch.maids.Count, VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).Count() );
+                MyLog.LogMessage("add", VMDAnimationMgr.Instance.maidcontrollers.Count, CharacterMgrPatch.maids.Count);
             }
             FavoritesName = GUILayout.TextField(FavoritesName, gui[350, 25]);
             if (GUILayout.Button("reload", gui[50, 25]))
@@ -377,7 +378,8 @@ namespace CM3D2.VMDPlay.Plugin
             }
             if (GUILayout.Button("chack", gui[50, 25]))
             {
-                MyLog.LogMessage("chack", VMDAnimationMgr.Instance.controllers.Count);
+                MyLog.LogMessage("chack", VMDAnimationMgr.Instance.maidcontrollers.Count);
+                MyLog.LogMessage("chack", CharacterMgrPatch.maids.Count);
             }
             GUILayout.EndHorizontal();
                       
@@ -390,20 +392,21 @@ namespace CM3D2.VMDPlay.Plugin
                     GUILayout.BeginHorizontal();
                     if (GUILayout.Button(item.Key, gui[550f, 25f]))
                     {
-                        //lastFilename = item.Value.Song;
-                        
                         VMDAnimationMgr.Instance.ClearAll();
-                        var v=VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).ToList();
+                        var v=VMDAnimationMgr.Instance.maidcontrollers.Values.ToList();
+                        //var v=VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).ToList();
                         for (int i = 0; i < item.Value.Motions.Count && i < v.Count; i++)
                         {
-                            //VMDAnimationMgr.Instance.controllers[i].lastLoadedVMD = item.Value.Motions[i];
-                            //VMDAnimationMgr.Instance.controllers[i].lastLoadedVMD = item.Value.Motions[i];
                             v[i].LoadVMDAnimation(item.Value.Motions[i], false);
                         }
 
                         oggFilename = item.Value.Song;
                         AudioManager.Load(oggFilename, vMDAnimationController.Loop);
                         
+                        //for (int i = 0; i < item.Value.Motions.Count && i < v.Count; i++)
+                        //{
+                        //    vMDAnimationController.Play();
+                        //}
                         VMDAnimationMgr.Instance.PlayAll();
                         AudioManager.Play();
                         
@@ -461,11 +464,12 @@ namespace CM3D2.VMDPlay.Plugin
             oggFilename = GUILayout.TextField(oggFilename, gui[350, 25]);
             if (GUILayout.Button("...", gui[30, 25]))
             {                
-                dialog.Filter = "OGG files (*.ogg)|*.ogg";
+                dialog.Filter = "OGG files (*.ogg)|*.ogg|WAV files (*.wav)|*.wav";
 
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    oggFilename = dialog.FileName;
+                    // À½¾ÇÀº »ó´ë°æ·Î°¡ ¾È¸ÔÈù´Ù?
+                    oggFilename = MyUtill.EvaluateRelativePath(Environment.CurrentDirectory, dialog.FileName);
                     if (vMDAnimationController != null)
                     {
                         AudioManager.Load(oggFilename, vMDAnimationController.Loop);
@@ -581,8 +585,8 @@ namespace CM3D2.VMDPlay.Plugin
 
                             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                             {
-                                lastFilename = dialog.FileName;
-                                vMDAnimationController.ReloadVMDAnimation();
+                                lastFilename = MyUtill.EvaluateRelativePath(Environment.CurrentDirectory, dialog.FileName);
+                                vMDAnimationController.LoadVMDAnimation(lastFilename, true);                                
                                 vMDAnimationController.Play();
                             }
 
@@ -612,10 +616,7 @@ namespace CM3D2.VMDPlay.Plugin
                             AudioManager.Stop();
                         }
                         GUILayout.Space(30f);
-                        GUILayout.Label("(All)", (GUILayoutOption[])new GUILayoutOption[1]
-                        {
-                            GUILayout.Width(50f)
-                        });
+                        GUILayout.Label("(All)", gui[GUILayoutOptionUtill.Type.Width, 50f]);
                         if (GUILayout.Button("Play", gui[50f, 25f]))
                         {
                             VMDAnimationMgr.Instance.PlayAll();
@@ -650,19 +651,13 @@ namespace CM3D2.VMDPlay.Plugin
                             AudioManager.SetLoop(vMDAnimationController.Loop);
                         }
                         GUILayout.Space(20f);
-                        GUILayout.Label("Face", (GUILayoutOption[])new GUILayoutOption[1]
-                        {
-                            GUILayout.Width(40f)
-                        });
+                        GUILayout.Label("Face", gui[GUILayoutOptionUtill.Type.Width, 40f]);
                         if (GUILayout.Button(vMDAnimationController.faceAnimeEnabled ? "On" : "Off", gui[GUILayoutOptionUtill.Type.Width, 40f]))
                         {
                             vMDAnimationController.faceAnimeEnabled = !vMDAnimationController.faceAnimeEnabled;
                         }
                         GUILayout.Space(10f);
-                        GUILayout.Label("IK (foot)", (GUILayoutOption[])new GUILayoutOption[1]
-                        {
-                            GUILayout.Width(80f)
-                        });
+                        GUILayout.Label("IK (foot)", gui[GUILayoutOptionUtill.Type.Width, 60f]);
                         if (GUILayout.Button(vMDAnimationController.enableIK ? "On" : "Off", gui[GUILayoutOptionUtill.Type.Width, 40f]))
                         {
                             vMDAnimationController.enableIK = !vMDAnimationController.enableIK;
@@ -670,10 +665,7 @@ namespace CM3D2.VMDPlay.Plugin
                         GUILayout.Space(10f);
                         if (vMDAnimationController.enableIK)
                         {
-                            GUILayout.Label("IK (toe)", (GUILayoutOption[])new GUILayoutOption[1]
-                            {
-                                GUILayout.Width(60f)
-                            });
+                            GUILayout.Label("IK (toe)", gui[GUILayoutOptionUtill.Type.Width, 60f]);
                             if (GUILayout.Button(vMDAnimationController.IKWeight.disableToeIK ? "Off" : "On", gui[GUILayoutOptionUtill.Type.Width, 40f]))
                             {
                                 vMDAnimationController.IKWeight.disableToeIK = !vMDAnimationController.IKWeight.disableToeIK;
@@ -697,10 +689,7 @@ namespace CM3D2.VMDPlay.Plugin
 
 
                         GUILayout.BeginHorizontal( );
-                        GUILayout.Label("Sync Anm to BGM", (GUILayoutOption[])new GUILayoutOption[1]
-                        {
-                                GUILayout.Width(120f)
-                        });
+                        GUILayout.Label("Sync Anm to BGM", gui[GUILayoutOptionUtill.Type.Width, 120f]);
                         if (GUILayout.Button(vMDAnimationController.SyncToBGM ? "On" : "Off", gui[GUILayoutOptionUtill.Type.Width,40f]))
                         {
                             vMDAnimationController.SyncToBGM = !vMDAnimationController.SyncToBGM;
@@ -731,23 +720,22 @@ namespace CM3D2.VMDPlay.Plugin
                             GUILayout.EndHorizontal();
                         }
                         GUILayout.BeginHorizontal( );
-                        GUILayout.Label("Config: (needs Reload): ", (GUILayoutOption[])new GUILayoutOption[1]
-                        {
-                            GUILayout.Width(150f)
-                        });
+                        GUILayout.Label("Config: (needs Reload): ", gui[GUILayoutOptionUtill.Type.Width, 150f]);
                         GUILayout.EndHorizontal();
                         GUILayout.BeginHorizontal( );
                         float num = AddSliderWithText("vmdCenterYPos", "(PMD)Center pos(y)", vMDAnimationController.centerBasePos.y, 15f);
                         if (num != vMDAnimationController.centerBasePos.y)
                         {
-                            vMDAnimationController.centerBasePos = new Vector3(0f, num, 0f);
+                            vMDAnimationController.centerBasePos.y = num;
+                            //vMDAnimationController.centerBasePos = new Vector3(0f, num, 0f);
                         }
                         GUILayout.EndHorizontal();
                         GUILayout.BeginHorizontal( );
                         float num2 = AddSliderWithTextFixedScale("(PMD)Hip pos(y)", vMDAnimationController.hipPositionAdjust.y, 1f, 6f);
                         if (num2 != vMDAnimationController.hipPositionAdjust.y)
                         {
-                            vMDAnimationController.hipPositionAdjust = new Vector3(0f, num2, 0f);
+                            vMDAnimationController.hipPositionAdjust.y = num2;
+                            //vMDAnimationController.hipPositionAdjust = new Vector3(0f, num2, 0f);
                         }
                         GUILayout.EndHorizontal();
                         GUILayout.BeginHorizontal( );
@@ -814,10 +802,8 @@ namespace CM3D2.VMDPlay.Plugin
 
         public float AddSliderGeneral(string prop, string label, float value, float defaultMin, float defaultMax, bool fixedScale, bool useText)
         {
-            GUILayout.Label(label, (GUILayoutOption[])new GUILayoutOption[1]
-            {
-                GUILayout.Width(sliderLabelWidth)
-            });
+            
+            GUILayout.Label(label, gui[GUILayoutOptionUtill.Type.Width, sliderLabelWidth]);
             GUILayout.Space(5f);
             float num;
             float num2;
@@ -831,60 +817,40 @@ namespace CM3D2.VMDPlay.Plugin
                 num = defaultMin;
                 num2 = GetSliderMax(prop, defaultMax);
             }
-            float result = GUILayout.HorizontalSlider(value, num, num2, (GUILayoutOption[])new GUILayoutOption[1]
-            {
-                GUILayout.Width(sliderWidth)
-            });
+            float result = GUILayout.HorizontalSlider(value, num, num2, gui[GUILayoutOptionUtill.Type.Width, sliderLabelWidth]);
             GUILayout.Space(5f);
             if (useText)
             {
                 string text = value.ToString("F4");
-                string text2 = GUILayout.TextField(text, (GUILayoutOption[])new GUILayoutOption[1]
-                {
-                    GUILayout.Width(valueLabelWidth)
-                });
+                string text2 = GUILayout.TextField(text, gui[GUILayoutOptionUtill.Type.Width, valueLabelWidth]);
                 if (text2 != text)
                 {
-                    try
-                    {
-                        result = float.Parse(text2);
-                    }
-                    catch (Exception)
-                    {
-                    }
+                    float.TryParse(text2, out result);
+                    //try
+                    //{
+                    //    result = float.Parse(text2);
+                    //}
+                    //catch (Exception)
+                    //{
+                    //}
                 }
             }
             else
             {
-                GUILayout.Label(value.ToString("F4"), (GUILayoutOption[])new GUILayoutOption[1]
-                {
-                    GUILayout.Width(valueLabelWidth)
-                });
+                GUILayout.Label(value.ToString("F4"), gui[GUILayoutOptionUtill.Type.Width, valueLabelWidth]);
             }
             GUILayout.Space(5f);
             if (!fixedScale)
             {
-                if (GUILayout.Button("0-1", (GUILayoutOption[])new GUILayoutOption[2]
-                {
-                    GUILayout.Width(50f),
-                    GUILayout.Height(25f)
-                }))
+                if (GUILayout.Button("0-1", gui[50,25]))
                 {
                     SetSliderMax(prop, 1f);
                 }
-                if (GUILayout.Button("0-10", (GUILayoutOption[])new GUILayoutOption[2]
-                {
-                    GUILayout.Width(50f),
-                    GUILayout.Height(25f)
-                }))
+                if (GUILayout.Button("0-10", gui[50, 25]))
                 {
                     SetSliderMax(prop, 10f);
                 }
-                if (GUILayout.Button("x2", (GUILayoutOption[])new GUILayoutOption[2]
-                {
-                    GUILayout.Width(50f),
-                    GUILayout.Height(25f)
-                }))
+                if (GUILayout.Button("x2", gui[50, 25]))
                 {
                     SetSliderMax(prop, GetSliderMax(prop, 1f) * 2f);
                 }

@@ -14,9 +14,10 @@ namespace CM3D2.VMDPlay.Plugin.Utill
         public class SongMotion
         {
             [JsonProperty("Song")]
-            public string Song { get=> song; set=> MyUtill. EvaluateRelativePath(Environment.CurrentDirectory, value); }
+            //public string Song { get=> song; set=> song= MyUtill. EvaluateRelativePath(Environment.CurrentDirectory, value); }
+            public string Song { get; set; }
 
-            private string song;
+            //private string song;
             //  foreach (string f_strFileName in Directory.GetFiles(Path.Combine(GameMain.Instance.SerializeStorageManager.StoreDirectoryPath, "Preset"), "*.preset", SearchOption.AllDirectories))
 
             [JsonProperty("Motions")]

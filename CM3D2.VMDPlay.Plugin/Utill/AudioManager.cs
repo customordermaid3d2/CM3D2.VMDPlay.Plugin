@@ -20,12 +20,11 @@ namespace COM3D2.Lilly.Plugin.Utill
 
         public static bool Load(string filePath, bool loop = false)
         {
-            if (soundMgr == null)
-            {
-                soundMgr = GameMain.Instance.SoundMgr;
-            }
 
-            Debug.Log("LoadAndPlayAudioClip" + filePath);
+            //            MyUtill.EvaluateRelativePath(Environment.CurrentDirectory, filePath);
+
+
+            MyLog.Log("LoadAndPlayAudioClip" , filePath);
             string extension = Path.GetExtension(filePath);
             if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath) || (extension != ".ogg" && extension != ".wav"))
             {
@@ -35,9 +34,14 @@ namespace COM3D2.Lilly.Plugin.Utill
                 }
                 return false;
             }
+            string s = Path.GetPathRoot(filePath);
+            if (s.Equals('/')||s.Equals(string.Empty))
+                filePath = Path.Combine(Environment.CurrentDirectory, filePath);
+            MyLog.Log("LoadAndPlayAudioClip" , filePath);
             isLoaded = false;
             using (WWW www = new WWW("file:///" + filePath))
             {
+                MyLog.LogDebug("WWW", www.url);
                 int num = 0;
                 while (!www.isDone)
                 {
@@ -71,6 +75,10 @@ namespace COM3D2.Lilly.Plugin.Utill
                         isLoaded = true;
                     }
                 }
+            }
+            if (soundMgr == null)
+            {
+                soundMgr = GameMain.Instance.SoundMgr;
             }
             return isLoaded;
         }

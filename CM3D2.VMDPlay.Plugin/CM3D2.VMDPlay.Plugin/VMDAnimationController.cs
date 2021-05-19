@@ -596,7 +596,7 @@ namespace CM3D2.VMDPlay.Plugin
 				}
 				vMDAnimationController = maid.gameObject.AddComponent<VMDAnimationController>();
 				vMDAnimationController.Init(maid);
-				VMDAnimationMgr.Instance.controllers.Add(vMDAnimationController);
+				//VMDAnimationMgr.Instance.controllers.Add(vMDAnimationController);
 				if (VMDAnimationMgr.Instance.maidcontrollers.ContainsKey(maid))
 				{
 					VMDAnimationMgr.Instance.maidcontrollers[maid]=vMDAnimationController ;
@@ -1660,7 +1660,14 @@ namespace CM3D2.VMDPlay.Plugin
 				GameMain.Destroy(AudioManager.audiosource);
 				AudioManager.audiosource = null;
 			}
-			VMDAnimationMgr.Instance.controllers.Remove(this);
+            foreach (var item in VMDAnimationMgr.Instance.maidcontrollers)
+            {
+                if (item.Value== this)
+                {
+					VMDAnimationMgr.Instance.maidcontrollers.Remove(item.Key);
+				}
+            }
+			//VMDAnimationMgr.Instance.maidcontrollers.Remove(this);
 			UnityEngine.Object.Destroy(animeOverride);
 			UnityEngine.Object.Destroy(vmdAnimationGo);
 			UnityEngine.Object.Destroy(faceController.gameObject);

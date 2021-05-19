@@ -16,7 +16,7 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public CustomSoundMgr SoundMgr = new CustomSoundMgr();
 
-		public List<VMDAnimationController> controllers = new List<VMDAnimationController>();
+		//public List<VMDAnimationController> controllers = new List<VMDAnimationController>();
 		public Dictionary<Maid,VMDAnimationController> maidcontrollers = new Dictionary<Maid, VMDAnimationController>();
 
 		public static VMDAnimationMgr Instance => _instance;
@@ -45,7 +45,7 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public void PlayAll()
 		{
-			foreach (VMDAnimationController controller in controllers)
+			foreach (VMDAnimationController controller in maidcontrollers.Values)
 			{
 				controller.Play();
 			}
@@ -53,7 +53,7 @@ namespace CM3D2.VMDPlay.Plugin
 		
 		public void ClearAll()
 		{
-			foreach (VMDAnimationController controller in controllers)
+			foreach (VMDAnimationController controller in maidcontrollers.Values)
 			{
 				controller.Stop();
 				controller.lastLoadedVMD=string.Empty;
@@ -62,7 +62,7 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public void StopAll()
 		{
-			foreach (VMDAnimationController controller in controllers)
+			foreach (VMDAnimationController controller in maidcontrollers.Values)
 			{
 				controller.Stop();
 			}
@@ -70,7 +70,7 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public void PauseAll()
 		{
-			foreach (VMDAnimationController controller in controllers)
+			foreach (VMDAnimationController controller in maidcontrollers.Values)
 			{
 				controller.Pause();
 			}

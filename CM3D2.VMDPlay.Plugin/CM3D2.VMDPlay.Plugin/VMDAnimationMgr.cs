@@ -56,6 +56,7 @@ namespace CM3D2.VMDPlay.Plugin
 			foreach (VMDAnimationController controller in maidcontrollers.Values)
 			{
 				controller.Stop();
+				controller.VMDAnimEnabled = false;
 				controller.lastLoadedVMD=string.Empty;
 			}
 		}

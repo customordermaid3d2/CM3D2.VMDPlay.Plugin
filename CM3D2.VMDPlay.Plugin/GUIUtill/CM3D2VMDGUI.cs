@@ -399,6 +399,7 @@ namespace CM3D2.VMDPlay.Plugin
                         {
                             v[i].LoadVMDAnimation(item.Value.Motions[i], false);
                         }
+                        lastFilename = vMDAnimationController.lastLoadedVMD;
 
                         oggFilename = item.Value.Song;
                         AudioManager.Load(oggFilename, vMDAnimationController.Loop);

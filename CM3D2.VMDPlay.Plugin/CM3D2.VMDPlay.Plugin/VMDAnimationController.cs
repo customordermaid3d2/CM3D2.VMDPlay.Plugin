@@ -158,6 +158,11 @@ namespace CM3D2.VMDPlay.Plugin
 						foreach (GameObject key in map.Keys)
 						{
 							GameObject obj = map[key];
+							if (obj == null|| obj?.name == null)
+							{
+								MyLog.LogWarning("FixedUpdate null");
+								continue;
+							}
 							if (obj.name.Contains("Foot"))
 							{
 								obj.transform.rotation = key.transform.rotation;

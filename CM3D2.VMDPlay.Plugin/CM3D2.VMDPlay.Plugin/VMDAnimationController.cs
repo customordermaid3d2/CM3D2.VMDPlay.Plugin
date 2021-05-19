@@ -161,7 +161,9 @@ namespace CM3D2.VMDPlay.Plugin
 							if (obj == null|| obj?.name == null)
 							{
 								MyLog.LogWarning("FixedUpdate null");
-								continue;
+								controller.VMDAnimEnabled = false;
+								controller.CreateClone();
+								return;
 							}
 							if (obj.name.Contains("Foot"))
 							{

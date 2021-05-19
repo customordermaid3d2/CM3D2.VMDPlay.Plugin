@@ -397,6 +397,7 @@ namespace CM3D2.VMDPlay.Plugin
                         //var v=VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).ToList();
                         for (int i = 0; i < item.Value.Motions.Count && i < v.Count; i++)
                         {
+                            v[i].VMDAnimEnabled = true;
                             v[i].LoadVMDAnimation(item.Value.Motions[i], false);
                         }
                         lastFilename = vMDAnimationController.lastLoadedVMD;

@@ -350,6 +350,9 @@ namespace CM3D2.VMDPlay.Plugin
         float timeShiftMin = -60;
         float timeShiftMax = 60;
         float timeShiftNow = 0;
+        string timeShiftMin_s = string.Empty;
+        string timeShiftMax_s = string.Empty;
+        string timeShiftNow_s = string.Empty;
 
         private void DrawVMDAnimationArea()
         {
@@ -692,30 +695,34 @@ namespace CM3D2.VMDPlay.Plugin
 
                         GUILayout.BeginHorizontal();
 
+    //                    GUILayout.Label("time shift");
 
+      //                  timeShiftNow_s = GUILayout.TextField(timeShiftNow.ToString(), gui[GUILayoutOptionUtill.Type.Width, 40]);
 
-                        GUILayout.Label("time shift");
+  //                      GUILayout.Label("min");
                         
-                        if (!float.TryParse(GUILayout.TextField(timeShiftNow.ToString(), gui[GUILayoutOptionUtill.Type.Width, 40]),out timeShiftNow))
-                            timeShiftNow = 0;
+                        //timeShiftNow= GUILayout.HorizontalSlider(timeShiftNow, timeShiftMin, timeShiftMax, gui[GUILayoutOptionUtill.Type.Width, 80]);
+                        vMDAnimationController.timeShiftNow = AddSliderWithTextFixedScale("time shift", vMDAnimationController.timeShiftNow, timeShiftMin, timeShiftMax);
+                        //sizeMultiplier = EditorGUILayout.FloatField("Increase scale by:", sizeMultiplier);
 
-                        GUILayout.Label("min");
-                        
-                        if (!float.TryParse(GUILayout.TextField(timeShiftMin.ToString(), gui[GUILayoutOptionUtill.Type.Width, 40]), out timeShiftMin))
+
+                        if (!float.TryParse(GUILayout.TextField(timeShiftMin.ToString("0.00"), gui[GUILayoutOptionUtill.Type.Width, 60]), out timeShiftMin))
                             timeShiftMin = -60;
 
-                        timeShiftNow= GUILayout.HorizontalSlider(timeShiftNow, timeShiftMin, timeShiftMax, gui[GUILayoutOptionUtill.Type.Width, 80]);
-                        
-                        if (!float.TryParse(GUILayout.TextField(timeShiftMax.ToString(), gui[GUILayoutOptionUtill.Type.Width, 40]), out timeShiftMax))
+                        if (!float.TryParse(GUILayout.TextField(timeShiftMax.ToString("0.00"), gui[GUILayoutOptionUtill.Type.Width, 60]), out timeShiftMax))
                             timeShiftMax = 60;
 
-                        GUILayout.Label("max");
+//                        GUILayout.Label("max");
 
-                        if (GUI.changed)
-                        {
-                            vMDAnimationController.timeShiftNow = timeShiftNow;
-
-                        }
+                        //if (GUI.changed)
+                        //{
+                        //    if (!float.TryParse(timeShiftNow_s, out timeShiftNow)) timeShiftNow = 0;
+                        //    if (!float.TryParse(timeShiftMin_s, out timeShiftMin)) timeShiftMin = -60;
+                        //    if (!float.TryParse(timeShiftMax_s, out timeShiftMax)) timeShiftMax =  60;
+                        //
+                        //    vMDAnimationController.timeShiftNow = timeShiftNow;
+                        //
+                        //}
                         if (GUILayout.Button("All apply", gui[60, 25f]))
                         {
                             foreach (var item in CharacterMgrPatch.maids)

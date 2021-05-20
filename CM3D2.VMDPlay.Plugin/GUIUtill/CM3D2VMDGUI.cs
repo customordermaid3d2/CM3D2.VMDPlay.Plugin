@@ -374,7 +374,7 @@ namespace CM3D2.VMDPlay.Plugin
                     FavoritesName
                     , oggFilename
                     //, VMDAnimationMgr.Instance.controllers.Where(x=> CharacterMgrPatch.maids.Contains(x.maid) ).Select(x => x.lastLoadedVMD).ToArray()
-                    , VMDAnimationMgr.Instance.maidcontrollers.Values.Select(x => x.lastLoadedVMD).ToArray()
+                    , VMDAnimationMgr.Instance.maidcontrollers.Values.Select(x => new SongMotionUtill.motionAndTime(x.lastLoadedVMD , x.timeShiftNow)).ToArray()
                     );
                // MyLog.LogMessage("add", VMDAnimationMgr.Instance.controllers.Count, CharacterMgrPatch.maids.Count, VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).Count() );
                 MyLog.LogMessage("add", VMDAnimationMgr.Instance.maidcontrollers.Count, CharacterMgrPatch.maids.Count);
@@ -400,18 +400,20 @@ namespace CM3D2.VMDPlay.Plugin
                     GUILayout.BeginHorizontal();
                     if (GUILayout.Button(item.Key, gui[550f, 25f]))
                     {
+                        FavoritesName = item.Key;
                         //VMDAnimationMgr.Instance.ControllerInstallAll();
                         VMDAnimationMgr.Instance.ClearAll();
-                        if (item.Value.Motions.Count>0)
+                        if (item.Value.Motions2.Count>0)
                         {
                             //var v = VMDAnimationMgr.Instance.maidcontrollers.ToList();
                             //var v=VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).ToList();
                             var v = CharacterMgrPatch.maids;
-                            for (int i = 0; i < item.Value.Motions.Count && i < v.Count; i++)
+                            for (int i = 0; i < item.Value.Motions2.Count && i < v.Count; i++)
                             {
                                 vMDAnimationControllerSub = VMDAnimationController.Install(v[i]);
                                 vMDAnimationControllerSub.VMDAnimEnabled = true;
-                                vMDAnimationControllerSub.LoadVMDAnimation(item.Value.Motions[i]);
+                                vMDAnimationControllerSub.timeShiftNow = item.Value.Motions2[i].time;
+                                vMDAnimationControllerSub.LoadVMDAnimation(item.Value.Motions2[i].motion);
                             }
                             //vMDAnimationController = VMDAnimationController.Install(focusChara);
                             lastFilename = vMDAnimationController.lastLoadedVMD ;

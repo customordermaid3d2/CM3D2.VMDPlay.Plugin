@@ -11,6 +11,18 @@ namespace CM3D2.VMDPlay.Plugin.Utill
 {
     class SongMotionUtill
     {
+        public struct motionAndTime
+        {
+            public string motion;
+            public float time;
+
+            public motionAndTime(string motion, float time)
+            {
+                this.motion = motion??string.Empty;
+                this.time = time;
+            }
+        }
+
         public class SongMotion
         {
             [JsonProperty("Song")]
@@ -20,38 +32,46 @@ namespace CM3D2.VMDPlay.Plugin.Utill
             //private string song;
             //  foreach (string f_strFileName in Directory.GetFiles(Path.Combine(GameMain.Instance.SerializeStorageManager.StoreDirectoryPath, "Preset"), "*.preset", SearchOption.AllDirectories))
 
-            [JsonProperty("Motions")]
-            public List<string> Motions { get; set; }
+            /// <summary>
+            /// 이전 세이브 호환용. 사용하지 말것
+            /// </summary>
+            [Obsolete("이전 세이브 호환용. 사용하지 말것.")]
+            [JsonProperty("Motions",NullValueHandling =NullValueHandling.Ignore)]
+            public List<string> Motions
+            {
+                set {
+                    Motions2.Clear();
+                    Motions2.AddRange(value.Select(x=> new motionAndTime(x,0) ) );
+                }
+            }
+
+            [JsonProperty("Motions2", NullValueHandling = NullValueHandling.Ignore)]
+            public List<motionAndTime> Motions2 { get; set; }
 
 
 
             public SongMotion()
             {
-                this.Song =  string.Empty;
-                this.Motions = new List<string>();
-            }
-
-            public SongMotion(List<string> motions = null)
-            {
-                this.Motions = motions ?? new List<string>();
-            }
-
-            public SongMotion(string key, List<string> motions = null)
-            {
                 this.Song = string.Empty;
-                this.Motions = motions ?? new List<string>();
-            }
-            public SongMotion(string key, string song, List<string> motions = null)
-            {
-                this.Song = song ?? string.Empty;
-                this.Motions = motions ?? new List<string>();
+                this.Motions2 = new List<motionAndTime>();
             }
 
-            public string this[int motion_index]
+            public SongMotion(List<motionAndTime> MotionsTime = null)
+            {
+                this.Motions2 = MotionsTime ?? new List<motionAndTime>();
+            }
+
+            public SongMotion(string Song, List<motionAndTime> MotionsTime = null) : this( MotionsTime)
+            {
+                this.Song = Song ?? string.Empty;
+            }
+
+
+            public motionAndTime this[int motion_index]
             {
                 get
                 {
-                    return Motions[motion_index];
+                    return Motions2[motion_index];
                 }
             }
         }
@@ -77,18 +97,18 @@ namespace CM3D2.VMDPlay.Plugin.Utill
             {
                 list = new Dictionary<string, SongMotion>();
 
-                Set("Favorites name1", "song path1", "motion path1", "motion path2" );
-                Set("Favorites name2", "song path2", "motion path1", "motion path2" );
-                Set("Favorites name2", "song path2", "motion path1", "motion path2" );
-                Set("Favorites name2", "song path2", "motion path1", "motion path2" );
-                Set("Favorites name2", "song path2", "motion path1", "motion path2" );
-                Set("Favorites name2", "song path2", "motion path1", "motion path2" );
-                
+                Set("Favorites name1", "song path1",new motionAndTime ( "motion path1" ,0 ));
+                Set("Favorites name2", "song path2",new motionAndTime ( "motion path1" ,0 ));
+                Set("Favorites name2", "song path2",new motionAndTime ( "motion path1" ,0 ));
+                Set("Favorites name2", "song path2",new motionAndTime ( "motion path1" ,0 ));
+                Set("Favorites name2", "song path2",new motionAndTime ( "motion path1" ,0 ));
+                Set("Favorites name2", "song path2",new motionAndTime ( "motion path1" ,0 ));
+
                 Serialize();
             }
         }
 
-        public static void Set(string name, string song = null, params string[] motion)
+        public static void Set(string name, string song = null,params motionAndTime[] motion )
         {
             MyLog.LogMessage("SongMotionDic", "Set", name, song);
             if (!list.ContainsKey(name))
@@ -98,8 +118,8 @@ namespace CM3D2.VMDPlay.Plugin.Utill
             list[name].Song = song;
             if (motion != null && motion.Length > 0)
             {
-                list[name].Motions.Clear();
-                list[name].Motions.AddRange(motion);
+                list[name].Motions2.Clear();
+                list[name].Motions2.AddRange(motion);
             }
             Serialize();
         }
@@ -123,7 +143,7 @@ namespace CM3D2.VMDPlay.Plugin.Utill
         {
             MyLog.LogMessage("SongMotionDic", "Get", name);
             //list.ContainsKey(name);
-            if (list.TryGetValue(name,out SongMotion songMotion))
+            if (list.TryGetValue(name, out SongMotion songMotion))
             {
                 return songMotion;
             }

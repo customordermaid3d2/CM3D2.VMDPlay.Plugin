@@ -728,7 +728,7 @@ namespace CM3D2.VMDPlay.Plugin
                             foreach (var item in CharacterMgrPatch.maids)
                             {
                                 vMDAnimationControllerSub = VMDAnimationController.Install(item);
-                                vMDAnimationControllerSub.timeShiftNow = timeShiftNow;
+                                vMDAnimationControllerSub.timeShiftNow = vMDAnimationController.timeShiftNow;
                             }
                         }
                         GUILayout.FlexibleSpace();

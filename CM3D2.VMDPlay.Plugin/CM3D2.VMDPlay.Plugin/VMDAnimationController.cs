@@ -350,6 +350,8 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public bool enableHeadRotate = true;
 
+		public float timeShiftNow = 0;
+
 		//private static float bgmvolume = 1f;
 		//public float BgmVolume
 		//{
@@ -1513,11 +1515,11 @@ namespace CM3D2.VMDPlay.Plugin
 								{
 									if (syncToBGM)
 									{
-										SetAnimPosition(AudioManager.audiosource.time);
+										SetAnimPosition(AudioManager.audiosource.time+ timeShiftNow);
 									}
 									else if (syncToAnim)
 									{
-										AudioManager.audiosource.time = GetAnimTime();
+										AudioManager.audiosource.time = GetAnimTime()-timeShiftNow;
 									}
 								}
 							}

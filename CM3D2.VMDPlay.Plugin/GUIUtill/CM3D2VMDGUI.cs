@@ -27,7 +27,7 @@ namespace CM3D2.VMDPlay.Plugin
 
         private int dialogWindowID = 87248;
 
-        private Rect windowRect = new Rect(0f, 300f, 650f, 510f);
+        private Rect windowRect = new Rect(0f, 300f, 660f, 560f);
 
         private string windowTitle = "COM3D2 VMDPlay Plugin Lilly";
 
@@ -340,11 +340,16 @@ namespace CM3D2.VMDPlay.Plugin
         */
 
         public static VMDAnimationController vMDAnimationController;
+        public static VMDAnimationController vMDAnimationControllerSub;
         public static bool isFavorites = false;
 
         protected Vector2 scrollPosition;
 
         private string FavoritesName = string.Empty;
+
+        float timeShiftMin = -60;
+        float timeShiftMax = 60;
+        float timeShiftNow = 0;
 
         private void DrawVMDAnimationArea()
         {
@@ -401,11 +406,11 @@ namespace CM3D2.VMDPlay.Plugin
                             var v = CharacterMgrPatch.maids;
                             for (int i = 0; i < item.Value.Motions.Count && i < v.Count; i++)
                             {
-                                vMDAnimationController = VMDAnimationController.Install(v[i]);
-                                vMDAnimationController.VMDAnimEnabled = true;
-                                vMDAnimationController.LoadVMDAnimation(item.Value.Motions[i]);
+                                vMDAnimationControllerSub = VMDAnimationController.Install(v[i]);
+                                vMDAnimationControllerSub.VMDAnimEnabled = true;
+                                vMDAnimationControllerSub.LoadVMDAnimation(item.Value.Motions[i]);
                             }
-                            vMDAnimationController = VMDAnimationController.Install(focusChara);
+                            //vMDAnimationController = VMDAnimationController.Install(focusChara);
                             lastFilename = vMDAnimationController.lastLoadedVMD ;
                         }
                         oggFilename = item.Value.Song;
@@ -494,6 +499,7 @@ namespace CM3D2.VMDPlay.Plugin
             #endregion =================================
 
 
+
             if (focusChara == null)
             {
                 GUILayout.BeginHorizontal( );
@@ -518,6 +524,7 @@ namespace CM3D2.VMDPlay.Plugin
                     {
                         lastFilename = vMDAnimationController.lastLoadedVMD;
                         lastController = vMDAnimationController;
+                        timeShiftNow = vMDAnimationController.timeShiftNow;
                     }
                     if (lastFilename == null)
                     {
@@ -604,11 +611,11 @@ namespace CM3D2.VMDPlay.Plugin
                             VMDAnimationMgr.Instance.ClearAll();
                             foreach (var item in  CharacterMgrPatch.maids)
                             {
-                                vMDAnimationController = VMDAnimationController.Install(item);
-                                vMDAnimationController.VMDAnimEnabled = true;
-                                vMDAnimationController.LoadVMDAnimation(lastFilename);
+                                vMDAnimationControllerSub = VMDAnimationController.Install(item);
+                                vMDAnimationControllerSub.VMDAnimEnabled = true;
+                                vMDAnimationControllerSub.LoadVMDAnimation(lastFilename);
                             }
-                            vMDAnimationController = VMDAnimationController.Install(focusChara);
+                            //vMDAnimationController = VMDAnimationController.Install(focusChara);
                             VMDAnimationMgr.Instance.PlayAll();
                         }
                         GUILayout.EndHorizontal();
@@ -660,9 +667,77 @@ namespace CM3D2.VMDPlay.Plugin
 
                         #region option
 
+                        #region time shift
+
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label("Sync Anm to BGM", gui[GUILayoutOptionUtill.Type.Width, 120f]);
+                        if (GUILayout.Button(vMDAnimationController.SyncToBGM ? "On" : "Off", gui[GUILayoutOptionUtill.Type.Width, 40f]))
+                        {
+                            vMDAnimationController.SyncToBGM = !vMDAnimationController.SyncToBGM;
+                        }
+                        /*GUILayout.Space(30f);
+						GUILayout.Label("Sync BGM to Anm", (GUILayoutOption[])new GUILayoutOption[1]
+						{
+								GUILayout.Width(120f)
+						});
+						if (GUILayout.Button(vMDAnimationController.SyncToAnim ? "On" : "Off", (GUILayoutOption[])new GUILayoutOption[1]
+						{
+								GUILayout.Width(40f)
+						}))
+						{
+							vMDAnimationController.SyncToAnim = !vMDAnimationController.SyncToAnim;
+						}*/
+                        
+                        GUILayout.EndHorizontal();
+
+                        GUILayout.BeginHorizontal();
+
+
+
+                        GUILayout.Label("time shift");
+                        
+                        if (!float.TryParse(GUILayout.TextField(timeShiftNow.ToString(), gui[GUILayoutOptionUtill.Type.Width, 40]),out timeShiftNow))
+                            timeShiftNow = 0;
+
+                        GUILayout.Label("min");
+                        
+                        if (!float.TryParse(GUILayout.TextField(timeShiftMin.ToString(), gui[GUILayoutOptionUtill.Type.Width, 40]), out timeShiftMin))
+                            timeShiftMin = -60;
+
+                        timeShiftNow= GUILayout.HorizontalSlider(timeShiftNow, timeShiftMin, timeShiftMax, gui[GUILayoutOptionUtill.Type.Width, 80]);
+                        
+                        if (!float.TryParse(GUILayout.TextField(timeShiftMax.ToString(), gui[GUILayoutOptionUtill.Type.Width, 40]), out timeShiftMax))
+                            timeShiftMax = 60;
+
+                        GUILayout.Label("max");
+
+                        if (GUI.changed)
+                        {
+                            vMDAnimationController.timeShiftNow = timeShiftNow;
+
+                        }
+                        if (GUILayout.Button("All apply", gui[60, 25f]))
+                        {
+                            foreach (var item in CharacterMgrPatch.maids)
+                            {
+                                vMDAnimationControllerSub = VMDAnimationController.Install(item);
+                                vMDAnimationControllerSub.timeShiftNow = timeShiftNow;
+                            }
+                        }
+                        GUILayout.FlexibleSpace();
+                        //vMDAnimationController = VMDAnimationController.Install(focusChara);
+
+                        GUILayout.EndHorizontal(); 
+
+                        #endregion
+
+
+
                         GUILayout.BeginHorizontal( );
                         vMDAnimationController.speed = AddSliderWithText("vmdAnimSpeed", "Speed", vMDAnimationController.speed, 5f);
                         GUILayout.EndHorizontal();
+
+
                         GUILayout.BeginHorizontal( );
                         GUILayout.Label("Loop", gui[GUILayoutOptionUtill.Type.Width, 40f]);
                         if (GUILayout.Button(vMDAnimationController.Loop ? "On" : "Off", gui[GUILayoutOptionUtill.Type.Width, 40f]))
@@ -708,25 +783,6 @@ namespace CM3D2.VMDPlay.Plugin
 
 
 
-                        GUILayout.BeginHorizontal( );
-                        GUILayout.Label("Sync Anm to BGM", gui[GUILayoutOptionUtill.Type.Width, 120f]);
-                        if (GUILayout.Button(vMDAnimationController.SyncToBGM ? "On" : "Off", gui[GUILayoutOptionUtill.Type.Width,40f]))
-                        {
-                            vMDAnimationController.SyncToBGM = !vMDAnimationController.SyncToBGM;
-                        }
-                        /*GUILayout.Space(30f);
-						GUILayout.Label("Sync BGM to Anm", (GUILayoutOption[])new GUILayoutOption[1]
-						{
-								GUILayout.Width(120f)
-						});
-						if (GUILayout.Button(vMDAnimationController.SyncToAnim ? "On" : "Off", (GUILayoutOption[])new GUILayoutOption[1]
-						{
-								GUILayout.Width(40f)
-						}))
-						{
-							vMDAnimationController.SyncToAnim = !vMDAnimationController.SyncToAnim;
-						}*/
-                        GUILayout.EndHorizontal();
 
 
 

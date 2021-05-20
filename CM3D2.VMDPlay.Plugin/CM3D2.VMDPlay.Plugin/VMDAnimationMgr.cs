@@ -1,3 +1,4 @@
+using COM3D2.VMDPlay.Plugin;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -74,6 +75,14 @@ namespace CM3D2.VMDPlay.Plugin
 			foreach (VMDAnimationController controller in maidcontrollers.Values)
 			{
 				controller.Pause();
+			}
+		}
+		
+		public void ControllerInstallAll()
+		{
+			foreach (var maid in CharacterMgrPatch.maids)
+			{
+				VMDAnimationController.Install(maid);
 			}
 		}
 

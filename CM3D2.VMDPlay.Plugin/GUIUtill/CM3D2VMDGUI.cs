@@ -392,16 +392,22 @@ namespace CM3D2.VMDPlay.Plugin
                     GUILayout.BeginHorizontal();
                     if (GUILayout.Button(item.Key, gui[550f, 25f]))
                     {
+                        //VMDAnimationMgr.Instance.ControllerInstallAll();
                         VMDAnimationMgr.Instance.ClearAll();
-                        var v=VMDAnimationMgr.Instance.maidcontrollers.Values.ToList();
-                        //var v=VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).ToList();
-                        for (int i = 0; i < item.Value.Motions.Count && i < v.Count; i++)
+                        if (item.Value.Motions.Count>0)
                         {
-                            v[i].VMDAnimEnabled = true;
-                            v[i].LoadVMDAnimation(item.Value.Motions[i], false);
+                            //var v = VMDAnimationMgr.Instance.maidcontrollers.ToList();
+                            //var v=VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).ToList();
+                            var v = CharacterMgrPatch.maids;
+                            for (int i = 0; i < item.Value.Motions.Count && i < v.Count; i++)
+                            {
+                                vMDAnimationController = VMDAnimationController.Install(v[i]);
+                                vMDAnimationController.VMDAnimEnabled = true;
+                                vMDAnimationController.LoadVMDAnimation(item.Value.Motions[i]);
+                            }
+                            vMDAnimationController = VMDAnimationController.Install(focusChara);
+                            lastFilename = vMDAnimationController.lastLoadedVMD ;
                         }
-                        lastFilename = vMDAnimationController.lastLoadedVMD;
-
                         oggFilename = item.Value.Song;
                         AudioManager.Load(oggFilename, vMDAnimationController.Loop);
                         
@@ -588,10 +594,22 @@ namespace CM3D2.VMDPlay.Plugin
                             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                             {
                                 lastFilename = MyUtill.EvaluateRelativePath(Environment.CurrentDirectory, dialog.FileName);
-                                vMDAnimationController.LoadVMDAnimation(lastFilename, true);                                
+                                vMDAnimationController.LoadVMDAnimation(lastFilename);                                
                                 vMDAnimationController.Play();
                             }
 
+                        }
+                        if (GUILayout.Button("All apply", gui[60, 25f]))
+                        {
+                            VMDAnimationMgr.Instance.ClearAll();
+                            foreach (var item in  CharacterMgrPatch.maids)
+                            {
+                                vMDAnimationController = VMDAnimationController.Install(item);
+                                vMDAnimationController.VMDAnimEnabled = true;
+                                vMDAnimationController.LoadVMDAnimation(lastFilename);
+                            }
+                            vMDAnimationController = VMDAnimationController.Install(focusChara);
+                            VMDAnimationMgr.Instance.PlayAll();
                         }
                         GUILayout.EndHorizontal();
 

@@ -42,7 +42,7 @@ namespace COM3D2.VMDPlay.Plugin
                //    VMDAnimationMgr.Instance.controllers.Remove(vMDAnimationController);
                //}
             }
-            MyLog.LogMessage("Visible", MyUtill.GetMaidFullName(__instance), value, __instance.IsCrcBody, __instance.boMAN, maids.Count,VMDAnimationMgr.Instance.maidcontrollers.Count,(CM3D2VMDGUI.vMDAnimationController!=null));
+            //MyLog.LogMessage("Visible", MyUtill.GetMaidFullName(__instance), value, __instance.IsCrcBody, __instance.boMAN, maids.Count,VMDAnimationMgr.Instance.maidcontrollers.Count,(CM3D2VMDGUI.vMDAnimationController!=null));
         }
 
         /*

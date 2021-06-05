@@ -48,7 +48,7 @@ namespace CM3D2.VMDPlay.Plugin
 			UnityEngine.Object.DontDestroyOnLoad(val);
 			VMDAnimationMgr.Install(val);
 			DebugHelper.Install(val);
-			SystemShortcutAPI.AddButton("VMDPlayPlugin", new Action(delegate () { VMDAnimationMgr.Instance .gui. visibleGUI = !VMDAnimationMgr.Instance.gui.visibleGUI; }), "VMDPlayPlugin", DefaultIcon.Png);
+			SystemShortcutAPI.AddButton("VMDPlayPlugin", new Action(delegate () { VMDAnimationMgr.Instance.ToggleGUI(); }), "VMDPlayPlugin", DefaultIcon.Png);
 		}
 
 		public void togGUI()

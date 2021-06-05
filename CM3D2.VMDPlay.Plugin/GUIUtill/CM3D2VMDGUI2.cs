@@ -667,7 +667,7 @@ namespace CM3D2.VMDPlay.Plugin
 			//if (!Buttons.Contains(gearMenuButtonName))
 			{
 				//GameObject gameObject = Buttons.Add(gearMenuButtonName, "", GetGearMenuIconPng(!isUIVisible), OnGearMenuClick);
-				SystemShortcutAPI.AddButton(gearMenuButtonName, OnGearMenuClick, gearMenuButtonName, GetGearMenuIconPng(!isUIVisible));
+				//SystemShortcutAPI.AddButton(gearMenuButtonName, OnGearMenuClick, gearMenuButtonName, GetGearMenuIconPng(!isUIVisible));
 				//UpdateGearMenuIcon(gameObject);
 			}
 		}

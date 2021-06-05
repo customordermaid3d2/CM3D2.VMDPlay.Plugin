@@ -10,6 +10,8 @@ using System.Reflection;
 using UnityEngine;
 
 using System.Linq;
+using COM3D2API;
+using GearMenu;
 
 namespace CM3D2.VMDPlay.Plugin
 {
@@ -98,6 +100,7 @@ namespace CM3D2.VMDPlay.Plugin
                 cameraCtrl.ikInfoGui = this;
                 cameraCtrl.enabled = true;
             }
+            
         }
 
         private void OnEnable()

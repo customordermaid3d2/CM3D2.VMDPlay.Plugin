@@ -2,7 +2,10 @@ using BepInEx;
 using CM3D2.VMDPlay.Plugin.Utill;
 using COM3D2.Lilly.Plugin;
 using COM3D2.VMDPlay.Plugin;
+using COM3D2API;
+using GearMenu;
 using HarmonyLib;
+using System;
 using System.IO;
 using UnityEngine;
 //using UnityInjector.Attributes;
@@ -42,9 +45,10 @@ namespace CM3D2.VMDPlay.Plugin
 		private void Start()
 		{
 			GameObject val = new GameObject("COM3D2VMDPlayPlugin");
-			Object.DontDestroyOnLoad(val);
+			UnityEngine.Object.DontDestroyOnLoad(val);
 			VMDAnimationMgr.Install(val);
 			DebugHelper.Install(val);
+			SystemShortcutAPI.AddButton("VMDPlayPlugin", new Action(delegate () { VMDAnimationMgr.Instance .gui. visibleGUI = !VMDAnimationMgr.Instance.gui.visibleGUI; }), "VMDPlayPlugin", DefaultIcon.Png);
 		}
 
 		public void togGUI()

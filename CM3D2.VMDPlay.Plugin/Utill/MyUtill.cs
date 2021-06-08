@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -104,12 +106,21 @@ namespace COM3D2.Lilly.Plugin
             */
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="methodBase"></param>
-        /// <returns></returns>
-        public static string GetClassMethodName(System.Reflection.MethodBase methodBase)
+		internal static byte[] ExtractResource(Bitmap image)
+		{
+			using (MemoryStream ms = new MemoryStream())
+			{
+				image.Save(ms, ImageFormat.Png);
+				return ms.ToArray();
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="methodBase"></param>
+		/// <returns></returns>
+		public static string GetClassMethodName(System.Reflection.MethodBase methodBase)
         {
 			return methodBase.ReflectedType.Name+"."+methodBase.Name+":" ;
         }

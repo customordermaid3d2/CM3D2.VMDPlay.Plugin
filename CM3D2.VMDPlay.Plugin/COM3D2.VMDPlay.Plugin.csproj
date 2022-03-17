@@ -35,20 +35,11 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>G:\repos\COM3D2.VibeYourMaid.Plugin.BepInEx\lib\0Harmony.dll</HintPath>
-    </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>G:\repos\COM3D2.VibeYourMaid.Plugin\lib\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>G:\repos\COM3D2.VibeYourMaid.Plugin\lib\Assembly-CSharp-firstpass.dll</HintPath>
-    </Reference>
-    <Reference Include="BepInEx">
-      <HintPath>G:\repos\COM3D2.VibeYourMaid.Plugin.BepInEx\lib\BepInEx.dll</HintPath>
+      <HintPath>H:\COM3D2\COM3D2x64_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="COM3D2.API">
-      <HintPath>G:\repos\_lib\COM3D2.API.dll</HintPath>
+      <HintPath>H:\COM3D2\BepinEx\plugins\COM3D2.API.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -58,9 +49,6 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine">
-      <HintPath>G:\repos\COM3D2.DanceCameraMotion.Plugin4.6.0\COM3D2.DanceCameraMotion.Plugin\lib\UnityEngine.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BoneController.cs" />
@@ -112,8 +100,19 @@
     <Compile Include="Utill\SongMotionUtill.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers">
+      <Version>1.0.8</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="BepInEx.Core">
+      <Version>5.4.19</Version>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="UnityEngine">
+      <Version>5.6.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -126,4 +125,8 @@
     <None Include="Resources\icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(targetpath)" "h:\COM3D2\BepInEx\plugins" 
+copy "$(targetpath)" "h:\COM3D2-test\BepInEx\plugins"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

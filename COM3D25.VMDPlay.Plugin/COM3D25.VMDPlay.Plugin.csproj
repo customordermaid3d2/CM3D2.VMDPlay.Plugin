@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{454BE2BB-9A2E-4963-8147-7F4DBBFDC544}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CM3D2.VMDPlay.Plugin</RootNamespace>
+    <AssemblyName>COM3D25.VMDPlay.Plugin</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony, Version=2.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HarmonyX.2.7.0\lib\net35\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>H:\COM3D2_5\COM3D2x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>H:\COM3D2_5\COM3D2x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="BepInEx, Version=5.4.19.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BepInEx.BaseLib.5.4.19\lib\net35\BepInEx.dll</HintPath>
+    </Reference>
+    <Reference Include="COM3D2.API">
+      <HintPath>H:\COM3D2_5\BepinEx\plugins\COM3D2.API.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.10.4\lib\net35\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.10.4\lib\net35\Mono.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.10.4\lib\net35\Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.10.4\lib\net35\Mono.Cecil.Rocks.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMod.RuntimeDetour, Version=21.12.13.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MonoMod.RuntimeDetour.21.12.13.1\lib\net35\MonoMod.RuntimeDetour.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMod.Utils, Version=21.12.13.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MonoMod.Utils.21.12.13.1\lib\net35\MonoMod.Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UnityEngine.5.6.1\lib\net35\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\BoneController.cs">
+      <Link>BoneController.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CCDIKSolver.cs">
+      <Link>CCDIKSolver.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\BoneAdjustment.cs">
+      <Link>CM3D2.VMDPlay.Plugin\BoneAdjustment.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\CameraCtrlOff.cs">
+      <Link>CM3D2.VMDPlay.Plugin\CameraCtrlOff.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\CM3D2FaceAnimeController.cs">
+      <Link>CM3D2.VMDPlay.Plugin\CM3D2FaceAnimeController.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\GUIUtill\CM3D2VMDGUI.cs">
+      <Link>GUIUtill\CM3D2VMDGUI.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\GUIUtill\CM3D2VMDGUI2.cs">
+      <Link>GUIUtill\CM3D2VMDGUI2.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\Main\CM3D2VMDPlugin.cs">
+      <Link>Main\CM3D2VMDPlugin.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\CustomSoundMgr.cs">
+      <Link>CM3D2.VMDPlay.Plugin\CustomSoundMgr.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\DebugHelper.cs">
+      <Link>CM3D2.VMDPlay.Plugin\DebugHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\DefaultCharaAnimOverride.cs">
+      <Link>CM3D2.VMDPlay.Plugin\DefaultCharaAnimOverride.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\FileBrowser.cs">
+      <Link>CM3D2.VMDPlay.Plugin\FileBrowser.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\FileBrowserType.cs">
+      <Link>CM3D2.VMDPlay.Plugin\FileBrowserType.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\GUILayoutx.cs">
+      <Link>CM3D2.VMDPlay.Plugin\GUILayoutx.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\IKEffectedBoneAdjustment.cs">
+      <Link>CM3D2.VMDPlay.Plugin\IKEffectedBoneAdjustment.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\KeyUtil.cs">
+      <Link>CM3D2.VMDPlay.Plugin\KeyUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\ModelBaselineData.cs">
+      <Link>CM3D2.VMDPlay.Plugin\ModelBaselineData.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\NGUIFileSelectionDialog.cs">
+      <Link>CM3D2.VMDPlay.Plugin\NGUIFileSelectionDialog.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\Settings.cs">
+      <Link>CM3D2.VMDPlay.Plugin\Settings.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\SJISToUnicode.cs">
+      <Link>CM3D2.VMDPlay.Plugin\SJISToUnicode.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\ToEncoding.cs">
+      <Link>CM3D2.VMDPlay.Plugin\ToEncoding.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\UIUtils.cs">
+      <Link>CM3D2.VMDPlay.Plugin\UIUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\VMDAnimationController.cs">
+      <Link>CM3D2.VMDPlay.Plugin\VMDAnimationController.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\VMDAnimationMgr.cs">
+      <Link>CM3D2.VMDPlay.Plugin\VMDAnimationMgr.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\VMDHSConverter.cs">
+      <Link>CM3D2.VMDPlay.Plugin\VMDHSConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\CM3D2.VMDPlay.Plugin\VMDResources.cs">
+      <Link>CM3D2.VMDPlay.Plugin\VMDResources.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\GearMenu\DefaultIcon.cs">
+      <Link>GearMenu\DefaultIcon.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\Utill\AudioManager.cs">
+      <Link>Utill\AudioManager.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\Utill\CharacterMgrPatch.cs">
+      <Link>Utill\CharacterMgrPatch.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\Utill\GUILayoutOptionUtill.cs">
+      <Link>Utill\GUILayoutOptionUtill.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\Utill\GUIStyleUtill.cs">
+      <Link>Utill\GUIStyleUtill.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\HexDump\Utils.cs">
+      <Link>HexDump\Utils.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\MMD.PMD\PMDFormat.cs">
+      <Link>MMD.PMD\PMDFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\MMD.PMD\PMDLoader.cs">
+      <Link>MMD.PMD\PMDLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\MMD.VMD\VMDFormat.cs">
+      <Link>MMD.VMD\VMDFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\MMD.VMD\VMDLoader.cs">
+      <Link>MMD.VMD\VMDLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\MMDMathf.cs">
+      <Link>MMDMathf.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\MMD\Format.cs">
+      <Link>MMD\Format.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\Utill\MyLog.cs">
+      <Link>Utill\MyLog.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\Utill\MyUtill.cs">
+      <Link>Utill\MyUtill.cs</Link>
+    </Compile>
+    <Compile Include="..\CM3D2.VMDPlay.Plugin\Utill\SongMotionUtill.cs">
+      <Link>Utill\SongMotionUtill.cs</Link>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\BepInEx.Analyzers.1.0.8\analyzers\dotnet\cs\BepInEx.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\BepInEx.Analyzers.1.0.8\analyzers\dotnet\cs\BepInEx.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(targetpath)" "h:\COM3D2_5\BepInEx\plugins" 
+copy "$(targetpath)" "h:\COM3D2_5-test\BepInEx\plugins"</PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="..\packages\BepInEx.Core.5.4.19\build\BepInEx.Core.targets" Condition="Exists('..\packages\BepInEx.Core.5.4.19\build\BepInEx.Core.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>이 프로젝트는 이 컴퓨터에 없는 NuGet 패키지를 참조합니다. 해당 패키지를 다운로드하려면 NuGet 패키지 복원을 사용하십시오. 자세한 내용은 http://go.microsoft.com/fwlink/?LinkID=322105를 참조하십시오. 누락된 파일은 {0}입니다.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\BepInEx.Core.5.4.19\build\BepInEx.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\BepInEx.Core.5.4.19\build\BepInEx.Core.targets'))" />
+  </Target>
+</Project>

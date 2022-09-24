@@ -381,7 +381,7 @@ namespace CM3D2.VMDPlay.Plugin
 				obj.color = Color.white;
 				obj.trueTypeFont = font;
 				obj.fontSize = 18;
-				obj.text = "COM3D2.VMDPlay.Plugin 0.3.11.0";
+				obj.text = "COM3D2.VMDPlay.Plugin 0.3.11.2";
 
 
 				float num2 = (float)uiBGSprite.height / 2f;

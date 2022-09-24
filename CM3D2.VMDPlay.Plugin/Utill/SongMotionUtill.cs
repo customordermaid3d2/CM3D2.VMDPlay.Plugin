@@ -15,11 +15,19 @@ namespace CM3D2.VMDPlay.Plugin.Utill
         {
             public string motion;
             public float time;
+            public float[] adjustParams;
 
-            public motionAndTime(string motion, float time)
+            public motionAndTime(string motion, float time, float[] adjust = null, int count=0)
             {
                 this.motion = motion??string.Empty;
                 this.time = time;
+
+                if(adjust != null && count > 0) {
+                    this.adjustParams = new float[count];
+                    for(int i=0;i<count;++i)
+                        this.adjustParams[i] = adjust[i];
+                }
+                else this.adjustParams = null;
             }
         }
 

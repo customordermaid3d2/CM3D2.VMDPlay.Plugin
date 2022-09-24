@@ -495,7 +495,7 @@ namespace CM3D2.VMDPlay.Plugin
 						Quaternion val = Quaternion.identity;
 						for (int i = 0; i < list.Count; i++)
 						{
-							float num = (float)(double)list[i].flame_no * 0.0333333351f;
+							float num = (float)(double)list[i].frame_no * 0.0333333351f; // 1 / 30 fos
 							Quaternion val2 = list[i].rotation;
 							if (dictionary != null)
 							{
@@ -698,7 +698,7 @@ namespace CM3D2.VMDPlay.Plugin
 						int index3 = 0;
 						for (int i = 0; i < list.Count; i++)
 						{
-							float num = (float)(double)list[i].flame_no * 0.0333333351f;
+							float num = (float)(double)list[i].frame_no * 0.0333333351f; // 1 / 30 fps
 							Vector3 val2 = list[i].location;
 							if (!(val2 == Vector3.zero))
 							{
@@ -844,7 +844,7 @@ namespace CM3D2.VMDPlay.Plugin
 			int index3 = 0;
 			for (int i = 0; i < list.Count; i++)
 			{
-				float time = (float)(double)list[i].flame_no * 0.0333333351f;
+				float time = (float)(double)list[i].frame_no * 0.0333333351f; // (1 / 30.0 fps)
 				FloatKeyframe floatKeyframe = new FloatKeyframe(time, list[i].location.x * scale + (zero).x);
 				FloatKeyframe floatKeyframe2 = new FloatKeyframe(time, list[i].location.y * scale + (zero).y);
 				FloatKeyframe floatKeyframe3 = new FloatKeyframe(time, list[i].location.z * scale + (zero).z);
@@ -872,7 +872,7 @@ namespace CM3D2.VMDPlay.Plugin
 			int index4 = 0;
 			for (int j = 0; j < list.Count; j++)
 			{
-				float time2 = (float)(double)list[j].flame_no * 0.0333333351f;
+				float time2 = (float)(double)list[j].frame_no * 0.0333333351f; // (1 / 30.0 fps)
 				Quaternion rotation = list[j].rotation;
 				QuaternionKeyframe quaternionKeyframe = new QuaternionKeyframe(time2, rotation);
 				QuaternionKeyframe.AddBezierKeyframes(list[j].interpolation, 3, prev_keyframe4, quaternionKeyframe, interpolationQuality, ref keyframes4, ref index4);

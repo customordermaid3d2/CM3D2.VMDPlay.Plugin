@@ -57,7 +57,7 @@ namespace MMD.VMD
 		{
 			public string bone_name;
 
-			public uint flame_no;
+			public uint frame_no;
 
 			public Vector3 location;
 
@@ -72,11 +72,11 @@ namespace MMD.VMD
 				//IL_0036: Unknown result type (might be due to invalid IL or missing references)
 				//IL_003b: Unknown result type (might be due to invalid IL or missing references)
 				bone_name = ConvertByteToString(bin.ReadBytes(15));
-				flame_no = bin.ReadUInt32();
+				frame_no = bin.ReadUInt32();
 				location = ReadSinglesToVector3(bin);
 				rotation = ReadSinglesToQuaternion(bin);
 				interpolation = bin.ReadBytes(64);
-				count = (int)flame_no;
+				count = (int)frame_no;
 			}
 
 			public byte GetInterpolation(int i, int j, int k)

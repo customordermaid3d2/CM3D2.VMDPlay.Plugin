@@ -3,6 +3,13 @@
 단순하게 베핀용으로 바꾼거  
 그리고 취향에 맞게 개조중  
 
+# Change Log : 0.3.11.2
+ - COM3D2.VMDPlay.Plugin 업데이트
+   - 어깨, 팔상하박 XYZ 회전 QuickAdjust 추가
+   - Favorite 에 QuickAdjust 파라미터 저장/불러오기 포함
+     - 총 10개 파라미터 : 어째, 상박, 하박 XYZ, 모델 scale
+   - Load 시에 윈도우 숨김 기능 제거
+
 
 # 개조한거
 
@@ -24,7 +31,9 @@ https://youtu.be/LHRlHhz0dEM
 
 - BepInEx https://github.com/BepInEx/BepInEx  
 - COM3D2.API.dll  https://github.com/DeathWeasel1337/COM3D2_Plugins/releases/download/v3/COM3D2.API.v1.0.zip  
-
+- UnityEngine.dll (5.6.1)
+- Assembly-CSharp.dll (COM3D2\COM3D2x64_Data\Managed)
+- Assembly-CSharp-firstpass.dll (COM3D2\COM3D2x64_Data\Managed)
 
 # 참고
 

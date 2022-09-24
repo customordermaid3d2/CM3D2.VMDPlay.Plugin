@@ -1,3 +1,4 @@
+using CM3D2.VMDPlay.Plugin.Utill;
 using COM3D2.Lilly.Plugin;
 using COM3D2.Lilly.Plugin.Utill;
 using MMD.VMD;
@@ -36,57 +37,194 @@ namespace CM3D2.VMDPlay.Plugin
 		{
 			private VMDAnimationController mgr;
 
-			private float _shoulder = 10f;
+			private float[] _shoulder = {0,0,0}; //{-15f, -20f, 0f};
 
-			private float _armUp = 30f;
+			private float[] _armUp = {0,0,40}; //40f;
 
-			private float _armLow;
+			private float[] _armLow = {0,0,0}; //10f;
 
 			private float _scaleModel = 1f;
 
-			public float Shoulder
+			public int AdjustCount()
+			{
+				const int count = 10;
+				return count;
+			}
+			public float[] ConvertToArray()
+			{
+				var adjustParams = new float[AdjustCount()];
+				adjustParams[0] = _shoulder[0];
+				adjustParams[1] = _shoulder[1];
+				adjustParams[2] = _shoulder[2];
+				adjustParams[3] = _armUp[0];
+				adjustParams[4] = _armUp[1];
+				adjustParams[5] = _armUp[2];
+				adjustParams[6] = _armLow[0];
+				adjustParams[7] = _armLow[1];
+				adjustParams[8] = _armLow[2];
+				adjustParams[9] = _scaleModel;
+				return adjustParams;
+			}
+
+			internal void ParseAdjust(SongMotionUtill.motionAndTime mat)
+            {
+				if(mat.adjustParams == null) return;
+				
+                int dstCount = mat.adjustParams.Count();
+				int srcCount = AdjustCount();
+
+				if(srcCount > dstCount)	return;
+				_shoulder[0] = mat.adjustParams[0];
+				_shoulder[1] = mat.adjustParams[1];
+				_shoulder[2] = mat.adjustParams[2];
+				_armUp[0] = mat.adjustParams[3];
+				_armUp[1] = mat.adjustParams[4];
+				_armUp[2] = mat.adjustParams[5];
+				_armLow[0] = mat.adjustParams[6];
+				_armLow[1] = mat.adjustParams[7];
+				_armLow[2] = mat.adjustParams[8];
+				_scaleModel = mat.adjustParams[9];
+
+				Set();
+            }
+
+			public float ShoulderX
 			{
 				get
 				{
-					return _shoulder;
+					return _shoulder[0];
 				}
 				set
 				{
-					if (_shoulder != value)
+					if (_shoulder[0] != value)
 					{
-						_shoulder = value;
+						_shoulder[0] = value;
+						Set();
+					}
+				}
+			}
+			public float ShoulderY
+			{
+				get
+				{
+					return _shoulder[1];
+				}
+				set
+				{
+					if (_shoulder[1] != value)
+					{
+						_shoulder[1] = value;
+						Set();
+					}
+				}
+			}
+			public float ShoulderZ
+			{
+				get
+				{
+					return _shoulder[2];
+				}
+				set
+				{
+					if (_shoulder[2] != value)
+					{
+						_shoulder[2] = value;
 						Set();
 					}
 				}
 			}
 
-			public float ArmUp
+			public float ArmUpX
 			{
 				get
 				{
-					return _armUp;
+					return _armUp[0];
 				}
 				set
 				{
-					if (_armUp != value)
+					if (_armUp[0] != value)
 					{
-						_armUp = value;
+						_armUp[0] = value;
 						Set();
 					}
 				}
 			}
 
-			public float ArmLow
+			public float ArmUpY
 			{
 				get
 				{
-					return _armLow;
+					return _armUp[1];
 				}
 				set
 				{
-					if (_armLow != value)
+					if (_armUp[1] != value)
 					{
-						_armLow = value;
+						_armUp[1] = value;
+						Set();
+					}
+				}
+			}
+
+			public float ArmUpZ
+			{
+				get
+				{
+					return _armUp[2];
+				}
+				set
+				{
+					if (_armUp[2] != value)
+					{
+						_armUp[2] = value;
+						Set();
+					}
+				}
+			}
+
+			public float ArmLowX
+			{
+				get
+				{
+					return _armLow[0];
+				}
+				set
+				{
+					if (_armLow[0] != value)
+					{
+						_armLow[0] = value;
+						Set();
+					}
+				}
+			}
+
+			public float ArmLowY
+			{
+				get
+				{
+					return _armLow[1];
+				}
+				set
+				{
+					if (_armLow[1] != value)
+					{
+						_armLow[1] = value;
+						Set();
+					}
+				}
+			}
+
+			public float ArmLowZ
+			{
+				get
+				{
+					return _armLow[2];
+				}
+				set
+				{
+					if (_armLow[2] != value)
+					{
+						_armLow[2] = value;
 						Set();
 					}
 				}
@@ -117,16 +255,16 @@ namespace CM3D2.VMDPlay.Plugin
 			{
 				try
 				{
-					mgr.boneAdjust[mgr._shoulderKey[0]].SetRotAdjustment(new Vector3(0f, 0f, _shoulder));
-					mgr.boneAdjust[mgr._shoulderKey[1]].SetRotAdjustment(new Vector3(0f, 0f, -1f * _shoulder));
-					mgr.boneAdjust[mgr._armUpKey[0]].SetRotAdjustment(new Vector3(0f, 0f, _armUp));
-					mgr.boneAdjust[mgr._armUpKey[1]].SetRotAdjustment(new Vector3(0f, 0f, -1f * _armUp));
-					mgr.boneAdjust[mgr._armLowKey[0]].SetRotAdjustment(new Vector3(0f, 0f, _armLow));
-					mgr.boneAdjust[mgr._armLowKey[1]].SetRotAdjustment(new Vector3(0f, 0f, -1f * _armLow));
-					mgr.boneAdjust[mgr._armUpKey[0]].SetAxisAdjustment(new Vector3(0f, 0f, -1f * _shoulder));
-					mgr.boneAdjust[mgr._armUpKey[1]].SetAxisAdjustment(new Vector3(0f, 0f, _shoulder));
-					mgr.boneAdjust[mgr._armLowKey[0]].SetAxisAdjustment(new Vector3(0f, 0f, -1f * _armUp));
-					mgr.boneAdjust[mgr._armLowKey[1]].SetAxisAdjustment(new Vector3(0f, 0f, _armUp));
+					mgr.boneAdjust[mgr._shoulderKey[0]].SetRotAdjustment(new Vector3(_shoulder[0], _shoulder[1], _shoulder[2]));
+					mgr.boneAdjust[mgr._shoulderKey[1]].SetRotAdjustment(new Vector3(_shoulder[0], -1f * _shoulder[1], -1f * _shoulder[2]));
+					mgr.boneAdjust[mgr._armUpKey[0]].SetRotAdjustment(new Vector3(_armUp[0], _armUp[1], _armUp[2]));
+					mgr.boneAdjust[mgr._armUpKey[1]].SetRotAdjustment(new Vector3(_armUp[0], -1 * _armUp[1], -1f * _armUp[2]));
+					mgr.boneAdjust[mgr._armLowKey[0]].SetRotAdjustment(new Vector3(_armLow[0], -1 * _armLow[1], _armLow[2]));
+					mgr.boneAdjust[mgr._armLowKey[1]].SetRotAdjustment(new Vector3(_armLow[0], -1 * _armLow[1], -1f * _armLow[2]));
+					mgr.boneAdjust[mgr._armUpKey[0]].SetAxisAdjustment(new Vector3(_shoulder[0], -1f * _shoulder[1], -1f * _shoulder[2]));
+					mgr.boneAdjust[mgr._armUpKey[1]].SetAxisAdjustment(new Vector3(_shoulder[0], _shoulder[1], _shoulder[2]));
+					mgr.boneAdjust[mgr._armLowKey[0]].SetAxisAdjustment(new Vector3(_armUp[0], -1 * _armUp[1], -1f * _armUp[2]));
+					mgr.boneAdjust[mgr._armLowKey[1]].SetAxisAdjustment(new Vector3(_armUp[0], _armUp[1], _armUp[2]));
 					mgr.scale = mgr.scaleBase * _scaleModel;
 				}
 				catch (Exception value)
@@ -134,7 +272,7 @@ namespace CM3D2.VMDPlay.Plugin
 					Console.WriteLine(value);
 				}
 			}
-		}
+        }
 
 		public class AutoTrack : UnityEngine.MonoBehaviour
 		{

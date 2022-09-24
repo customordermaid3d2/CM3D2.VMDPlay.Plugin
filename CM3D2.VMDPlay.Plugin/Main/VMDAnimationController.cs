@@ -274,7 +274,7 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public bool enableIK = true;
 
-		// 뼈가 없는 경우 대비한듯
+		// 뼈가 없는 경우 대비한듯 // unity bone 이름 <-> mms 본이름(shift-jis) 매핑
 		public Dictionary<string, string> boneNameMap;
 
 		private Transform t_hips;

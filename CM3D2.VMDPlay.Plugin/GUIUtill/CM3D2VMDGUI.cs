@@ -261,7 +261,7 @@ namespace CM3D2.VMDPlay.Plugin
         }
 
         /// <summary>
-        /// ÃÖÀûÈ­ ¿Ï·á?
+        /// ï¿½ï¿½ï¿½ï¿½È­ ï¿½Ï·ï¿½?
         /// </summary>
         /// <returns></returns>
         private Maid FindFirstMaid()
@@ -285,7 +285,7 @@ namespace CM3D2.VMDPlay.Plugin
         }
 
         /// <summary>
-        /// ÃÖÀûÈ­ ¿Ï·á?
+        /// ï¿½ï¿½ï¿½ï¿½È­ ï¿½Ï·ï¿½?
         /// </summary>
         /// <param name="next"></param>
         /// <returns></returns>
@@ -377,7 +377,7 @@ namespace CM3D2.VMDPlay.Plugin
                     FavoritesName
                     , oggFilename
                     //, VMDAnimationMgr.Instance.controllers.Where(x=> CharacterMgrPatch.maids.Contains(x.maid) ).Select(x => x.lastLoadedVMD).ToArray()
-                    , VMDAnimationMgr.Instance.maidcontrollers.Values.Select(x => new SongMotionUtill.motionAndTime(x.lastLoadedVMD , x.timeShiftNow)).ToArray()
+                    , VMDAnimationMgr.Instance.maidcontrollers.Values.Select(x => new SongMotionUtill.motionAndTime(x.lastLoadedVMD , x.timeShiftNow, x.quickAdjust.ConvertToArray(), x.quickAdjust.AdjustCount())).ToArray()
                     );
                // MyLog.LogMessage("add", VMDAnimationMgr.Instance.controllers.Count, CharacterMgrPatch.maids.Count, VMDAnimationMgr.Instance.controllers.Where(x => CharacterMgrPatch.maids.Contains(x.maid)).Count() );
                 MyLog.LogMessage("add", VMDAnimationMgr.Instance.maidcontrollers.Count, CharacterMgrPatch.maids.Count);
@@ -417,6 +417,7 @@ namespace CM3D2.VMDPlay.Plugin
                                 vMDAnimationControllerSub.VMDAnimEnabled = true;
                                 vMDAnimationControllerSub.timeShiftNow = item.Value.Motions2[i].time;
                                 vMDAnimationControllerSub.LoadVMDAnimation(item.Value.Motions2[i].motion);
+                                vMDAnimationControllerSub.quickAdjust.ParseAdjust(item.Value.Motions2[i]);
                             }
                             //vMDAnimationController = VMDAnimationController.Install(focusChara);
                             lastFilename = vMDAnimationController.lastLoadedVMD ;
@@ -428,11 +429,12 @@ namespace CM3D2.VMDPlay.Plugin
                         //{
                         //    vMDAnimationController.Play();
                         //}
-                        VMDAnimationMgr.Instance.PlayAll();
-                        AudioManager.Play();
+
+                        // VMDAnimationMgr.Instance.PlayAll();
+                        // AudioManager.Play();
                         
-                        isFavorites = false;
-                        this.gameObject.SetActive(false);
+                        // isFavorites = false;
+                        // this.gameObject.SetActive(false);
                     }
                     if (GUILayout.Button("Del", gui[50f, 25f]))
                     {
@@ -489,7 +491,7 @@ namespace CM3D2.VMDPlay.Plugin
 
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    // À½¾ÇÀº »ó´ë°æ·Î°¡ ¾È¸ÔÈù´Ù?
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Î°ï¿½ ï¿½È¸ï¿½ï¿½ï¿½ï¿½ï¿½?
                     oggFilename = MyUtill.EvaluateRelativePath(Environment.CurrentDirectory, dialog.FileName);
                     if (vMDAnimationController != null)
                     {
@@ -834,13 +836,31 @@ namespace CM3D2.VMDPlay.Plugin
                         }
                         GUILayout.EndHorizontal();
                         GUILayout.BeginHorizontal( );
-                        vMDAnimationController.quickAdjust.Shoulder = AddSliderWithTextFixedScale("Shoulder Tilt", vMDAnimationController.quickAdjust.Shoulder, -10f, 40f);
+                        vMDAnimationController.quickAdjust.ShoulderX = AddSliderWithTextFixedScale("Shoulder TiltX", vMDAnimationController.quickAdjust.ShoulderX, -20f, 40f);
                         GUILayout.EndHorizontal();
                         GUILayout.BeginHorizontal( );
-                        vMDAnimationController.quickAdjust.ArmUp = AddSliderWithTextFixedScale("Upper Arm Tilt", vMDAnimationController.quickAdjust.ArmUp, -10f, 40f);
+                        vMDAnimationController.quickAdjust.ShoulderY = AddSliderWithTextFixedScale("Shoulder TiltY", vMDAnimationController.quickAdjust.ShoulderY, -20f, 40f);
                         GUILayout.EndHorizontal();
                         GUILayout.BeginHorizontal( );
-                        vMDAnimationController.quickAdjust.ArmLow = AddSliderWithTextFixedScale("Lower Arm Tilt", vMDAnimationController.quickAdjust.ArmLow, -10f, 40f);
+                        vMDAnimationController.quickAdjust.ShoulderZ = AddSliderWithTextFixedScale("Shoulder TiltZ", vMDAnimationController.quickAdjust.ShoulderZ, -20f, 40f);
+                        GUILayout.EndHorizontal();
+                        GUILayout.BeginHorizontal( );
+                        vMDAnimationController.quickAdjust.ArmUpX = AddSliderWithTextFixedScale("Upper Arm TiltX", vMDAnimationController.quickAdjust.ArmUpX, -20f, 40f);
+                        GUILayout.EndHorizontal();
+                        GUILayout.BeginHorizontal( );
+                        vMDAnimationController.quickAdjust.ArmUpY = AddSliderWithTextFixedScale("Upper Arm TiltY", vMDAnimationController.quickAdjust.ArmUpY, -20f, 40f);
+                        GUILayout.EndHorizontal();
+                        GUILayout.BeginHorizontal( );
+                        vMDAnimationController.quickAdjust.ArmUpZ = AddSliderWithTextFixedScale("Upper Arm TiltZ", vMDAnimationController.quickAdjust.ArmUpZ, -20f, 40f);
+                        GUILayout.EndHorizontal();
+                        GUILayout.BeginHorizontal( );
+                        vMDAnimationController.quickAdjust.ArmLowX = AddSliderWithTextFixedScale("Lower Arm TiltX", vMDAnimationController.quickAdjust.ArmLowX, -20f, 40f);
+                        GUILayout.EndHorizontal();
+                        GUILayout.BeginHorizontal( );
+                        vMDAnimationController.quickAdjust.ArmLowY = AddSliderWithTextFixedScale("Lower Arm TiltY", vMDAnimationController.quickAdjust.ArmLowY, -20f, 40f);
+                        GUILayout.EndHorizontal();
+                        GUILayout.BeginHorizontal( );
+                        vMDAnimationController.quickAdjust.ArmLowZ = AddSliderWithTextFixedScale("Lower Arm TiltZ", vMDAnimationController.quickAdjust.ArmLowZ, -20f, 40f);
                         GUILayout.EndHorizontal();
                         //GUILayout.Label("Other Config", (GUILayoutOption[])new GUILayoutOption[1]
                         //{

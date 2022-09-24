@@ -16,7 +16,7 @@ namespace CM3D2.VMDPlay.Plugin
 	//[PluginName("COM3D2.VMDPlay.Plugin")]
 	//[PluginVersion("0.3.11.0")]
 
-	[BepInPlugin("COM3D2.VMDPlay.Plugin", "COM3D2.VMDPlay.Plugin", "0.3.11.0")]// ¹öÀü ±ÔÄ¢ ÀÕÀ½. ¹Ýµå½Ã 2~4°³ÀÇ ¼ýÀÚ±¸¼ºÀ¸·Î ÇØ¾ßÇÔ. ¹ÌÁØ¼ö½Ã ¸øÀÐ¾îµéÀÓ
+	[BepInPlugin("COM3D2.VMDPlay.Plugin", "COM3D2.VMDPlay.Plugin", "0.3.11.2")]// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¢ ï¿½ï¿½ï¿½ï¿½. ï¿½Ýµï¿½ï¿½ 2~4ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø¾ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½
 	[BepInProcess("COM3D2x64.exe")]
 	public class CM3D2VMDPlugin : BaseUnityPlugin//UnityInjector.PluginBase
 	{
@@ -24,7 +24,7 @@ namespace CM3D2.VMDPlay.Plugin
 
 		public const string NAME = "COM3D2.VMDPlay.Plugin";
 
-		public const string VERSION = "0.3.11.0";
+		public const string VERSION = "0.3.11.2";
 
 		public CM3D2VMDPlugin()
         {
